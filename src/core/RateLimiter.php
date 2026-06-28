@@ -28,8 +28,8 @@ class RateLimiter {
     public static function check($endpoint, $maxRequests = 60, $windowSeconds = 60) {
         $db = self::getDB();
         $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-        $userId = session_id();
-        $identifier = ($_SESSION['user_id'] ?? 'anon') . ':' . $ip;
+        $userId = isset($_SESSION) && session_id() ? ($_SESSION['user_id'] ?? 'anon') : 'anon';
+        $identifier = $userId . ':' . $ip;
         $window = date('Y-m-d H:i:s', time() - $windowSeconds);
 
         $stmt = $db->prepare("SELECT SUM(hits) as total FROM " . self::$table . "

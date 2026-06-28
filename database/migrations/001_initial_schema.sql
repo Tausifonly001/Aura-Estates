@@ -117,7 +117,8 @@ CREATE TABLE IF NOT EXISTS properties (
     area_sqft INT NOT NULL,
     main_image VARCHAR(255),
     is_available TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE INDEX idx_property_title (title)
 );
 
 CREATE TABLE IF NOT EXISTS rentals (
@@ -169,7 +170,8 @@ CREATE TABLE IF NOT EXISTS amenities (
     image VARCHAR(255),
     is_active TINYINT(1) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+    UNIQUE INDEX idx_amenity_name_property (name, property_id)
 );
 
 CREATE TABLE IF NOT EXISTS amenity_bookings (

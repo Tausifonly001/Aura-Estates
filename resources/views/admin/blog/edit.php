@@ -108,7 +108,7 @@ if ($_POST) {
                 <h1 class="text-4xl font-serif font-light italic text-ink mb-2"><?php echo $isEdit ? 'Edit' : 'New'; ?> Post</h1>
                 <p class="text-sm text-graphite font-sans"><?php echo $isEdit ? 'Update' : 'Create'; ?> a journal article</p>
             </div>
-            <a href="../blog.php" class="neo-btn-ghost">
+            <a href="/admin/blog" class="neo-btn-ghost">
                 <i class="fas fa-arrow-left mr-2"></i> Back
             </a>
         </div>
@@ -174,7 +174,7 @@ if ($_POST) {
                         <i class="fas fa-save mr-2"></i>
                         <?php echo $isEdit ? 'Update' : 'Create'; ?> Post
                     </button>
-                    <a href="../blog.php" class="neo-btn-ghost">Cancel</a>
+                    <a href="/admin/blog" class="neo-btn-ghost">Cancel</a>
                 </div>
             </div>
         </form>

@@ -70,7 +70,7 @@ $currentPage = 'properties';
                     <p class="font-sans font-medium text-[1.5rem] lg:text-[2.125rem] text-ink mb-1">$<?php echo number_format($property['price']); ?> <span class="font-normal text-muted text-[1rem]">/mo</span></p>
                     <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-6"><?php echo htmlspecialchars($property['property_type']); ?> &middot; <?php echo htmlspecialchars($property['location']); ?></p>
                     <p class="font-sans font-medium text-[1rem] text-ink mb-4">Interested in this property?</p>
-                    <form action="contact.php" method="GET" class="flex flex-col gap-4">
+                    <form action="/contact" method="GET" class="flex flex-col gap-4">
                         <input type="hidden" name="property" value="<?php echo $property['id']; ?>">
                         <input type="text" name="name" class="input-field" placeholder="Your name" required>
                         <input type="email" name="email" class="input-field" placeholder="Your email" required>
@@ -78,7 +78,7 @@ $currentPage = 'properties';
                         <button type="submit" class="btn-primary w-full justify-center mt-2">Send Inquiry</button>
                     </form>
                     <div class="mt-6 pt-6 border-t border-border-light">
-                        <a href="properties.php" class="flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">
+                        <a href="/properties" class="flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M3 7l4-4M3 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             Back to Properties
                         </a>

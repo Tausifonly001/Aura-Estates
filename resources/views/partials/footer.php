@@ -22,40 +22,40 @@
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Pages</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="index.html" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Home</a>
-                    <a href="about.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">About</a>
-                    <a href="services.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Services</a>
-                    <a href="properties.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Properties</a>
-                    <a href="blog.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Journal</a>
-                    <a href="contact.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Contact</a>
-                    <a href="faq.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">FAQ</a>
-                    <a href="careers.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Careers</a>
+                    <a href="/" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Home</a>
+                    <a href="/about" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">About</a>
+                    <a href="/services" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Services</a>
+                    <a href="/properties" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Properties</a>
+                    <a href="/blog" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Journal</a>
+                    <a href="/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Contact</a>
+                    <a href="/faq" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">FAQ</a>
+                    <a href="/careers" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Careers</a>
                 </div>
             </div>
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Services</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="services.php#residential" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Residential</a>
-                    <a href="services.php#commercial" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Commercial</a>
-                    <a href="services.php#consulting" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Consulting</a>
-                    <a href="services.php#maintenance" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Maintenance</a>
+                    <a href="/services#residential" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Residential</a>
+                    <a href="/services#commercial" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Commercial</a>
+                    <a href="/services#consulting" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Consulting</a>
+                    <a href="/services#maintenance" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Maintenance</a>
                 </div>
             </div>
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Account</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="login.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Sign In</a>
-                    <a href="register.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Register</a>
-                    <a href="user/dashboard.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Dashboard</a>
-                    <a href="contact.php" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Support</a>
+                    <a href="/login" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Sign In</a>
+                    <a href="/register" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Register</a>
+                    <a href="/user/dashboard" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Dashboard</a>
+                    <a href="/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Support</a>
                 </div>
             </div>
         </div>
         <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border-light font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted gap-4">
             <span>&copy; 2026 Aura Estates. All rights reserved.</span>
             <div class="flex gap-6">
-                <a href="privacy.php" class="hover:text-ink transition-colors no-underline">Privacy</a>
-                <a href="terms.php" class="hover:text-ink transition-colors no-underline">Terms</a>
+                <a href="/privacy" class="hover:text-ink transition-colors no-underline">Privacy</a>
+                <a href="/terms" class="hover:text-ink transition-colors no-underline">Terms</a>
             </div>
         </div>
     </div>

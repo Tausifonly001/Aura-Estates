@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../src/config/auth.php';
 Auth::startSession();
 if(isset($_SESSION['user_id'])){
-    header("Location: dashboard.php");
+    header("Location: /user/dashboard");
     exit;
 }
 ?>
@@ -87,8 +87,8 @@ if(isset($_SESSION['user_id'])){
             </form>
 
             <div class="mt-8 pt-6 border-t border-border-light flex flex-col gap-3 font-mono text-[0.625rem] tracking-[0.02em] uppercase">
-                <a href="login.php" class="text-ink-secondary hover:text-ink transition-colors">Already have an account? Sign In</a>
-                <a href="../index.html" class="text-muted hover:text-ink-secondary transition-colors">Back to Site</a>
+                <a href="/login" class="text-ink-secondary hover:text-ink transition-colors">Already have an account? Sign In</a>
+                <a href="/" class="text-muted hover:text-ink-secondary transition-colors">Back to Site</a>
             </div>
         </div>
     </div>

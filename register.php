@@ -4,7 +4,7 @@ require_once __DIR__ . '/src/config/auth.php';
 
 Auth::startSession();
 if (isset($_SESSION['user_id'])) {
-    header("Location: resources/views/user/dashboard.php");
+    header("Location: /user/dashboard");
     exit;
 }
 
@@ -35,7 +35,7 @@ if ($_POST) {
                 $_SESSION['user_email'] = $email;
                 $_SESSION['role'] = 'tenant';
                 $_SESSION['user_role'] = 'tenant';
-                header("Location: resources/views/user/dashboard.php");
+                header("Location: /user/dashboard");
                 exit;
             }
             $message = 'Registration failed.';
@@ -152,7 +152,7 @@ if ($_POST) {
                 </button>
  
                 <p class="text-center mt-6 text-[0.6875rem] text-[#555555]">
-                    Already have an account? <a href="login.php" class="slide-link font-medium text-[#8c7b6c]">Sign in</a>
+                    Already have an account? <a href="/login" class="slide-link font-medium text-[#8c7b6c]">Sign in</a>
                 </p>
             </div>
         </div>

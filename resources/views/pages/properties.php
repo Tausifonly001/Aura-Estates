@@ -93,13 +93,13 @@ $currentPage = 'properties';
         <div class="text-center py-16 lg:py-24">
             <i class="fas fa-search text-3xl text-muted mb-4"></i>
             <p class="font-sans text-[1.125rem] text-ink-secondary">No properties match your criteria.</p>
-            <a href="properties.php" class="btn-primary mt-6 inline-flex">Clear Filters</a>
+            <a href="/properties" class="btn-primary mt-6 inline-flex">Clear Filters</a>
         </div>
         <?php else: ?>
         <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted mb-6"><?php echo count($properties); ?> property<?php echo count($properties) !== 1 ? 'ies' : 'y'; ?> found</p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
             <?php foreach ($properties as $p): ?>
-            <a href="property-detail.php?id=<?php echo $p['id']; ?>" class="property-card no-underline" data-stagger-item>
+            <a href="/property-detail?id=<?php echo $p['id']; ?>" class="property-card no-underline" data-stagger-item>
                 <?php if (!empty($p['main_image'])): ?>
                 <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy">
                 <?php else: ?>

@@ -48,6 +48,7 @@ class Property {
             $this->area_sqft = $row['area_sqft'];
             $this->main_image = $row['main_image'];
         }
+        return $stmt;
     }
 
     // Create property
@@ -159,9 +160,24 @@ class Property {
 
         $baseQuery = "FROM " . $this->table_name;
         $where = [];
+        $binds = [];
 
         if ($p['search']) {
             $where[] = "MATCH(title, description, location) AGAINST(:search IN BOOLEAN MODE)";
+        }
+
+        foreach ($p['filter'] as $key => $value) {
+            if ($value === '' || $value === null) continue;
+            $allowed = ['property_type', 'bedrooms', 'bathrooms', 'location', 'is_available'];
+            if (!in_array($key, $allowed)) continue;
+            $param = ":filter_$key";
+            if ($key === 'bedrooms' || $key === 'bathrooms' || $key === 'is_available') {
+                $where[] = "$key = $param";
+            } else {
+                $where[] = "$key LIKE $param";
+                $value = "%$value%";
+            }
+            $binds[$param] = $value;
         }
 
         $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -171,11 +187,13 @@ class Property {
         $countSql = "SELECT COUNT(*) $baseQuery $whereClause";
         $countStmt = $this->conn->prepare($countSql);
         if ($p['search']) $countStmt->bindValue(':search', $p['search'], PDO::PARAM_STR);
+        foreach ($binds as $param => $value) $countStmt->bindValue($param, $value);
         $countStmt->execute();
 
         $dataSql = "SELECT * $baseQuery $whereClause $orderClause $limitClause";
         $dataStmt = $this->conn->prepare($dataSql);
         if ($p['search']) $dataStmt->bindValue(':search', $p['search'], PDO::PARAM_STR);
+        foreach ($binds as $param => $value) $dataStmt->bindValue($param, $value);
         $dataStmt->execute();
 
         return Paginator::paginatedResponse($dataStmt, $countStmt, $p['page'], $p['perPage']);

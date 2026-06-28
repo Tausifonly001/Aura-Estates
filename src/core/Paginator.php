@@ -9,7 +9,8 @@ class Paginator {
         $allowedSorts = $params['allowed_sorts'] ?? ['created_at', 'id', 'name', 'status', 'updated_at'];
         $sort = in_array($sort, $allowedSorts) ? $sort : 'created_at';
         $offset = ($page - 1) * $perPage;
-        return compact('page', 'perPage', 'offset', 'search', 'sort', 'order');
+        $filter = $params['filter'] ?? [];
+        return compact('page', 'perPage', 'offset', 'search', 'sort', 'order', 'filter');
     }
 
     public static function searchClause($columns, $search): string {

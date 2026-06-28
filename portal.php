@@ -4,13 +4,13 @@ Auth::startSession();
 if(isset($_SESSION['user_id'])) {
     $role = $_SESSION['role'] ?? $_SESSION['user_role'] ?? '';
     if ($role === 'admin') {
-        header("Location: admin/dashboard.php");
-    } elseif (in_array($role, ['user', 'tenant'])) {
-        header("Location: user/dashboard.php");
-    } else {
-        header("Location: user/dashboard.php");
-    }
+    header("Location: /admin/dashboard");
+} elseif (in_array($_SESSION['role'], ['tenant', 'user', 'maintenance_staff', 'property_manager'])) {
+    header("Location: /user/dashboard");
 } else {
-    header("Location: login.php");
+    header("Location: /user/dashboard");
+}
+} else {
+header("Location: /login");
 }
 exit;

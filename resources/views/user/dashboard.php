@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../src/config/auth.php';
 Auth::startSession();
 if(!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: /login");
     exit;
 }
 ?>
@@ -91,7 +91,7 @@ if(!isset($_SESSION['user_id'])) {
             </div>
             <div class="flex items-center gap-4">
                 <span class="font-sans text-[0.875rem] text-ink-secondary">Welcome, <strong class="text-ink font-medium">{{user.name}}</strong></span>
-                <a href="logout.php" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors px-4 py-2 border border-border rounded-full no-underline">
+                <a href="/user/logout" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors px-4 py-2 border border-border rounded-full no-underline">
                     Logout
                 </a>
             </div>

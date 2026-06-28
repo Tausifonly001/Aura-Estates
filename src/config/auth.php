@@ -11,6 +11,12 @@ class Auth {
         return self::$db;
     }
 
+    private static function getClientIp(): string {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
+        if (strpos($ip, ',') !== false) $ip = trim(explode(',', $ip)[0]);
+        return $ip;
+    }
+
     public static function startSession() {
         if (session_status() === PHP_SESSION_NONE) {
             session_set_cookie_params([
@@ -21,28 +27,11 @@ class Auth {
             session_start();
         }
 
-        if (isset($_SESSION['_last_activity']) && (time() - $_SESSION['_last_activity'] > 7200)) {
+        $inactive = time() - ($_SESSION['_last_activity'] ?? time());
+        if ($inactive > 7200) {
             $_SESSION = [];
             session_destroy();
             if (session_status() === PHP_SESSION_NONE) {
-                session_set_cookie_params([
-                    'httponly' => true,
-                    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-                    'samesite' => 'Strict'
-                ]);
-                session_start();
-            }
-        }
-
-        if (isset($_SESSION['_last_activity']) && (time() - $_SESSION['_last_activity'] > 86400)) {
-            $_SESSION = [];
-            session_destroy();
-            if (session_status() === PHP_SESSION_NONE) {
-                session_set_cookie_params([
-                    'httponly' => true,
-                    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-                    'samesite' => 'Strict'
-                ]);
                 session_start();
             }
         }
@@ -53,7 +42,7 @@ class Auth {
     public static function getUser() {
         self::startSession();
         if (isset($_SESSION['user_id'])) {
-            $expectedFingerprint = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+            $expectedFingerprint = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . self::getClientIp());
             if (!isset($_SESSION['_fingerprint']) || $_SESSION['_fingerprint'] !== $expectedFingerprint) {
                 $_SESSION = [];
                 session_destroy();
@@ -82,7 +71,7 @@ class Auth {
             if (self::isAjaxRequest()) {
                 echo json_encode(["message" => "Unauthorized.", "authenticated" => false]);
             } else {
-                header("Location: login.php");
+                header("Location: /admin/login");
             }
             exit;
         }
@@ -137,7 +126,6 @@ class Auth {
         if ($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (password_verify($password, $row['password'])) {
-                self::startSession();
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['user_name'] = $row['name'];
@@ -145,7 +133,7 @@ class Auth {
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['user_role'] = $row['role'];
                 $_SESSION['role_id'] = $row['role_id'];
-                $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+                $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . self::getClientIp());
 
                 $_SESSION['_login_attempts'] = 0;
                 $_SESSION['_login_time'] = null;

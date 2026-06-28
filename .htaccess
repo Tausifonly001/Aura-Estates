@@ -14,10 +14,60 @@ ServerSignature Off
 
 RewriteEngine On
 
-# Block dev utility scripts
+# ====== BLOCK UTILITY SCRIPTS ======
 RewriteRule ^(install|update_db|update_blog|update_rbac|migrate_content|add_tenant)\.php$ - [F,L]
 
-# Rewrite page URLs to resources/views/pages/
+# ====== CLEAN URLS: External redirect .php → clean URL (301) ======
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+RewriteCond %{REQUEST_URI} ^/([^.?]+)\.php(\?.*)?$ [NC]
+RewriteCond %{REQUEST_URI} !^/(install|update_db|update_blog|update_rbac|migrate_content|add_tenant|database)\.php
+RewriteRule ^ /%1 [R=301,L,QSA]
+
+# ====== CLEAN URLS: Internal rewrite clean URL → .php file ======
+
+# Rewrite root-level pages → resources/views/pages/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/resources/views/pages/%1.php -f
+RewriteRule ^ resources/views/pages/%1.php [L]
+
+# Rewrite root-level PHP files (login.php, register.php, etc.)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/%1.php -f
+RewriteRule ^ %1.php [L]
+
+# Rewrite /api/* → api/*.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/api/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/api/%1.php -f
+RewriteRule ^ api/%1.php [L]
+
+# Rewrite /admin/* → resources/views/admin/*.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/admin/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/resources/views/admin/%1.php -f
+RewriteRule ^ resources/views/admin/%1.php [L]
+
+# Rewrite /user/* → resources/views/user/*.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/user/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/resources/views/user/%1.php -f
+RewriteRule ^ resources/views/user/%1.php [L]
+
+# Rewrite /admin/blog/* → resources/views/admin/blog/*.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/admin/blog/([^/]+)$
+RewriteCond %{DOCUMENT_ROOT}/resources/views/admin/blog/%1.php -f
+RewriteRule ^ resources/views/admin/blog/%1.php [L]
+
+# ====== EXISTING RULES (keep for backward compatibility) ======
 RewriteRule ^about\.php$ resources/views/pages/about.php [L]
 RewriteRule ^blog\.php$ resources/views/pages/blog.php [L]
 RewriteRule ^blog-post\.php$ resources/views/pages/blog-post.php [L]
@@ -29,9 +79,5 @@ RewriteRule ^terms\.php$ resources/views/pages/terms.php [L]
 RewriteRule ^properties\.php$ resources/views/pages/properties.php [L]
 RewriteRule ^property-detail\.php$ resources/views/pages/property-detail.php [L]
 RewriteRule ^services\.php$ resources/views/pages/services.php [L]
-
-# Rewrite admin/ URLs to resources/views/admin/
 RewriteRule ^admin/(.+)$ resources/views/admin/$1 [L]
-
-# Rewrite user/ URLs to resources/views/user/
 RewriteRule ^user/(.+)$ resources/views/user/$1 [L]

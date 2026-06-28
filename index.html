@@ -73,18 +73,18 @@
             <span class="hidden sm:inline">Aura Estates</span>
         </a>
         <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0">
-            <li><a href="about.php" class="nav-link">About</a></li>
-            <li><a href="properties.php" class="nav-link">Properties</a></li>
-            <li><a href="services.php" class="nav-link">Services</a></li>
-            <li><a href="blog.php" class="nav-link">Journal</a></li>
-            <li><a href="contact.php" class="nav-link">Contact</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+            <li><a href="/properties" class="nav-link">Properties</a></li>
+            <li><a href="services" class="nav-link">Services</a></li>
+            <li><a href="blog" class="nav-link">Journal</a></li>
+            <li><a href="contact" class="nav-link">Contact</a></li>
         </ul>
         <div class="hidden md:flex items-center gap-3 shrink-0" ng-if="currentUser">
             <span class="font-sans text-[0.875rem] text-ink-secondary">Hi, {{currentUser.name}}</span>
-            <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard.php' : 'user/dashboard.php'}}" class="btn-primary">Dashboard</a>
-            <a href="user/logout.php" class="nav-link">Logout</a>
+            <a ng-href="{{currentUser.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}}" class="btn-primary">Dashboard</a>
+            <a href="user/logout" class="nav-link">Logout</a>
         </div>
-        <a href="login.php" class="hidden md:inline-flex btn-primary" ng-if="!currentUser" data-magnetic>
+        <a href="login" class="hidden md:inline-flex btn-primary" ng-if="!currentUser" data-magnetic>
             Sign In
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -99,17 +99,17 @@
             <svg width="24" height="24" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>
         <ul class="flex flex-col gap-8 mt-16 list-none">
-            <li><a href="about.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">About</a></li>
-            <li><a href="properties.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Properties</a></li>
-            <li><a href="services.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Services</a></li>
-            <li><a href="blog.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Journal</a></li>
-            <li><a href="contact.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Contact</a></li>
+            <li><a href="about" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">About</a></li>
+            <li><a href="properties" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Properties</a></li>
+            <li><a href="services" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Services</a></li>
+            <li><a href="blog" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Journal</a></li>
+            <li><a href="contact" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Contact</a></li>
             <li class="mt-4" ng-if="currentUser">
                 <span class="font-sans text-xl text-ink-secondary block mb-4">Hi, {{currentUser.name}}</span>
-                <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard.php' : 'user/dashboard.php'}}" class="btn-primary">Dashboard</a>
-                <a href="user/logout.php" class="font-mono text-[0.75rem] tracking-[0.02em] uppercase text-ink-secondary no-underline ml-4">Logout</a>
+                <a ng-href="{{currentUser.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}}" class="btn-primary">Dashboard</a>
+                <a href="user/logout" class="font-mono text-[0.75rem] tracking-[0.02em] uppercase text-ink-secondary no-underline ml-4">Logout</a>
             </li>
-            <li class="mt-4" ng-if="!currentUser"><a href="login.php" class="btn-primary">Sign In</a></li>
+            <li class="mt-4" ng-if="!currentUser"><a href="login" class="btn-primary">Sign In</a></li>
         </ul>
     </div>    <main>
  
@@ -253,7 +253,7 @@
                                 <h3 class="font-sans text-2xl font-light text-ink">Integrated property services</h3>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-stagger>
-                                <a href="services.php#residential" data-stagger-item class="service-card group rounded-2xl">
+                                <a href="/services#residential" data-stagger-item class="service-card group rounded-2xl">
                                     <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" alt="Residential" loading="lazy" data-image-reveal>
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
@@ -261,7 +261,7 @@
                                         <p class="font-sans text-[0.75rem] leading-[1.5] text-white/70">End-to-end residential management.</p>
                                     </div>
                                 </a>
-                                <a href="services.php#commercial" data-stagger-item class="service-card group rounded-2xl">
+                                <a href="/services#commercial" data-stagger-item class="service-card group rounded-2xl">
                                     <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Commercial" loading="lazy" data-image-reveal>
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
@@ -269,7 +269,7 @@
                                         <p class="font-sans text-[0.75rem] leading-[1.5] text-white/70">Leasing and dashboard management.</p>
                                     </div>
                                 </a>
-                                <a href="services.php#consulting" data-stagger-item class="service-card group rounded-2xl">
+                                <a href="/services#consulting" data-stagger-item class="service-card group rounded-2xl">
                                     <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=800" alt="Consulting" loading="lazy" data-image-reveal>
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
@@ -521,7 +521,7 @@
                     </h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12" data-stagger>
-                    <a href="blog.php" data-stagger-item class="journal-card group no-underline block">
+                    <a href="blog" data-stagger-item class="journal-card group no-underline block">
                         <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
                             <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
                         </div>
@@ -532,7 +532,7 @@
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
                     </a>
-                    <a href="blog.php" data-stagger-item class="journal-card group no-underline block">
+                    <a href="blog" data-stagger-item class="journal-card group no-underline block">
                         <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
                             <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
                         </div>
@@ -552,7 +552,7 @@
             <div class="max-w-[120rem] mx-auto px-6 lg:px-12 text-center relative z-10">
                 <p class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink-secondary mb-4">Start your journey</p>
                 <h2 class="font-serif italic font-light text-[2.5rem] lg:text-[3.5rem] leading-[1.1] text-ink max-w-[20ch] mx-auto mb-12">Have a property in mind? Let us hear about it.</h2>
-                <a href="register.php" class="inline-flex items-center gap-3 font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[0.05em] uppercase text-white bg-accent px-10 py-5 rounded-full hover:bg-accent-hover transition-colors no-underline shadow-xl shadow-accent/10" data-magnetic>
+                <a href="register" class="inline-flex items-center gap-3 font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[0.05em] uppercase text-white bg-accent px-10 py-5 rounded-full hover:bg-accent-hover transition-colors no-underline shadow-xl shadow-accent/10" data-magnetic>
                     Get Started
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </a>
@@ -581,33 +581,33 @@
                 <div>
                     <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Pages</p>
                     <a href="index.html" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Home</a>
-                    <a href="about.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">About</a>
-                    <a href="services.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Services</a>
-                    <a href="properties.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Properties</a>
-                    <a href="blog.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Journal</a>
-                    <a href="contact.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Contact</a>
-                    <a href="faq.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">FAQ</a>
-                    <a href="careers.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Careers</a>
+                    <a href="about" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">About</a>
+                    <a href="services" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Services</a>
+                    <a href="properties" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Properties</a>
+                    <a href="blog" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Journal</a>
+                    <a href="contact" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Contact</a>
+                    <a href="faq" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">FAQ</a>
+                    <a href="careers" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Careers</a>
                 </div>
                 <div>
                     <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Services</p>
-                    <a href="services.php#residential" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Residential</a>
-                    <a href="services.php#commercial" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Commercial</a>
-                    <a href="services.php#consulting" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Consulting</a>
-                    <a href="services.php#maintenance" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Maintenance</a>
+                    <a href="/services#residential" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Residential</a>
+                    <a href="/services#commercial" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Commercial</a>
+                    <a href="/services#consulting" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Consulting</a>
+                    <a href="/services#maintenance" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Maintenance</a>
                 </div>
                 <div>
                     <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Account</p>
-                    <a href="login.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Sign In</a>
-                    <a href="register.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Register</a>
-                    <a href="contact.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Support</a>
+                    <a href="login" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Sign In</a>
+                    <a href="register" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Register</a>
+                    <a href="contact" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Support</a>
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-border-light font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted gap-4">
                 <span>&copy; 2026 Aura Estates. All rights reserved.</span>
                 <div class="flex gap-6">
-                    <a href="privacy.php" class="hover:text-ink transition-colors no-underline">Privacy</a>
-                    <a href="terms.php" class="hover:text-ink transition-colors no-underline">Terms</a>
+                    <a href="privacy" class="hover:text-ink transition-colors no-underline">Privacy</a>
+                    <a href="terms" class="hover:text-ink transition-colors no-underline">Terms</a>
                 </div>
             </div>
         </div>

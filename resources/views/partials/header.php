@@ -67,15 +67,15 @@
         <span class="hidden sm:inline">Aura Estates</span>
     </a>
     <div class="hidden md:flex items-center gap-8 list-none m-0 p-0">
-        <a href="about.php" class="nav-link <?php echo $currentPage === 'about' ? 'text-ink' : ''; ?>">About</a>
-        <a href="properties.php" class="nav-link <?php echo $currentPage === 'properties' ? 'text-ink' : ''; ?>">Properties</a>
-        <a href="services.php" class="nav-link <?php echo $currentPage === 'services' ? 'text-ink' : ''; ?>">Services</a>
-        <a href="blog.php" class="nav-link <?php echo $currentPage === 'blog' ? 'text-ink' : ''; ?>">Journal</a>
-        <a href="contact.php" class="nav-link <?php echo $currentPage === 'contact' ? 'text-ink' : ''; ?>">Contact</a>
+        <a href="/about" class="nav-link <?php echo $currentPage === 'about' ? 'text-ink' : ''; ?>">About</a>
+        <a href="/properties" class="nav-link <?php echo $currentPage === 'properties' ? 'text-ink' : ''; ?>">Properties</a>
+        <a href="/services" class="nav-link <?php echo $currentPage === 'services' ? 'text-ink' : ''; ?>">Services</a>
+        <a href="/blog" class="nav-link <?php echo $currentPage === 'blog' ? 'text-ink' : ''; ?>">Journal</a>
+        <a href="/contact" class="nav-link <?php echo $currentPage === 'contact' ? 'text-ink' : ''; ?>">Contact</a>
     </div>
     <div class="hidden md:flex items-center gap-3 shrink-0">
-        <a href="login.php" class="btn-outline text-[0.625rem] px-4 py-2 no-underline">Sign In</a>
-        <a href="register.php" class="btn-primary text-[0.5625rem] px-5 py-2.5">
+        <a href="/login" class="btn-outline text-[0.625rem] px-4 py-2 no-underline">Sign In</a>
+        <a href="/register" class="btn-primary text-[0.5625rem] px-5 py-2.5">
             Get Started
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -93,15 +93,15 @@
         </button>
     </div>
     <ul class="flex flex-col gap-8 list-none">
-        <li><a href="about.php" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">About</a></li>
-        <li><a href="properties.php" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Properties</a></li>
-        <li><a href="services.php" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Services</a></li>
-        <li><a href="blog.php" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Journal</a></li>
-        <li><a href="contact.php" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Contact</a></li>
+        <li><a href="/about" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">About</a></li>
+        <li><a href="properties" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Properties</a></li>
+        <li><a href="/services" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Services</a></li>
+        <li><a href="/blog" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Journal</a></li>
+        <li><a href="/contact" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Contact</a></li>
     </ul>
     <div class="mt-auto pt-10 flex gap-4">
-        <a href="login.php" onclick="closeMobileNav()" class="btn-outline flex-1 text-center">Sign In</a>
-        <a href="register.php" onclick="closeMobileNav()" class="btn-primary flex-1 text-center">Get Started</a>
+        <a href="/login" onclick="closeMobileNav()" class="btn-outline flex-1 text-center">Sign In</a>
+        <a href="/register" onclick="closeMobileNav()" class="btn-primary flex-1 text-center">Get Started</a>
     </div>
 </div>
 

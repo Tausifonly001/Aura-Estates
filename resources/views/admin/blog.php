@@ -70,7 +70,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h1 class="text-4xl font-serif font-light italic text-ink mb-2">Blog Posts</h1>
                 <p class="text-sm text-graphite font-sans">Manage your journal articles and publications</p>
             </div>
-            <a href="blog/edit.php" class="neo-btn">
+            <a href="/admin/blog/edit" class="neo-btn">
                 <i class="fas fa-plus mr-2"></i> New Post
             </a>
         </div>
@@ -96,7 +96,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </thead>
                 <tbody>
                     <?php if (count($posts) === 0): ?>
-                    <tr><td colspan="6" class="py-12 text-center text-graphite font-sans">No posts yet. <a href="blog/edit.php" class="text-ink underline">Create one.</a></td></tr>
+                    <tr><td colspan="6" class="py-12 text-center text-graphite font-sans">No posts yet. <a href="/admin/blog/edit" class="text-ink underline">Create one.</a></td></tr>
                     <?php else: ?>
                     <?php foreach ($posts as $p): ?>
                     <tr class="border-b border-clay/20 hover:bg-ink/[0.02] transition-colors">
@@ -119,11 +119,11 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </td>
                         <td class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <a href="blog/edit.php?id=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">Edit</a>
-                                <a href="blog.php?toggle=<?php echo $p['id']; ?>&status=<?php echo $p['status'] === 'published' ? 'draft' : 'published'; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">
+                                <a href="/admin/blog/edit?id=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">Edit</a>
+                                <a href="/admin/blog?toggle=<?php echo $p['id']; ?>&status=<?php echo $p['status'] === 'published' ? 'draft' : 'published'; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">
                                     <?php echo $p['status'] === 'published' ? 'Draft' : 'Publish'; ?>
                                 </a>
-                                <a href="blog.php?delete=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-danger/70 hover:text-danger transition-colors no-underline" onclick="return confirm('Delete this post?')">Delete</a>
+                                <a href="/admin/blog?delete=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-danger/70 hover:text-danger transition-colors no-underline" onclick="return confirm('Delete this post?')">Delete</a>
                             </div>
                         </td>
                     </tr>
