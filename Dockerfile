@@ -1,11 +1,23 @@
-FROM php:8.2-apache
+FROM debian:bookworm-slim
 
-RUN rm -rf /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-available/mpm_event.* 2>/dev/null; a2enmod rewrite
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    apache2 \
+    ca-certificates \
+    curl \
+    libapache2-mod-php8.2 \
+    php8.2 \
+    php8.2-mysqli \
+    php8.2-pdo \
+    php8.2-mysql \
+    php8.2-gd \
+    php8.2-zip \
+    php8.2-mbstring \
+    php8.2-curl \
+    php8.2-xml \
+    unzip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install mysqli pdo pdo_mysql zip gd && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
 
 COPY . /var/www/html/
 
@@ -20,4 +32,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["apache2ctl", "-D", "FOREGROUND"]
