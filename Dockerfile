@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-RUN a2enmod rewrite
+RUN rm -rf /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-available/mpm_event.* 2>/dev/null; a2enmod rewrite
 
 RUN apt-get update && apt-get install -y unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
