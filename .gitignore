@@ -6,3 +6,6 @@ storage/cache/*
 Thumbs.db
 *.log
 node_modules/
+.playwright-cli/
+.bcode/
+.vscode/
