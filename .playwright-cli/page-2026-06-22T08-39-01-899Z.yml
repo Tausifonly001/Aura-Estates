@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - link "A Aura Estates" [ref=e3] [cursor=pointer]:
+    - /url: ../index.html
+    - generic [ref=e4]: A
+    - text: Aura Estates
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: Tenant Portal
+      - heading "Welcome Back" [level=1] [ref=e9]
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e12]: Email
+        - textbox "you@example.com" [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Password
+        - textbox "••••••••" [ref=e16]
+      - button "Sign In" [ref=e17] [cursor=pointer]
+    - generic [ref=e18]:
+      - link "New here? Create Account" [ref=e19] [cursor=pointer]:
+        - /url: register.php
+      - link "Back to Site" [ref=e20] [cursor=pointer]:
+        - /url: ../index.html
+  - generic [ref=e21]: Est. 2020

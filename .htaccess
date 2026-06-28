@@ -1,0 +1,37 @@
+# Security
+Options -Indexes
+ServerSignature Off
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+RewriteEngine On
+
+# Block dev utility scripts
+RewriteRule ^(install|update_db|update_blog|update_rbac|migrate_content|add_tenant)\.php$ - [F,L]
+
+# Rewrite page URLs to resources/views/pages/
+RewriteRule ^about\.php$ resources/views/pages/about.php [L]
+RewriteRule ^blog\.php$ resources/views/pages/blog.php [L]
+RewriteRule ^blog-post\.php$ resources/views/pages/blog-post.php [L]
+RewriteRule ^careers\.php$ resources/views/pages/careers.php [L]
+RewriteRule ^contact\.php$ resources/views/pages/contact.php [L]
+RewriteRule ^faq\.php$ resources/views/pages/faq.php [L]
+RewriteRule ^privacy\.php$ resources/views/pages/privacy.php [L]
+RewriteRule ^terms\.php$ resources/views/pages/terms.php [L]
+RewriteRule ^properties\.php$ resources/views/pages/properties.php [L]
+RewriteRule ^property-detail\.php$ resources/views/pages/property-detail.php [L]
+RewriteRule ^services\.php$ resources/views/pages/services.php [L]
+
+# Rewrite admin/ URLs to resources/views/admin/
+RewriteRule ^admin/(.+)$ resources/views/admin/$1 [L]
+
+# Rewrite user/ URLs to resources/views/user/
+RewriteRule ^user/(.+)$ resources/views/user/$1 [L]

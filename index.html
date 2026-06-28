@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="auraApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Estates — Architecture & Property Management</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#fcfbfa',
+                        'bg-alt': '#f5f3f0',
+                        surface: '#ffffff',
+                        ink: '#111111',
+                        'ink-secondary': '#555555',
+                        muted: '#888888',
+                        border: '#e8e6e1',
+                        'border-light': '#f0eee9',
+                        accent: '#8c7b6c',
+                        'accent-hover': '#6f5f51',
+                        success: '#4c6a46',
+                        warning: '#a68352',
+                        danger: '#964a4a',
+                    },
+                    fontFamily: {
+                        sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <!-- CDN Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="resources/css/saas.css">
+
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
+        .nav-mobile-bg { background: rgba(232,229,219,0.98); backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body ng-controller="PropertyController" class="min-h-screen">
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo-mark">A</div>
+        <div class="loading-bar">
+            <div class="loading-bar-inner"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-5xl bg-bg/90 backdrop-blur-xl border border-border/40 shadow-lg shadow-ink/5 rounded-2xl sm:rounded-full transition-all duration-300" id="mainNav">
+        <a href="index.html" class="flex items-center gap-3 font-sans font-medium text-[0.875rem] tracking-[0.15em] uppercase text-ink no-underline shrink-0 group">
+            <span class="inline-flex items-center justify-center w-7 h-7 bg-accent text-surface text-[0.625rem] font-semibold leading-none transition-transform duration-500 group-hover:scale-105">A</span>
+            <span class="hidden sm:inline">Aura Estates</span>
+        </a>
+        <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0">
+            <li><a href="about.php" class="nav-link">About</a></li>
+            <li><a href="properties.php" class="nav-link">Properties</a></li>
+            <li><a href="services.php" class="nav-link">Services</a></li>
+            <li><a href="blog.php" class="nav-link">Journal</a></li>
+            <li><a href="contact.php" class="nav-link">Contact</a></li>
+        </ul>
+        <div class="hidden md:flex items-center gap-3 shrink-0" ng-if="currentUser">
+            <span class="font-sans text-[0.875rem] text-ink-secondary">Hi, {{currentUser.name}}</span>
+            <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard.php' : 'user/dashboard.php'}}" class="btn-primary">Dashboard</a>
+            <a href="user/logout.php" class="nav-link">Logout</a>
+        </div>
+        <a href="login.php" class="hidden md:inline-flex btn-primary" ng-if="!currentUser" data-magnetic>
+            Sign In
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="md:hidden p-2 text-ink bg-none border-none cursor-pointer" ng-click="mobileNavOpen = true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav transition-opacity duration-300" ng-class="{'opacity-100 pointer-events-auto': mobileNavOpen, 'opacity-0 pointer-events-none': !mobileNavOpen}">
+        <button class="self-end p-2 text-ink bg-none border-none cursor-pointer" ng-click="mobileNavOpen = false">
+            <svg width="24" height="24" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
+        <ul class="flex flex-col gap-8 mt-16 list-none">
+            <li><a href="about.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">About</a></li>
+            <li><a href="properties.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Properties</a></li>
+            <li><a href="services.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Services</a></li>
+            <li><a href="blog.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Journal</a></li>
+            <li><a href="contact.php" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Contact</a></li>
+            <li class="mt-4" ng-if="currentUser">
+                <span class="font-sans text-xl text-ink-secondary block mb-4">Hi, {{currentUser.name}}</span>
+                <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard.php' : 'user/dashboard.php'}}" class="btn-primary">Dashboard</a>
+                <a href="user/logout.php" class="font-mono text-[0.75rem] tracking-[0.02em] uppercase text-ink-secondary no-underline ml-4">Logout</a>
+            </li>
+            <li class="mt-4" ng-if="!currentUser"><a href="login.php" class="btn-primary">Sign In</a></li>
+        </ul>
+    </div>    <main>
+ 
+        <!-- ═══ HERO (Asymmetric Editorial Layout) ═══ -->
+        <section class="hero-section" id="hero">
+            <div class="hero-overlay"></div>
+            <div class="max-w-[120rem] mx-auto w-full px-6 lg:px-12 relative z-10 flex flex-col justify-end min-h-[90vh]">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-end pb-12">
+                    
+                    <!-- Hero Left: Typography Column -->
+                    <div class="lg:col-span-7 flex flex-col justify-end">
+                        <div class="flex items-center gap-4 mb-6" data-animate="hero-tagline">
+                            <span class="w-8 h-[1px] bg-accent/60"></span>
+                            <p class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink-secondary">
+                                Bespoke property management defined by clarity
+                            </p>
+                        </div>
+                        <h1 data-animate="hero-heading" class="font-sans font-medium text-[2.5rem] sm:text-[3.5rem] lg:text-[4.5rem] leading-[1.05] text-ink max-w-[20ch]">
+                            Spaces crafted through <span class="font-serif italic font-light text-accent">warmth</span>, materiality, and <span class="font-serif italic font-light text-accent">clarity</span>.
+                        </h1>
+                        <div class="flex flex-wrap gap-12 mt-12 border-t border-border/40 pt-8" data-animate="hero-link">
+                            <a href="#properties" class="group flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink hover:text-accent transition-colors no-underline">
+                                Properties
+                                <svg class="w-4.5 h-4.5 transform group-hover:translate-x-1 transition-transform" viewBox="0 0 16 16" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </a>
+                            <a href="#concierge" class="group flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink hover:text-accent transition-colors no-underline">
+                                Concierge
+                                <svg class="w-4.5 h-4.5 transform group-hover:translate-x-1 transition-transform" viewBox="0 0 16 16" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </a>
+                            <a href="#about-split" class="group flex items-center gap-3 font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink hover:text-accent transition-colors no-underline">
+                                Studio
+                                <svg class="w-4.5 h-4.5 transform group-hover:translate-x-1 transition-transform" viewBox="0 0 16 16" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </a>
+                        </div>
+                    </div>
+ 
+                    <!-- Hero Right: Framed Interactive ThreeJS Visual -->
+                    <div class="lg:col-span-5 hidden lg:block">
+                        <div class="relative w-full aspect-[4/5] max-w-sm ml-auto border border-border/60 p-5 rounded-[2rem] bg-surface/30 backdrop-blur-md shadow-2xl shadow-ink/5">
+                            <div class="absolute top-6 left-6 font-mono text-[0.5625rem] text-muted tracking-wider">AURA PRELOADER // STAGED</div>
+                            <div class="absolute bottom-6 left-6 font-mono text-[0.5625rem] text-muted tracking-wider">LAT. 52.5200° N<br>LONG. 13.4050° E</div>
+                            <div class="w-full h-full rounded-[1.5rem] overflow-hidden bg-bg-alt/30 relative">
+                                <div class="three-canvas hero-particles" hero-particles></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ STATS & TIMELINE BAR ═══ -->
+        <section class="py-8 border-t border-b border-border/40 bg-bg-alt/30" data-reveal>
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    <div class="flex flex-col items-center py-4 relative after:hidden md:after:block after:absolute after:right-0 after:top-1/4 after:h-1/2 after:w-[1px] after:bg-border/60">
+                        <div class="font-serif italic font-light text-[2.25rem] text-accent mb-0.5" data-count="500" data-suffix="+">0</div>
+                        <div class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Properties Managed</div>
+                    </div>
+                    <div class="flex flex-col items-center py-4 relative after:hidden md:after:block after:absolute after:right-0 after:top-1/4 after:h-1/2 after:w-[1px] after:bg-border/60">
+                        <div class="font-serif italic font-light text-[2.25rem] text-accent mb-0.5" data-count="48" data-suffix="+">0</div>
+                        <div class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Awards Won</div>
+                    </div>
+                    <div class="flex flex-col items-center py-4 relative after:hidden md:after:block after:absolute after:right-0 after:top-1/4 after:h-1/2 after:w-[1px] after:bg-border/60">
+                        <div class="font-serif italic font-light text-[2.25rem] text-accent mb-0.5" data-count="2012">0</div>
+                        <div class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Year Founded</div>
+                    </div>
+                    <div class="flex flex-col items-center py-4 relative after:hidden md:after:block after:absolute after:right-0 after:top-1/4 after:h-1/2 after:w-[1px] after:bg-border/60">
+                        <div class="font-serif italic font-light text-[2.25rem] text-accent mb-0.5" data-count="180" data-suffix="+">0</div>
+                        <div class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Projects Completed</div>
+                    </div>
+                    <div class="flex flex-col items-center py-4">
+                        <div class="font-serif italic font-light text-[2.25rem] text-accent mb-0.5" data-count="96" data-suffix="%">0</div>
+                        <div class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Satisfaction %</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ EDITORIAL STICKY SPLIT SECTION (About & Services) ═══ -->
+        <section id="about-split" class="py-24 lg:py-32 relative">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+                    
+                    <!-- Left Sticky Column: 3D Skyline Sculpture -->
+                    <div class="lg:col-span-5 sticky-left-panel flex flex-col justify-between h-auto">
+                        <div>
+                            <p class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-accent mb-3">01 // Architectural Focus</p>
+                            <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink mb-6">
+                                Deliberately <span class="font-serif italic">focused</span> practice.
+                            </h2>
+                            <p class="font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.6] text-ink-secondary max-w-[38ch]">
+                                We believe that property management is an extension of architectural design. Every building in our care is maintained with the same precision and vision that shaped its original sketches.
+                            </p>
+                        </div>
+                        <div class="relative w-full border border-border/50 rounded-3xl p-4 bg-surface/30 backdrop-blur-md mt-8 lg:mt-0">
+                            <div class="absolute top-4 left-4 font-mono text-[0.5rem] text-muted">3D SCULPTURE // SIMULATION</div>
+                            <div class="absolute bottom-4 left-4 font-mono text-[0.5rem] text-muted">ROTATE AUTOMATICALLY</div>
+                            <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-bg-alt/30 relative">
+                                <div class="three-canvas building-skyline" building-skyline></div>
+                            </div>
+                        </div>
+                    </div>
+ 
+                    <!-- Right Scrolling Column: About Details, Pillars, Quote, Services -->
+                    <div class="lg:col-span-7 space-y-24 lg:space-y-32">
+                        
+                        <!-- Pillars Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" data-stagger>
+                            <div data-stagger-item class="border-t border-border pt-6">
+                                <span class="font-mono text-[0.5625rem] text-muted tracking-widest block mb-4">M01 // CONSIDERED</span>
+                                <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-3">Considered</h3>
+                                <p class="text-[0.875rem] leading-[1.6] text-ink-secondary">Every decision follows a clear rationale. Tenant placement, finance, and schedules are balanced for optimum performance.</p>
+                            </div>
+                            <div data-stagger-item class="border-t border-border pt-6">
+                                <span class="font-mono text-[0.5625rem] text-muted tracking-widest block mb-4">M02 // CRAFTED</span>
+                                <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-3">Crafted</h3>
+                                <p class="text-[0.875rem] leading-[1.6] text-ink-secondary">Attention to detail defines our service. Management systems are carefully built to feel human and refined.</p>
+                            </div>
+                            <div data-stagger-item class="border-t border-border pt-6">
+                                <span class="font-mono text-[0.5625rem] text-muted tracking-widest block mb-4">M03 // LASTING</span>
+                                <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-3">Lasting</h3>
+                                <p class="text-[0.875rem] leading-[1.6] text-ink-secondary">We focus on relationships measured in years. Solutions are built to endure and preserve building asset value.</p>
+                            </div>
+                        </div>
+ 
+                        <!-- Quote Frame -->
+                        <div class="border-l border-accent/40 pl-8 py-4 my-12" data-reveal>
+                            <p class="font-sans text-[1.125rem] lg:text-[1.375rem] leading-[1.6] text-ink-secondary italic mb-6">
+                                "We founded Aura Estates with the belief that property management should feel seamless, transparent, and deeply human. Every relationship is approached with clarity, warmth, and careful attention to detail."
+                            </p>
+                            <div>
+                                <p class="font-sans font-medium text-[0.875rem] text-ink">The Aura Estates Team</p>
+                                <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-muted">Founders & Operators</p>
+                            </div>
+                        </div>
+ 
+                        <!-- Services List -->
+                        <div class="space-y-8">
+                            <div class="flex flex-col gap-2" data-reveal>
+                                <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">OUR CAPABILITIES</p>
+                                <h3 class="font-sans text-2xl font-light text-ink">Integrated property services</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-stagger>
+                                <a href="services.php#residential" data-stagger-item class="service-card group rounded-2xl">
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" alt="Residential" loading="lazy" data-image-reveal>
+                                    <div class="service-overlay"></div>
+                                    <div class="service-card-content">
+                                        <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Residential</h4>
+                                        <p class="font-sans text-[0.75rem] leading-[1.5] text-white/70">End-to-end residential management.</p>
+                                    </div>
+                                </a>
+                                <a href="services.php#commercial" data-stagger-item class="service-card group rounded-2xl">
+                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Commercial" loading="lazy" data-image-reveal>
+                                    <div class="service-overlay"></div>
+                                    <div class="service-card-content">
+                                        <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Commercial</h4>
+                                        <p class="font-sans text-[0.75rem] leading-[1.5] text-white/70">Leasing and dashboard management.</p>
+                                    </div>
+                                </a>
+                                <a href="services.php#consulting" data-stagger-item class="service-card group rounded-2xl">
+                                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=800" alt="Consulting" loading="lazy" data-image-reveal>
+                                    <div class="service-overlay"></div>
+                                    <div class="service-card-content">
+                                        <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Consulting</h4>
+                                        <p class="font-sans text-[0.75rem] leading-[1.5] text-white/70">Strategic asset portfolio advisory.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ PORTFOLIO (Asymmetric Staggered Grid) ═══ -->
+        <section id="properties" class="py-24 border-t border-border/40 bg-bg-alt/10">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16" data-reveal>
+                    <div>
+                        <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted mb-2">PORTFOLIO</p>
+                        <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">
+                            Featured <span class="font-serif italic font-normal">Properties</span>
+                        </h2>
+                    </div>
+                    <!-- Minimalist Filters -->
+                    <div class="flex flex-wrap gap-4 w-full md:w-auto items-center">
+                        <div class="relative w-full md:w-[16rem]">
+                            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <input type="text" ng-model="searchQuery" placeholder="Search by name, city..." class="input-field pl-10 rounded-full">
+                        </div>
+                        <select ng-model="filters.propertyType" class="w-full md:w-auto font-sans text-[0.8125rem] text-ink bg-surface border border-border px-5 py-3 outline-none focus:border-accent transition-colors appearance-none cursor-pointer rounded-full pr-10">
+                            <option value="">All Types</option>
+                            <option value="Villa">Villas</option>
+                            <option value="Penthouse">Penthouses</option>
+                            <option value="Apartment">Apartments</option>
+                        </select>
+                    </div>
+                </div>
+ 
+                <div ng-if="loading" class="flex justify-center py-24">
+                    <div class="spinner"></div>
+                </div>
+ 
+                <!-- Staggered Layout for Property Cards -->
+                <div ng-cloak class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24" data-stagger>
+                    <div ng-repeat="p in properties | filter:propertyFilter" data-stagger-item class="property-card rounded-3xl" ng-class="{'md:mt-16': $even}" ng-click="openDetail(p)">
+                        <div class="overflow-hidden aspect-[16/10]">
+                            <img ng-src="{{p.main_image}}" fallback-src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800" loading="lazy">
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <div class="font-mono text-[0.625rem] lg:text-[0.75rem] tracking-[0.1em] uppercase text-accent/80 flex gap-4 mb-3">
+                                <span>{{p.property_type}}</span>
+                                <span>{{p.location}}</span>
+                                <span ng-if="p.status">· {{p.status}}</span>
+                            </div>
+                            <h3 class="font-sans font-medium text-[1.25rem] lg:text-[1.5rem] leading-[1.2] text-ink mb-3">{{p.title}}</h3>
+                            <p class="font-sans text-[0.875rem] lg:text-[0.9375rem] leading-[1.6] text-ink-secondary opacity-75 mb-6" ng-if="p.description">{{p.description | limitTo:110}}...</p>
+                            <div class="flex items-center justify-between border-t border-border/40 pt-5 mt-4">
+                                <div class="flex gap-4 font-mono text-[0.6875rem] text-muted">
+                                    <span>{{p.bedrooms}} bed</span>
+                                    <span>{{p.bathrooms}} bath</span>
+                                    <span>{{p.area_sqft}} ft²</span>
+                                </div>
+                                <span class="font-sans text-[1.125rem] text-accent font-medium">{{p.price | currency:"$":0}}<span class="text-[0.75rem] text-muted font-normal">/mo</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ CONCIERGE & OPERATIONS DASHBOARD ═══ -->
+        <section id="concierge" class="py-24 border-t border-border/40 bg-bg-alt/30">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="flex flex-col gap-4 mb-16" data-reveal>
+                    <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">CONCIERGE PORTAL</p>
+                    <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">
+                        Operations & <span class="font-serif italic">Facility</span> Scheduler
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    
+                    <!-- Left: Maintenance Ticket Submission (5 Columns) -->
+                    <div class="lg:col-span-5 bg-surface border border-border/50 p-8 rounded-3xl shadow-xl shadow-ink/5" data-reveal>
+                        <h3 class="font-sans font-medium text-[1.25rem] text-ink mb-6">Maintenance Dispatch</h3>
+                        <div ng-if="maintenanceSuccess" class="badge badge-success mb-4 w-full justify-center">{{maintenanceSuccess}}</div>
+                        <div ng-if="maintenanceError" class="badge badge-danger mb-4 w-full justify-center">{{maintenanceError}}</div>
+                        <form ng-submit="submitMaintenanceRequest()" class="flex flex-col gap-5">
+                            <div>
+                                <label class="input-label">FullName</label>
+                                <input type="text" ng-model="maint.name" class="input-field rounded-xl" placeholder="Full name" required>
+                            </div>
+                            <div>
+                                <label class="input-label">Email</label>
+                                <input type="email" ng-model="maint.email" class="input-field rounded-xl" placeholder="Email address" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="input-label">Property</label>
+                                    <select ng-model="maint.property_id" class="input-field rounded-xl appearance-none bg-surface cursor-pointer" required>
+                                        <option value="">Select target</option>
+                                        <option ng-repeat="p in properties" value="{{p.id}}">{{p.title}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="input-label">Priority</label>
+                                    <select ng-model="maint.priority" class="input-field rounded-xl appearance-none bg-surface cursor-pointer" required>
+                                        <option value="low">P3 — Standard</option>
+                                        <option value="medium">P2 — Urgent</option>
+                                        <option value="high">P1 — Critical</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="input-label">Dispatch Notes</label>
+                                <textarea ng-model="maint.description" rows="3" class="input-field rounded-xl resize-y leading-relaxed" placeholder="Detailed description of operational issue..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary w-full justify-center rounded-xl py-3 mt-2">Submit Request</button>
+                        </form>
+                    </div>
+ 
+                    <!-- Right: Amenities Scheduler & Active Tickets (7 Columns) -->
+                    <div class="lg:col-span-7 space-y-12">
+                        
+                        <!-- Amenity Bookings -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-stagger>
+                            <div data-stagger-item class="bg-surface border border-border/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl shadow-ink/5">
+                                <div class="h-44 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b5e6a8b?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal>
+                                    <span class="absolute top-4 right-4 badge badge-success bg-surface">Available</span>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-1">Rooftop Pool & Spa</h3>
+                                    <p class="text-[0.8125rem] text-ink-secondary opacity-75 mb-6">Capacity: 12 persons. Towels & refreshments provided.</p>
+                                    <div class="flex gap-2">
+                                        <button ng-click="bookAmenity('Rooftop Pool', '14:00-16:00')" class="btn-outline rounded-xl flex-1 text-[0.625rem] py-2.5">Book 14:00</button>
+                                        <button ng-click="bookAmenity('Rooftop Pool', '16:00-18:00')" class="btn-outline rounded-xl flex-1 text-[0.625rem] py-2.5">Book 16:00</button>
+                                    </div>
+                                    <div ng-show="bookingMsg.includes('Pool')" class="font-mono text-[0.5625rem] text-success mt-3 text-center">{{bookingMsg}}</div>
+                                </div>
+                            </div>
+                            <div data-stagger-item class="bg-surface border border-border/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl shadow-ink/5">
+                                <div class="h-44 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1506521781265-d8422e82f816?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal>
+                                    <span class="absolute top-4 right-4 badge badge-success bg-surface">3 Spots Left</span>
+                                </div>
+                                <div class="p-6">
+                                    <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-1">Secure Parking Garage</h3>
+                                    <p class="text-[0.8125rem] text-ink-secondary opacity-75 mb-6">24/7 monitored access & electric charging stations.</p>
+                                    <button ng-click="bookAmenity('Parking', 'Overnight')" class="btn-outline rounded-xl w-full text-[0.625rem] py-2.5">Reserve Overnight slot</button>
+                                    <div ng-show="bookingMsg.includes('Parking')" class="font-mono text-[0.5625rem] text-success mt-3 text-center">{{bookingMsg}}</div>
+                                </div>
+                            </div>
+                        </div>
+ 
+                        <!-- Active Tickets Panel -->
+                        <div class="bg-surface border border-border/50 rounded-3xl shadow-xl shadow-ink/5 overflow-hidden" data-reveal>
+                            <div class="px-6 py-5 border-b border-border/40 flex justify-between items-center bg-bg-alt/30">
+                                <h3 class="font-sans font-medium text-[1rem] text-ink">Live Operational Tickets</h3>
+                                <span class="badge badge-warning">2 Active Dispatch</span>
+                            </div>
+                            <div class="px-6 py-5 border-b border-border/40 hover:bg-bg-alt/20 transition-colors cursor-pointer flex justify-between items-center">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <span class="font-mono text-[0.5625rem] text-muted">TKT-892</span>
+                                        <span class="font-sans font-medium text-[0.875rem] text-ink">HVAC System Failure</span>
+                                    </div>
+                                    <p class="text-[0.8125rem] text-ink-secondary opacity-75">Temperature control unresponsive in primary penthouse suite.</p>
+                                    <span class="font-mono text-[0.5625rem] text-muted block mt-1">Target: Penthouse 12A · Reported 2h ago</span>
+                                </div>
+                                <span class="badge badge-warning">P1 Urgent</span>
+                            </div>
+                            <div class="px-6 py-5 hover:bg-bg-alt/20 transition-colors cursor-pointer flex justify-between items-center">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <span class="font-mono text-[0.5625rem] text-muted">TKT-891</span>
+                                        <span class="font-sans font-medium text-[0.875rem] text-ink">Plumbing Leakage</span>
+                                    </div>
+                                    <p class="text-[0.8125rem] text-ink-secondary opacity-75">Water pressure drop near master bathroom double sink.</p>
+                                    <span class="font-mono text-[0.5625rem] text-muted block mt-1">Target: Villa Serenity · Reported 5h ago</span>
+                                </div>
+                                <span class="badge badge-success">P3 Active</span>
+                            </div>
+                        </div>
+ 
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ CLIENT PERSPECTIVES (Testimonials Grid) ═══ -->
+        <section class="py-24 lg:py-32">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="flex flex-col gap-4 mb-16 text-center" data-reveal>
+                    <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">CLIENT DIALOGUE</p>
+                    <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">
+                        Refining the <span class="font-serif italic">Resident</span> Experience
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12" data-stagger>
+                    <div data-stagger-item class="testimonial flex flex-col justify-between">
+                        <p class="testimonial-quote font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.7] text-ink-secondary italic mb-8">
+                            "From architecture to interior styling, the entire process felt thoughtful and seamless. The atmosphere they created exceeded our expectations."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <div>
+                                <p class="font-sans font-medium text-[0.875rem] text-ink">Hanna Bennett</p>
+                                <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Homeowner</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-stagger-item class="testimonial flex flex-col justify-between">
+                        <p class="testimonial-quote font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.7] text-ink-secondary italic mb-8">
+                            "Working with Aura Estates felt collaborative from the very beginning. The balance of service, communication, and professionalism completely changed how we experience property management."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <div>
+                                <p class="font-sans font-medium text-[0.875rem] text-ink">Lukas Walker</p>
+                                <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Residence Owner</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-stagger-item class="testimonial flex flex-col justify-between">
+                        <p class="testimonial-quote font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.7] text-ink-secondary italic mb-8">
+                            "The level of refinement throughout the process was exceptional. Everything feels intentional, balanced, and beautifully composed."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <div>
+                                <p class="font-sans font-medium text-[0.875rem] text-ink">Emma Hofstetter</p>
+                                <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Private Client</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ JOURNAL / INSIGHTS ═══ -->
+        <section id="journal" class="py-24 border-t border-border/40 bg-bg-alt/10">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+                <div class="flex flex-col gap-4 mb-16" data-reveal>
+                    <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">STUDIO JOURNAL</p>
+                    <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">
+                        Insights & <span class="font-serif italic">Case</span> Stories
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12" data-stagger>
+                    <a href="blog.php" data-stagger-item class="journal-card group no-underline block">
+                        <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                        </div>
+                        <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-accent mt-6 mb-2">Project Stories</p>
+                        <h3 class="font-sans font-medium text-[1.125rem] leading-[1.4] text-ink mb-4 group-hover:text-accent transition-colors">Embodied carbon in heritage buildings: A counterintuitive case</h3>
+                        <div class="flex items-center justify-between text-ink group-hover:text-accent transition-colors py-3 border-t border-border/20">
+                            <span class="font-sans font-medium text-[0.75rem] tracking-[0.05em] uppercase">Read Article</span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </a>
+                    <a href="blog.php" data-stagger-item class="journal-card group no-underline block">
+                        <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
+                            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                        </div>
+                        <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-accent mt-6 mb-2">Design Insights</p>
+                        <h3 class="font-sans font-medium text-[1.125rem] leading-[1.4] text-ink mb-4 group-hover:text-accent transition-colors">Why we still draw by hand before we draw on screen</h3>
+                        <div class="flex items-center justify-between text-ink group-hover:text-accent transition-colors py-3 border-t border-border/20">
+                            <span class="font-sans font-medium text-[0.75rem] tracking-[0.05em] uppercase">Read Article</span>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+ 
+        <!-- ═══ CALL TO ACTION ═══ -->
+        <section class="py-32 cta-section relative flex items-center justify-center border-t border-border/40">
+            <div class="max-w-[120rem] mx-auto px-6 lg:px-12 text-center relative z-10">
+                <p class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-ink-secondary mb-4">Start your journey</p>
+                <h2 class="font-serif italic font-light text-[2.5rem] lg:text-[3.5rem] leading-[1.1] text-ink max-w-[20ch] mx-auto mb-12">Have a property in mind? Let us hear about it.</h2>
+                <a href="register.php" class="inline-flex items-center gap-3 font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[0.05em] uppercase text-white bg-accent px-10 py-5 rounded-full hover:bg-accent-hover transition-colors no-underline shadow-xl shadow-accent/10" data-magnetic>
+                    Get Started
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+            </div>
+        </section>
+ 
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-16 lg:py-24 border-t border-border mt-12 lg:mt-16">
+        <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12 lg:mb-16">
+                <div>
+                    <p class="font-sans font-medium text-[0.875rem] lg:text-[1rem] tracking-[0.15em] uppercase text-ink mb-4">Aura Estates</p>
+                    <p class="font-sans text-[0.8125rem] lg:text-[0.9375rem] leading-[1.6] text-ink-secondary opacity-80 max-w-[30ch]">Architecture-led property management — thoughtful, transparent, built to last.</p>
+                    <div class="mt-6">
+                        <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-1">Address</p>
+                        <p class="font-sans text-[0.8125rem] lg:text-[0.9375rem] leading-[1.6] text-ink-secondary opacity-80">Linienstrasse 156, Berlin</p>
+                    </div>
+                    <div class="mt-4">
+                        <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-1">Contact</p>
+                        <p class="font-sans text-[0.8125rem] lg:text-[0.9375rem] leading-[1.6] text-ink-secondary opacity-80">hello@auraestates.com</p>
+                        <p class="font-sans text-[0.8125rem] lg:text-[0.9375rem] leading-[1.6] text-ink-secondary opacity-80">+49 30 28 04 8000</p>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Pages</p>
+                    <a href="index.html" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Home</a>
+                    <a href="about.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">About</a>
+                    <a href="services.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Services</a>
+                    <a href="properties.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Properties</a>
+                    <a href="blog.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Journal</a>
+                    <a href="contact.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Contact</a>
+                    <a href="faq.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">FAQ</a>
+                    <a href="careers.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Careers</a>
+                </div>
+                <div>
+                    <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Services</p>
+                    <a href="services.php#residential" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Residential</a>
+                    <a href="services.php#commercial" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Commercial</a>
+                    <a href="services.php#consulting" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Consulting</a>
+                    <a href="services.php#maintenance" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Maintenance</a>
+                </div>
+                <div>
+                    <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-4">Account</p>
+                    <a href="login.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Sign In</a>
+                    <a href="register.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Register</a>
+                    <a href="contact.php" class="block font-sans text-[0.8125rem] lg:text-[0.9375rem] text-ink-secondary py-1 hover:text-ink transition-colors no-underline">Support</a>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-border-light font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted gap-4">
+                <span>&copy; 2026 Aura Estates. All rights reserved.</span>
+                <div class="flex gap-6">
+                    <a href="privacy.php" class="hover:text-ink transition-colors no-underline">Privacy</a>
+                    <a href="terms.php" class="hover:text-ink transition-colors no-underline">Terms</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ═══ PROPERTY DETAIL MODAL (with 3D Viewer) ═══ -->
+    <div ng-show="selectedProperty" class="property-modal" ng-cloak>
+        <div class="modal-backdrop" ng-click="closeDetail()"></div>
+        <div class="modal-content">
+            <div class="w-full md:w-1/2 p-6 lg:p-8 flex flex-col justify-between">
+                <div>
+                    <button ng-click="closeDetail()" class="mb-4 p-2 text-ink bg-none border-none cursor-pointer hover:text-accent transition-colors">
+                        <svg width="20" height="20" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    </button>
+                    <p class="font-mono text-[0.625rem] lg:text-[0.75rem] tracking-[-0.02em] uppercase text-muted flex gap-4 mb-2">
+                        <span>{{selectedProperty.property_type}}</span>
+                        <span>{{selectedProperty.location}}</span>
+                    </p>
+                    <h2 class="font-sans font-medium text-[1.5rem] lg:text-[1.75rem] leading-[1.1] text-ink mb-4">{{selectedProperty.title}}</h2>
+                    <p class="font-sans text-[0.9375rem] leading-[1.6] text-ink-secondary mb-6">{{selectedProperty.description}}</p>
+                    <div class="flex gap-6 mb-6 font-mono text-[0.625rem] lg:text-[0.75rem] text-muted">
+                        <span><strong class="text-ink">{{selectedProperty.bedrooms}}</strong> bed</span>
+                        <span><strong class="text-ink">{{selectedProperty.bathrooms}}</strong> bath</span>
+                        <span><strong class="text-ink">{{selectedProperty.area_sqft}}</strong> ft²</span>
+                    </div>
+                    <p class="font-sans font-medium text-[1.5rem] lg:text-[1.75rem] text-ink mb-6">{{selectedProperty.price | currency:"$":0}} <span class="font-normal text-muted text-[1rem]">/mo</span></p>
+                </div>
+                <div>
+                    <p class="font-sans font-medium text-[1rem] text-ink mb-3">Interested in this property?</p>
+                    <div ng-if="successMessage" class="badge badge-success mb-3">{{successMessage}}</div>
+                    <div ng-if="errorMessage" class="badge badge-danger mb-3">{{errorMessage}}</div>
+                    <div class="flex gap-3">
+                        <input type="text" ng-model="inquiry.name" class="input-field flex-1" placeholder="Your name">
+                        <input type="email" ng-model="inquiry.email" class="input-field flex-1" placeholder="Your email">
+                    </div>
+                    <button ng-click="submitInquiry(selectedProperty.id)" class="btn-primary w-full justify-center mt-3">Send Inquiry</button>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 p-6 lg:p-8 bg-[#f2efe9] flex flex-col">
+                <div class="three-canvas property-viewer" id="property-viewer-3d"></div>
+                <div class="flex gap-3 mt-4">
+                    <button class="btn-outline flex-1" ng-click="activePropertyScene && activePropertyScene.orbitLeft()">
+                        <i class="fas fa-arrow-left mr-2"></i> Rotate Left
+                    </button>
+                    <button class="btn-outline flex-1" ng-click="activePropertyScene && activePropertyScene.orbitRight()">
+                        Rotate Right <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Scripts -->
+    <script src="resources/js/three-scene.js?v=27"></script>
+    <script src="resources/js/gsap-animations.js?v=27"></script>
+    <script src="resources/js/app.js?v=27"></script>
+
+    <script>
+        // Force-hide loading screen after 3s fallback (CDN scripts may be slow/blocked)
+        setTimeout(function() {
+            var loader = document.getElementById('loadingScreen');
+            if (loader) loader.classList.add('hidden');
+        }, 3000);
+
+        // Loading screen
+        window.addEventListener('load', function() {
+            var loader = document.getElementById('loadingScreen');
+            if (loader) {
+                setTimeout(function() { loader.classList.add('hidden'); }, 400);
+            }
+            AuraAnimations.initPage();
+            document.body.classList.add('page-entered');
+        });
+
+        // Navbar scroll effect
+        document.addEventListener('scroll', function() {
+            var nav = document.getElementById('mainNav');
+            if (nav) {
+                nav.classList.toggle('nav-compact', window.scrollY > 100);
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>

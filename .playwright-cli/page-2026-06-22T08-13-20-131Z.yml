@@ -1,0 +1,517 @@
+- generic [active] [ref=e1]:
+  - navigation:
+    - link "A Aura Estates" [ref=e2] [cursor=pointer]:
+      - /url: "#"
+      - generic [ref=e3]: A
+      - text: Aura Estates
+    - list [ref=e4]:
+      - listitem [ref=e5]:
+        - link "Properties" [ref=e6] [cursor=pointer]:
+          - /url: "#properties"
+      - listitem [ref=e7]:
+        - link "Services" [ref=e8] [cursor=pointer]:
+          - /url: "#services"
+      - listitem [ref=e9]:
+        - link "About" [ref=e10] [cursor=pointer]:
+          - /url: "#about"
+      - listitem [ref=e11]:
+        - link "Journal" [ref=e12] [cursor=pointer]:
+          - /url: "#journal"
+    - link "Sign In" [ref=e13] [cursor=pointer]:
+      - /url: user/login.php
+      - text: Sign In
+      - img [ref=e14]
+  - generic:
+    - button:
+      - img
+    - list:
+      - listitem:
+        - link "Properties":
+          - /url: "#properties"
+      - listitem:
+        - link "Services":
+          - /url: "#services"
+      - listitem:
+        - link "About":
+          - /url: "#about"
+      - listitem:
+        - link "Journal":
+          - /url: "#journal"
+      - listitem:
+        - link "Sign In":
+          - /url: user/login.php
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - img "Luxury estate interior" [ref=e19]
+      - generic [ref=e21]:
+        - paragraph [ref=e22]: Bespoke property management defined by clarity
+        - heading "Spaces crafted through warmth, materiality, and clarity." [level=1] [ref=e23]
+        - generic [ref=e24]:
+          - link "Properties" [ref=e25] [cursor=pointer]:
+            - /url: "#properties"
+            - generic [ref=e26]: Properties
+            - img [ref=e27]
+          - link "Services" [ref=e29] [cursor=pointer]:
+            - /url: "#services"
+            - generic [ref=e30]: Services
+            - img [ref=e31]
+          - link "About" [ref=e33] [cursor=pointer]:
+            - /url: "#about"
+            - generic [ref=e34]: About
+            - img [ref=e35]
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e41]: "0"
+        - generic [ref=e42]: Properties Managed
+      - generic [ref=e43]:
+        - generic [ref=e44]: "0"
+        - generic [ref=e45]: Awards Won
+      - generic [ref=e46]:
+        - generic [ref=e47]: "0"
+        - generic [ref=e48]: Year Founded
+      - generic [ref=e49]:
+        - generic [ref=e50]: "0"
+        - generic [ref=e51]: Projects Completed
+      - generic [ref=e52]:
+        - generic [ref=e53]: "0"
+        - generic [ref=e54]: Satisfaction %
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - paragraph [ref=e58]: About the Studio
+        - heading "Founded in 2020, Aura Estates is a deliberately focused practice. Every property is managed with the same thinking that shapes the first sketch — all the way through to the last detail on site." [level=2] [ref=e59]
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - paragraph [ref=e62]: "01"
+          - heading "Considered" [level=3] [ref=e63]
+          - paragraph [ref=e64]: Every decision is deliberate. From tenant placement to maintenance scheduling, each action follows a clear rationale.
+        - generic [ref=e65]:
+          - paragraph [ref=e66]: "02"
+          - heading "Crafted" [level=3] [ref=e67]
+          - paragraph [ref=e68]: Attention to detail defines every interaction. Systems are built to serve people, not the other way around.
+        - generic [ref=e69]:
+          - paragraph [ref=e70]: "03"
+          - heading "Lasting" [level=3] [ref=e71]
+          - paragraph [ref=e72]: Solutions are built to endure. Relationships with tenants, owners, and partners are measured in years, not quarters.
+    - generic [ref=e75]:
+      - img [ref=e76]
+      - paragraph [ref=e79]: We founded Aura Estates with the belief that property management should feel seamless, transparent, and deeply human. Every relationship is approached with clarity, warmth, and careful attention to detail — creating experiences that feel refined, functional, and made to last.
+      - paragraph [ref=e80]: The Aura Estates Team
+      - paragraph [ref=e81]: Founders & Operators
+    - generic [ref=e83]:
+      - generic [ref=e84]:
+        - paragraph [ref=e85]: What we do
+        - heading "Integrated property services. One team, full lifecycle." [level=2] [ref=e86]
+      - generic [ref=e87]:
+        - link "Residential Full Lifecycle Residential End-to-end property management for residential portfolios. Tenant placement, maintenance, and owner reporting." [ref=e88] [cursor=pointer]:
+          - /url: "#"
+          - img "Residential" [ref=e90]
+          - img [ref=e92]
+          - generic [ref=e94]:
+            - paragraph [ref=e95]: Full Lifecycle
+            - heading "Residential" [level=3] [ref=e96]
+            - paragraph [ref=e97]: End-to-end property management for residential portfolios. Tenant placement, maintenance, and owner reporting.
+        - link "Commercial Tailored To Context Commercial Commercial and retail asset management with real-time operational dashboards and lease administration." [ref=e98] [cursor=pointer]:
+          - /url: "#"
+          - img "Commercial" [ref=e100]
+          - img [ref=e102]
+          - generic [ref=e104]:
+            - paragraph [ref=e105]: Tailored To Context
+            - heading "Commercial" [level=3] [ref=e106]
+            - paragraph [ref=e107]: Commercial and retail asset management with real-time operational dashboards and lease administration.
+        - link "Consulting Advisory Consulting Strategic advisory for portfolio optimization, market analysis, and operational process design." [ref=e108] [cursor=pointer]:
+          - /url: "#"
+          - img "Consulting" [ref=e110]
+          - img [ref=e112]
+          - generic [ref=e114]:
+            - paragraph [ref=e115]: Advisory
+            - heading "Consulting" [level=3] [ref=e116]
+            - paragraph [ref=e117]: Strategic advisory for portfolio optimization, market analysis, and operational process design.
+    - generic [ref=e119]:
+      - generic [ref=e120]:
+        - paragraph [ref=e121]: Portfolio
+        - heading "Featured Properties" [level=2] [ref=e122]
+      - generic [ref=e124]:
+        - generic [ref=e125]:
+          - img [ref=e126]
+          - textbox "Search properties..." [ref=e128]
+        - combobox [ref=e129] [cursor=pointer]:
+          - option "All Types" [selected]
+          - option "Villas"
+          - option "Penthouses"
+          - option "Apartments"
+      - generic [ref=e130]:
+        - generic [ref=e131] [cursor=pointer]:
+          - img [ref=e132]
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]: Penthouse
+              - generic [ref=e136]: Beverly Hills, CA
+            - heading "The Sapphire Penthouse" [level=3] [ref=e137]
+            - paragraph [ref=e138]: A stunning penthouse with panoramic ocean views and private elevator access....
+            - generic [ref=e139]:
+              - generic [ref=e140]: 4 bed
+              - generic [ref=e141]: 5 bath
+              - generic [ref=e142]: 4500 ft²
+              - generic [ref=e143]: $5,000,000/mo
+        - generic [ref=e144] [cursor=pointer]:
+          - img [ref=e145]
+          - generic [ref=e146]:
+            - generic [ref=e147]:
+              - generic [ref=e148]: Villa
+              - generic [ref=e149]: Malibu, CA
+            - heading "Onyx Villa" [level=3] [ref=e150]
+            - paragraph [ref=e151]: Modern architectural masterpiece nestled in the hills with infinity pool....
+            - generic [ref=e152]:
+              - generic [ref=e153]: 5 bed
+              - generic [ref=e154]: 6 bath
+              - generic [ref=e155]: 6000 ft²
+              - generic [ref=e156]: $3,500,000/mo
+        - generic [ref=e157] [cursor=pointer]:
+          - img [ref=e158]
+          - generic [ref=e159]:
+            - generic [ref=e160]:
+              - generic [ref=e161]: Estate
+              - generic [ref=e162]: Hamptons, NY
+            - heading "Emerald Estate" [level=3] [ref=e163]
+            - paragraph [ref=e164]: Classic luxury estate with sprawling gardens and tennis court....
+            - generic [ref=e165]:
+              - generic [ref=e166]: 7 bed
+              - generic [ref=e167]: 8 bath
+              - generic [ref=e168]: 12000 ft²
+              - generic [ref=e169]: $8,200,000/mo
+        - generic [ref=e170] [cursor=pointer]:
+          - img [ref=e171]
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - generic [ref=e174]: Loft
+              - generic [ref=e175]: Tribeca, NY
+            - heading "Golden Loft" [level=3] [ref=e176]
+            - paragraph [ref=e177]: Industrial chic loft in the heart of the city with floor-to-ceiling windows....
+            - generic [ref=e178]:
+              - generic [ref=e179]: 2 bed
+              - generic [ref=e180]: 2 bath
+              - generic [ref=e181]: 2500 ft²
+              - generic [ref=e182]: $1,200,000/mo
+        - generic [ref=e183] [cursor=pointer]:
+          - img [ref=e184]
+          - generic [ref=e185]:
+            - generic [ref=e186]:
+              - generic [ref=e187]: Estate
+              - generic [ref=e188]: Miami Beach, FL
+            - heading "Crystal Waters Estate" [level=3] [ref=e189]
+            - paragraph [ref=e190]: A breathtaking waterfront estate with private dock, infinity pool, and panoramic ocean views from every room....
+            - generic [ref=e191]:
+              - generic [ref=e192]: 6 bed
+              - generic [ref=e193]: 7 bath
+              - generic [ref=e194]: 8500 ft²
+              - generic [ref=e195]: $7,200,000/mo
+        - generic [ref=e196] [cursor=pointer]:
+          - img [ref=e197]
+          - generic [ref=e198]:
+            - generic [ref=e199]:
+              - generic [ref=e200]: Penthouse
+              - generic [ref=e201]: Manhattan, NY
+            - heading "The Ivory Tower" [level=3] [ref=e202]
+            - paragraph [ref=e203]: Minimalist penthouse occupying the entire top floor with 360-degree city views and a private rooftop garden....
+            - generic [ref=e204]:
+              - generic [ref=e205]: 3 bed
+              - generic [ref=e206]: 4 bath
+              - generic [ref=e207]: 3800 ft²
+              - generic [ref=e208]: $4,500,000/mo
+        - generic [ref=e209] [cursor=pointer]:
+          - img [ref=e210]
+          - generic [ref=e211]:
+            - generic [ref=e212]:
+              - generic [ref=e213]: Villa
+              - generic [ref=e214]: Santa Barbara, CA
+            - heading "Villa del Sol" [level=3] [ref=e215]
+            - paragraph [ref=e216]: Mediterranean-inspired villa surrounded by olive groves with a private vineyard and infinity edge pool....
+            - generic [ref=e217]:
+              - generic [ref=e218]: 4 bed
+              - generic [ref=e219]: 5 bath
+              - generic [ref=e220]: 5500 ft²
+              - generic [ref=e221]: $2,800,000/mo
+        - generic [ref=e222] [cursor=pointer]:
+          - img [ref=e223]
+          - generic [ref=e224]:
+            - generic [ref=e225]:
+              - generic [ref=e226]: Loft
+              - generic [ref=e227]: Brooklyn, NY
+            - heading "The Industrial Loft" [level=3] [ref=e228]
+            - paragraph [ref=e229]: Converted warehouse with exposed brick walls, 20-foot ceilings, and curated contemporary interiors....
+            - generic [ref=e230]:
+              - generic [ref=e231]: 2 bed
+              - generic [ref=e232]: 2 bath
+              - generic [ref=e233]: 2200 ft²
+              - generic [ref=e234]: $950,000/mo
+        - generic [ref=e235] [cursor=pointer]:
+          - img [ref=e236]
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]: Estate
+              - generic [ref=e240]: Big Sur, CA
+            - heading "Azure Cliffs Residence" [level=3] [ref=e241]
+            - paragraph [ref=e242]: Sculptural concrete and glass masterpiece cantilevered over the Pacific Ocean with a glass-bottom pool....
+            - generic [ref=e243]:
+              - generic [ref=e244]: 5 bed
+              - generic [ref=e245]: 6 bath
+              - generic [ref=e246]: 7200 ft²
+              - generic [ref=e247]: $9,800,000/mo
+        - generic [ref=e248] [cursor=pointer]:
+          - img [ref=e249]
+          - generic [ref=e250]:
+            - generic [ref=e251]:
+              - generic [ref=e252]: Penthouse
+              - generic [ref=e253]: San Francisco, CA
+            - heading "The Metropolitan" [level=3] [ref=e254]
+            - paragraph [ref=e255]: Sleek modern penthouse in the financial district with smart home automation and concierge services....
+            - generic [ref=e256]:
+              - generic [ref=e257]: 3 bed
+              - generic [ref=e258]: 3 bath
+              - generic [ref=e259]: 3100 ft²
+              - generic [ref=e260]: $3,200,000/mo
+        - generic [ref=e261] [cursor=pointer]:
+          - img [ref=e262]
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - generic [ref=e265]: Penthouse
+              - generic [ref=e266]: Beverly Hills, CA
+            - heading "The Sapphire Penthouse" [level=3] [ref=e267]
+            - paragraph [ref=e268]: A stunning penthouse with panoramic ocean views and private elevator access....
+            - generic [ref=e269]:
+              - generic [ref=e270]: 4 bed
+              - generic [ref=e271]: 5 bath
+              - generic [ref=e272]: 4500 ft²
+              - generic [ref=e273]: $5,000,000/mo
+        - generic [ref=e274] [cursor=pointer]:
+          - img [ref=e275]
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - generic [ref=e278]: Villa
+              - generic [ref=e279]: Malibu, CA
+            - heading "Onyx Villa" [level=3] [ref=e280]
+            - paragraph [ref=e281]: Modern architectural masterpiece nestled in the hills with infinity pool....
+            - generic [ref=e282]:
+              - generic [ref=e283]: 5 bed
+              - generic [ref=e284]: 6 bath
+              - generic [ref=e285]: 6000 ft²
+              - generic [ref=e286]: $3,500,000/mo
+        - generic [ref=e287] [cursor=pointer]:
+          - img [ref=e288]
+          - generic [ref=e289]:
+            - generic [ref=e290]:
+              - generic [ref=e291]: Estate
+              - generic [ref=e292]: Hamptons, NY
+            - heading "Emerald Estate" [level=3] [ref=e293]
+            - paragraph [ref=e294]: Classic luxury estate with sprawling gardens and tennis court....
+            - generic [ref=e295]:
+              - generic [ref=e296]: 7 bed
+              - generic [ref=e297]: 8 bath
+              - generic [ref=e298]: 12000 ft²
+              - generic [ref=e299]: $8,200,000/mo
+        - generic [ref=e300] [cursor=pointer]:
+          - img [ref=e301]
+          - generic [ref=e302]:
+            - generic [ref=e303]:
+              - generic [ref=e304]: Loft
+              - generic [ref=e305]: Tribeca, NY
+            - heading "Golden Loft" [level=3] [ref=e306]
+            - paragraph [ref=e307]: Industrial chic loft in the heart of the city with floor-to-ceiling windows....
+            - generic [ref=e308]:
+              - generic [ref=e309]: 2 bed
+              - generic [ref=e310]: 2 bath
+              - generic [ref=e311]: 2500 ft²
+              - generic [ref=e312]: $1,200,000/mo
+    - generic [ref=e314]:
+      - generic [ref=e315]:
+        - paragraph [ref=e316]: Operations
+        - heading "Maintenance & Service Center" [level=2] [ref=e317]
+      - generic [ref=e318]:
+        - generic [ref=e319]:
+          - heading "Create Ticket" [level=3] [ref=e320]
+          - generic [ref=e321]:
+            - generic [ref=e322]:
+              - generic [ref=e323]: Name
+              - textbox "Your name" [ref=e324]
+            - generic [ref=e325]:
+              - generic [ref=e326]: Email
+              - textbox "Your email" [ref=e327]
+            - generic [ref=e328]:
+              - generic [ref=e329]: Property
+              - combobox [ref=e330]:
+                - option "Select property" [selected]
+                - option "The Sapphire Penthouse"
+                - option "Onyx Villa"
+                - option "Emerald Estate"
+                - option "Golden Loft"
+                - option "Crystal Waters Estate"
+                - option "The Ivory Tower"
+                - option "Villa del Sol"
+                - option "The Industrial Loft"
+                - option "Azure Cliffs Residence"
+                - option "The Metropolitan"
+                - option "The Sapphire Penthouse"
+                - option "Onyx Villa"
+                - option "Emerald Estate"
+                - option "Golden Loft"
+            - generic [ref=e331]:
+              - generic [ref=e332]: Severity
+              - combobox [ref=e333]:
+                - option [selected]
+                - option "P3 — Standard"
+                - option "P2 — Priority"
+                - option "P1 — Critical"
+            - generic [ref=e334]:
+              - generic [ref=e335]: Description
+              - textbox "Describe the issue..." [ref=e336]
+            - button "Submit Ticket" [ref=e337] [cursor=pointer]
+        - generic [ref=e338]:
+          - generic [ref=e339]:
+            - heading "Active Tickets" [level=3] [ref=e340]
+            - generic [ref=e341]: 2 Pending
+          - generic [ref=e342] [cursor=pointer]:
+            - generic [ref=e343]:
+              - generic [ref=e344]: TKT-892
+              - generic [ref=e345]: HVAC System Failure
+            - paragraph [ref=e346]: Temperature control unresponsive in primary suite.
+            - generic [ref=e347]:
+              - generic [ref=e348]: "Target: Penthouse 12A"
+              - generic [ref=e349]: "Reported: 2h ago"
+          - generic [ref=e350] [cursor=pointer]:
+            - generic [ref=e351]:
+              - generic [ref=e352]: TKT-891
+              - generic [ref=e353]: Plumbing Leak
+            - paragraph [ref=e354]: Minor water intrusion near master bathroom sink.
+            - generic [ref=e355]:
+              - generic [ref=e356]: "Target: Villa Serenity"
+              - generic [ref=e357]: "Reported: 5h ago"
+    - generic [ref=e359]:
+      - generic [ref=e360]:
+        - paragraph [ref=e361]: Amenities
+        - heading "Shared Facility Scheduling" [level=2] [ref=e362]
+      - generic [ref=e363]:
+        - generic [ref=e364]:
+          - img [ref=e366]
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - heading "Rooftop Pool & Spa" [level=3] [ref=e369]
+              - generic [ref=e370]: Available
+            - paragraph [ref=e371]: "Capacity: 12 persons. Towel service included."
+            - generic [ref=e372]:
+              - button "Book 14:00" [ref=e373] [cursor=pointer]
+              - button "Book 16:00" [ref=e374] [cursor=pointer]
+        - generic [ref=e375]:
+          - img [ref=e377]
+          - generic [ref=e378]:
+            - generic [ref=e379]:
+              - heading "Secure Parking" [level=3] [ref=e380]
+              - generic [ref=e381]: 3 Spots Left
+            - paragraph [ref=e382]: 24/7 monitored underground facility.
+            - button "Reserve Overnight" [ref=e383] [cursor=pointer]
+    - generic [ref=e385]:
+      - generic [ref=e386]:
+        - paragraph [ref=e387]: Client Perspectives
+        - heading "These are a few words from the clients who live with the result every day." [level=2] [ref=e388]
+      - generic [ref=e389]:
+        - generic [ref=e390]:
+          - img [ref=e391]
+          - paragraph [ref=e394]: From architecture to interior styling, the entire process felt thoughtful and seamless. The atmosphere they created exceeded our expectations.
+          - generic [ref=e395]:
+            - img [ref=e396]
+            - generic [ref=e397]:
+              - paragraph [ref=e398]: Hanna Bennett
+              - paragraph [ref=e399]: Homeowner
+        - generic [ref=e400]:
+          - img [ref=e401]
+          - paragraph [ref=e404]: Working with Aura Estates felt collaborative from the very beginning. The balance of service, communication, and professionalism completely changed how we experience property management.
+          - generic [ref=e405]:
+            - img [ref=e406]
+            - generic [ref=e407]:
+              - paragraph [ref=e408]: Lukas Walker
+              - paragraph [ref=e409]: Residence Owner
+        - generic [ref=e410]:
+          - img [ref=e411]
+          - paragraph [ref=e414]: The level of refinement throughout the process was exceptional. Everything feels intentional, balanced, and beautifully composed.
+          - generic [ref=e415]:
+            - img [ref=e416]
+            - generic [ref=e417]:
+              - paragraph [ref=e418]: Emma Hofstetter
+              - paragraph [ref=e419]: Private Client
+    - generic [ref=e421]:
+      - generic [ref=e422]:
+        - paragraph [ref=e423]: Journal
+        - heading "Insights from the studio." [level=2] [ref=e424]
+      - generic [ref=e425]:
+        - 'link "Project Stories Embodied carbon in heritage buildings: A counterintuitive case Read" [ref=e426] [cursor=pointer]':
+          - /url: "#"
+          - img [ref=e427]
+          - paragraph [ref=e428]: Project Stories
+          - 'heading "Embodied carbon in heritage buildings: A counterintuitive case" [level=3] [ref=e429]'
+          - generic [ref=e430]:
+            - generic [ref=e431]: Read
+            - img [ref=e432]
+        - link "Design Insights Why we still draw by hand before we draw on screen Read" [ref=e434] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e435]
+          - paragraph [ref=e436]: Design Insights
+          - heading "Why we still draw by hand before we draw on screen" [level=3] [ref=e437]
+          - generic [ref=e438]:
+            - generic [ref=e439]: Read
+            - img [ref=e440]
+    - generic [ref=e443]:
+      - paragraph [ref=e444]: Start your journey
+      - heading "Have a property in mind? Let us hear about it." [level=2] [ref=e445]
+      - link "Get Started" [ref=e446] [cursor=pointer]:
+        - /url: user/register.php
+        - text: Get Started
+        - img [ref=e447]
+  - contentinfo [ref=e449]:
+    - generic [ref=e450]:
+      - generic [ref=e451]:
+        - generic [ref=e452]:
+          - paragraph [ref=e453]: Aura Estates
+          - paragraph [ref=e454]: Architecture-led property management — thoughtful, transparent, built to last.
+          - generic [ref=e455]:
+            - paragraph [ref=e456]: Address
+            - paragraph [ref=e457]: Linienstrasse 156, Berlin
+          - generic [ref=e458]:
+            - paragraph [ref=e459]: Contact
+            - paragraph [ref=e460]: hello@auraestates.com
+            - paragraph [ref=e461]: +49 30 28 04 8000
+        - generic [ref=e462]:
+          - paragraph [ref=e463]: Pages
+          - link "Home" [ref=e464] [cursor=pointer]:
+            - /url: "#"
+          - link "About" [ref=e465] [cursor=pointer]:
+            - /url: "#about"
+          - link "Services" [ref=e466] [cursor=pointer]:
+            - /url: "#services"
+          - link "Properties" [ref=e467] [cursor=pointer]:
+            - /url: "#properties"
+          - link "Journal" [ref=e468] [cursor=pointer]:
+            - /url: "#journal"
+        - generic [ref=e469]:
+          - paragraph [ref=e470]: Services
+          - link "Residential" [ref=e471] [cursor=pointer]:
+            - /url: "#"
+          - link "Commercial" [ref=e472] [cursor=pointer]:
+            - /url: "#"
+          - link "Consulting" [ref=e473] [cursor=pointer]:
+            - /url: "#"
+          - link "Maintenance" [ref=e474] [cursor=pointer]:
+            - /url: "#"
+        - generic [ref=e475]:
+          - paragraph [ref=e476]: Account
+          - link "Sign In" [ref=e477] [cursor=pointer]:
+            - /url: user/login.php
+          - link "Register" [ref=e478] [cursor=pointer]:
+            - /url: user/register.php
+          - link "Support" [ref=e479] [cursor=pointer]:
+            - /url: "#"
+      - generic [ref=e480]:
+        - generic [ref=e481]: © 2026 Aura Estates. All rights reserved.
+        - generic [ref=e482]:
+          - link "Privacy" [ref=e483] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms" [ref=e484] [cursor=pointer]:
+            - /url: "#"

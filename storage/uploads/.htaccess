@@ -1,0 +1,5 @@
+# Secure uploads directory - No script execution
+<FilesMatch "\.(php|php5|phtml|pl|py|cgi|asp|aspx)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>

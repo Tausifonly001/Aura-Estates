@@ -1,0 +1,117 @@
+/* Cinematic Theme — Optional dark override */
+/* Import after saas.css: <link rel="stylesheet" href="resources/css/saas.css">
+                            <link rel="stylesheet" href="resources/css/cinematic.css"> */
+
+:root {
+    --color-bg: #0a0a0a;
+    --color-bg-alt: #141414;
+    --color-surface: #1a1a1a;
+    --color-text: #ffffff;
+    --color-text-secondary: #a3a3a3;
+    --color-muted: #666666;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-light: rgba(255, 255, 255, 0.05);
+    --color-accent: #d4af37;
+    --color-accent-hover: #e6c24d;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+}
+
+body {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+}
+
+/* Navigation */
+.saas-nav {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Cards */
+.saas-card {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.saas-card:hover {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Buttons */
+.saas-btn {
+    transition: all 0.3s ease !important;
+}
+
+/* Inputs */
+.saas-input {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+.saas-input:focus {
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 0 1px var(--color-accent) !important;
+}
+
+/* Modals */
+.modal-backdrop {
+    background: rgba(10, 10, 10, 0.9) !important;
+}
+
+.modal-content {
+    background: var(--color-surface) !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
+}
+
+/* Hero Overlay */
+.hero-display-overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.3) 0%,
+        rgba(10, 10, 10, 0.7) 50%,
+        rgba(10, 10, 10, 1) 100%
+    ) !important;
+}
+
+/* CTA Section */
+.cta-section-dark {
+    background: var(--color-accent) !important;
+}
+
+/* Footer */
+.footer {
+    border-top-color: var(--color-border) !important;
+}
+
+/* Mobile Nav */
+.nav-mobile-overlay {
+    background: var(--color-surface) !important;
+}
+
+/* Ticket Items */
+.ticket-item:hover {
+    background: var(--color-bg) !important;
+}
