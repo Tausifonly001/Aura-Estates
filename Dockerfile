@@ -2,7 +2,10 @@ FROM php:8.2-apache
 
 RUN a2enmod rewrite
 
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN apt-get update && apt-get install -y unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install mysqli pdo pdo_mysql zip gd && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY . /var/www/html/
 
@@ -11,11 +14,7 @@ RUN chown -R www-data:www-data /var/www/html/uploads && \
 
 RUN cp /var/www/html/.env.example /var/www/html/.env
 
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     cd /var/www/html && composer install --optimize-autoloader --no-dev
 
