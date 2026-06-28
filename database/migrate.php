@@ -25,37 +25,68 @@ while ($retry < $max_retries) {
     }
 }
 
-$stmt = $pdo->query("SELECT COUNT(*) as cnt FROM information_schema.tables WHERE table_schema = " . $pdo->quote($db_name));
-$row = $stmt->fetch();
+$pdo->exec("CREATE TABLE IF NOT EXISTS _migrations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL UNIQUE,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)");
 
-if ((int)$row['cnt'] > 0) {
+$applied = [];
+$stmt = $pdo->query("SELECT filename FROM _migrations");
+while ($row = $stmt->fetch()) {
+    $applied[] = $row['filename'];
+}
+
+$migrations_dir = __DIR__ . '/migrations';
+if (!is_dir($migrations_dir)) {
+    $pdo = null;
     exit(0);
 }
 
-$sql_path = __DIR__ . '/database.sql';
-if (!file_exists($sql_path)) {
-    fwrite(STDERR, "SQL file not found: $sql_path\n");
-    exit(1);
-}
+$files = glob($migrations_dir . '/*.sql');
+sort($files);
 
-$sql = file_get_contents($sql_path);
+$count = 0;
+foreach ($files as $file) {
+    $filename = basename($file);
 
-$sql = preg_replace('/^CREATE DATABASE\s+.*?;/im', '', $sql);
-$sql = preg_replace('/^USE\s+.*?;/im', '', $sql);
-$sql = trim($sql);
+    if (in_array($filename, $applied)) {
+        continue;
+    }
 
-$statements = array_filter(
-    array_map('trim', explode(';', $sql)),
-    fn($s) => !empty($s)
-);
+    $sql = file_get_contents($file);
+    $sql = preg_replace('/^CREATE DATABASE\s+.*?;/im', '', $sql);
+    $sql = preg_replace('/^USE\s+.*?;/im', '', $sql);
+    $sql = trim($sql);
 
-foreach ($statements as $statement) {
+    if (empty($sql)) {
+        continue;
+    }
+
+    $statements = array_filter(
+        array_map('trim', explode(';', $sql)),
+        fn($s) => !empty($s)
+    );
+
     try {
-        $pdo->exec($statement);
+        $pdo->beginTransaction();
+        foreach ($statements as $statement) {
+            $pdo->exec($statement);
+        }
+        $stmtIns = $pdo->prepare("INSERT INTO _migrations (filename) VALUES (?)");
+        $stmtIns->execute([$filename]);
+        $pdo->commit();
+        $count++;
+        fwrite(STDOUT, "Applied migration: $filename\n");
     } catch (PDOException $e) {
-        fwrite(STDERR, "SQL error: {$e->getMessage()}\nSQL: $statement\n");
+        $pdo->rollBack();
+        fwrite(STDERR, "Migration $filename failed: {$e->getMessage()}\n");
         exit(1);
     }
 }
 
-fwrite(STDOUT, "Database migrated successfully.\n");
+if ($count === 0) {
+    fwrite(STDOUT, "No new migrations to apply.\n");
+} else {
+    fwrite(STDOUT, "Applied $count migration(s) successfully.\n");
+}
