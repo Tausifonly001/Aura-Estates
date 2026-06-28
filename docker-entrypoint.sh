@@ -14,4 +14,6 @@ for conf in /etc/apache2/sites-enabled/*.conf; do
     fi
 done
 
+php /var/www/html/database/migrate.php 2>&1 || true
+
 exec apache2ctl -D FOREGROUND
