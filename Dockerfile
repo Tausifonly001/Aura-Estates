@@ -17,7 +17,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
+RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite headers
+
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 COPY . /var/www/html/
 
@@ -30,6 +32,10 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     cd /var/www/html && composer install --optimize-autoloader --no-dev
 
+RUN chmod +x /var/www/html/docker-entrypoint.sh
+
+RUN apache2ctl configtest
+
 EXPOSE 80
 
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]
