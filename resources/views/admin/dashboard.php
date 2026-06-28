@@ -373,18 +373,19 @@ Auth::startSession();
             };
 
             $scope.loadDashboardData = function() {
-                return $http.get('../api/dashboard.php').then(function(res) {
+                return $http.get('../api/dashboard').then(function(res) {
+                    var d = res.data.data || {};
                     $scope.stats = {
-                        properties: res.data.properties,
-                        maintenance: res.data.maintenance,
-                        amenities: res.data.amenities,
-                        inquiries: res.data.inquiries,
-                        rentals: res.data.rentals,
-                        kpi: res.data.kpi || {}
+                        properties: d.properties,
+                        maintenance: d.maintenance,
+                        amenities: d.amenities,
+                        inquiries: d.inquiries,
+                        rentals: d.rentals,
+                        kpi: d.kpi || {}
                     };
-                    $scope.recentMaintenance = res.data.kpirecent_maintenance_requests || [];
-                    $scope.todayBookings = res.data.today_bookings || [];
-                    $scope._checkNotifications(res.data.kpi);
+                    $scope.recentMaintenance = d.kpirecent_maintenance_requests || [];
+                    $scope.todayBookings = d.today_bookings || [];
+                    $scope._checkNotifications(d.kpi);
                 });
             };
 
@@ -397,7 +398,7 @@ Auth::startSession();
             var sseSource = null;
             $scope.startSSE = function() {
                 $scope.isPolling = true;
-                sseSource = new EventSource('../api/sse.php');
+                sseSource = new EventSource('../api/sse');
                 sseSource.addEventListener('new_maintenance', function(e) {
                     $scope.$apply(function() { $scope._refreshDashboard(); });
                 });
@@ -410,17 +411,18 @@ Auth::startSession();
             };
 
             $scope._refreshDashboard = function() {
-                $http.get('../api/dashboard.php').then(function(res) {
+                $http.get('../api/dashboard').then(function(res) {
+                    var d = res.data.data || {};
                     var oldPending = $scope.stats.maintenance ? $scope.stats.maintenance.pending_count : 0;
                     var oldInProgress = $scope.stats.maintenance ? $scope.stats.maintenance.in_progress_count : 0;
                     var oldOverdue = $scope.stats.kpi ? $scope.stats.kpi.overdue_count : 0;
                     $scope.stats = {
-                        properties: res.data.properties,
-                        maintenance: res.data.maintenance,
-                        amenities: res.data.amenities,
-                        inquiries: res.data.inquiries,
-                        rentals: res.data.rentals,
-                        kpi: res.data.kpi || {}
+                        properties: d.properties,
+                        maintenance: d.maintenance,
+                        amenities: d.amenities,
+                        inquiries: d.inquiries,
+                        rentals: d.rentals,
+                        kpi: d.kpi || {}
                     };
                     var newPending = $scope.stats.maintenance.pending_count || 0;
                     var newInProgress = $scope.stats.maintenance.in_progress_count || 0;
@@ -432,11 +434,11 @@ Auth::startSession();
                         });
                         gsap.fromTo('#kpiSection', { backgroundColor: 'rgba(90,120,80,0.08)' }, { backgroundColor: 'transparent', duration: 1.5 });
                     }
-                    let newMaint = res.data.kpirecent_maintenance_requests || [];
+                    let newMaint = d.kpirecent_maintenance_requests || [];
                     if($scope.recentMaintenance.length !== newMaint.length || (newMaint[0] && $scope.recentMaintenance[0] && (newMaint[0].id !== $scope.recentMaintenance[0].id || newMaint[0].status !== $scope.recentMaintenance[0].status))) {
                         $scope.recentMaintenance = newMaint;
                     }
-                    let newBookings = res.data.today_bookings || [];
+                    let newBookings = d.today_bookings || [];
                     if($scope.todayBookings.length !== newBookings.length || (newBookings[0] && $scope.todayBookings[0] && (newBookings[0].id !== $scope.todayBookings[0].id || newBookings[0].status !== $scope.todayBookings[0].status))) {
                         $scope.todayBookings = newBookings;
                     }
