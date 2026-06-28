@@ -69,18 +69,16 @@ foreach ($files as $file) {
     );
 
     try {
-        $pdo->beginTransaction();
         foreach ($statements as $statement) {
             $pdo->exec($statement);
         }
         $stmtIns = $pdo->prepare("INSERT INTO _migrations (filename) VALUES (?)");
         $stmtIns->execute([$filename]);
-        $pdo->commit();
         $count++;
         fwrite(STDOUT, "Applied migration: $filename\n");
     } catch (PDOException $e) {
-        $pdo->rollBack();
         fwrite(STDERR, "Migration $filename failed: {$e->getMessage()}\n");
+        $pdo = null;
         exit(1);
     }
 }
