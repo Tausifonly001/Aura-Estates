@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <?php
+    $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+    $currentDir = str_replace('\\', '/', __DIR__);
+    $projectRoot = $currentDir;
+    while ($projectRoot !== $docRoot && !file_exists($projectRoot . '/.env') && dirname($projectRoot) !== $projectRoot) {
+        $projectRoot = dirname($projectRoot);
+    }
+    $basePath = str_replace($docRoot, '', str_replace('\\', '/', $projectRoot));
+    $baseHref = rtrim($basePath, '/') . '/';
+    ?>
+    <base href="<?php echo htmlspecialchars($baseHref); ?>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aura Estates — Bespoke property management defined by clarity, materiality, and trust. Manage your properties with thoughtful, design-led service.">
@@ -12,7 +23,7 @@
     <title><?php echo $pageTitle ?? 'Aura Estates'; ?> — Aura Estates</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="resources/js/tailwindcss.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -48,8 +59,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="resources/css/saas.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="resources/js/gsap.min.js"></script>
+    <script src="resources/js/ScrollTrigger.min.js"></script>
     <script src="resources/js/gsap-animations.js"></script>
 
     <style>
@@ -67,15 +78,15 @@
         <span class="hidden sm:inline">Aura Estates</span>
     </a>
     <div class="hidden md:flex items-center gap-8 list-none m-0 p-0">
-        <a href="/about" class="nav-link <?php echo $currentPage === 'about' ? 'text-ink' : ''; ?>">About</a>
-        <a href="/properties" class="nav-link <?php echo $currentPage === 'properties' ? 'text-ink' : ''; ?>">Properties</a>
-        <a href="/services" class="nav-link <?php echo $currentPage === 'services' ? 'text-ink' : ''; ?>">Services</a>
-        <a href="/blog" class="nav-link <?php echo $currentPage === 'blog' ? 'text-ink' : ''; ?>">Journal</a>
-        <a href="/contact" class="nav-link <?php echo $currentPage === 'contact' ? 'text-ink' : ''; ?>">Contact</a>
+        <a href="about" class="nav-link <?php echo $currentPage === 'about' ? 'text-ink' : ''; ?>">About</a>
+        <a href="properties" class="nav-link <?php echo $currentPage === 'properties' ? 'text-ink' : ''; ?>">Properties</a>
+        <a href="services" class="nav-link <?php echo $currentPage === 'services' ? 'text-ink' : ''; ?>">Services</a>
+        <a href="blog" class="nav-link <?php echo $currentPage === 'blog' ? 'text-ink' : ''; ?>">Journal</a>
+        <a href="contact" class="nav-link <?php echo $currentPage === 'contact' ? 'text-ink' : ''; ?>">Contact</a>
     </div>
     <div class="hidden md:flex items-center gap-3 shrink-0">
-        <a href="/login" class="btn-outline text-[0.625rem] px-4 py-2 no-underline">Sign In</a>
-        <a href="/register" class="btn-primary text-[0.5625rem] px-5 py-2.5">
+        <a href="login" class="btn-outline text-[0.625rem] px-4 py-2 no-underline">Sign In</a>
+        <a href="register" class="btn-primary text-[0.5625rem] px-5 py-2.5">
             Get Started
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -93,15 +104,15 @@
         </button>
     </div>
     <ul class="flex flex-col gap-8 list-none">
-        <li><a href="/about" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">About</a></li>
+        <li><a href="about" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">About</a></li>
         <li><a href="properties" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Properties</a></li>
-        <li><a href="/services" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Services</a></li>
-        <li><a href="/blog" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Journal</a></li>
-        <li><a href="/contact" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Contact</a></li>
+        <li><a href="services" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Services</a></li>
+        <li><a href="blog" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Journal</a></li>
+        <li><a href="contact" onclick="closeMobileNav()" class="font-sans font-medium text-4xl text-ink/70 hover:text-ink no-underline transition-colors duration-300">Contact</a></li>
     </ul>
     <div class="mt-auto pt-10 flex gap-4">
-        <a href="/login" onclick="closeMobileNav()" class="btn-outline flex-1 text-center">Sign In</a>
-        <a href="/register" onclick="closeMobileNav()" class="btn-primary flex-1 text-center">Get Started</a>
+        <a href="login" onclick="closeMobileNav()" class="btn-outline flex-1 text-center">Sign In</a>
+        <a href="register" onclick="closeMobileNav()" class="btn-primary flex-1 text-center">Get Started</a>
     </div>
 </div>
 

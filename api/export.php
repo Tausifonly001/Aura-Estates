@@ -3,7 +3,7 @@ require_once __DIR__ . '/../src/core/Middleware.php';
 require_once __DIR__ . '/../src/core/AuditLogger.php';
 
 Middleware::api();
-Middleware::auth();
+Middleware::auth('dashboard_view');
 
 $database = new Database();
 $db = $database->getConnection();

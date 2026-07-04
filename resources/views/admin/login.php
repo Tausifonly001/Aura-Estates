@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../src/config/auth.php';
 Auth::startSession();
 if(isset($_SESSION['user_id'])){
-    header("Location: dashboard.php");
+    header("Location: " . Auth::getBasePrefix() . "/admin/dashboard");
     exit;
 }
 
@@ -23,10 +23,10 @@ if($_POST){
     if($result === false) {
         $message = "Invalid credentials.";
     } elseif($result['role'] !== 'admin') {
-        Auth::logout('login.php');
+        Auth::logout(Auth::getBasePrefix() . '/admin/login');
         $message = "Access denied. Admins only.";
     } else {
-        header("Location: dashboard.php");
+        header("Location: " . Auth::getBasePrefix() . "/admin/dashboard");
         exit;
     }
 }
@@ -96,7 +96,7 @@ if($_POST){
             <div class="err-msg" style="opacity:0;"><?php echo $message; ?></div>
         <?php endif; ?>
 
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
+        <form action="/aura-estates/admin/login" method="post">
             <div class="relative mb-7">
                 <input type="email" name="email" id="email" class="input-line" placeholder=" " value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
                 <label for="email" class="input-label">Email</label>

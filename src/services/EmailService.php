@@ -61,57 +61,73 @@ class EmailService {
 
     public static function sendContactNotification($name, $email, $message) {
         $config = self::getConfig();
-        $subject = "New Contact Inquiry — $name";
+        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $safeEmail = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+        $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+        $subject = "New Contact Inquiry — $safeName";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES — ADMIN</div>
             <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>New Contact Inquiry</h2>
-            <p style='color:#5c5349;font-size:14px'><strong>Name:</strong> $name</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Email:</strong> $email</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Message:</strong><br>" . nl2br($message) . "</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Name:</strong> $safeName</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Email:</strong> $safeEmail</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Message:</strong><br>" . nl2br($safeMessage) . "</p>
         </div>";
         return self::send($config['admin_email'], $subject, $body);
     }
 
     public static function sendInquiryNotification($name, $email, $property, $type) {
         $config = self::getConfig();
-        $subject = "New Property Inquiry — $property";
+        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $safeEmail = htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
+        $safeProperty = htmlspecialchars($property, ENT_QUOTES, 'UTF-8');
+        $safeType = htmlspecialchars($type, ENT_QUOTES, 'UTF-8');
+        $subject = "New Property Inquiry — $safeProperty";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES — ADMIN</div>
-            <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>New $type Inquiry</h2>
-            <p style='color:#5c5349;font-size:14px'><strong>Name:</strong> $name</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Email:</strong> $email</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Property:</strong> $property</p>
+            <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>New $safeType Inquiry</h2>
+            <p style='color:#5c5349;font-size:14px'><strong>Name:</strong> $safeName</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Email:</strong> $safeEmail</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Property:</strong> $safeProperty</p>
         </div>";
         return self::send($config['admin_email'], $subject, $body);
     }
 
     public static function sendBookingAlert($userName, $userEmail, $amenity, $date, $time) {
         $config = self::getConfig();
-        $subject = "New Booking — $amenity by $userName";
+        $safeUserName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+        $safeUserEmail = htmlspecialchars($userEmail, ENT_QUOTES, 'UTF-8');
+        $safeAmenity = htmlspecialchars($amenity, ENT_QUOTES, 'UTF-8');
+        $safeDate = htmlspecialchars($date, ENT_QUOTES, 'UTF-8');
+        $safeTime = htmlspecialchars($time, ENT_QUOTES, 'UTF-8');
+        $subject = "New Booking — $safeAmenity by $safeUserName";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES — ADMIN</div>
             <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>New Amenity Booking</h2>
-            <p style='color:#5c5349;font-size:14px'><strong>User:</strong> $userName ($userEmail)</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Amenity:</strong> $amenity</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Date:</strong> $date</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Time:</strong> $time</p>
+            <p style='color:#5c5349;font-size:14px'><strong>User:</strong> $safeUserName ($safeUserEmail)</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Amenity:</strong> $safeAmenity</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Date:</strong> $safeDate</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Time:</strong> $safeTime</p>
         </div>";
         return self::send($config['admin_email'], $subject, $body);
     }
 
     public static function sendMaintenanceAlert($userName, $userEmail, $property, $priority) {
         $config = self::getConfig();
-        $subject = "New Maintenance Request — $property ($priority)";
+        $safeUserName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+        $safeUserEmail = htmlspecialchars($userEmail, ENT_QUOTES, 'UTF-8');
+        $safeProperty = htmlspecialchars($property, ENT_QUOTES, 'UTF-8');
+        $safePriority = htmlspecialchars($priority, ENT_QUOTES, 'UTF-8');
+        $subject = "New Maintenance Request — $safeProperty ($safePriority)";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES — ADMIN</div>
             <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>New Maintenance Request</h2>
-            <p style='color:#5c5349;font-size:14px'><strong>User:</strong> $userName ($userEmail)</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Property:</strong> $property</p>
-            <p style='color:#5c5349;font-size:14px'><strong>Priority:</strong> $priority</p>
+            <p style='color:#5c5349;font-size:14px'><strong>User:</strong> $safeUserName ($safeUserEmail)</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Property:</strong> $safeProperty</p>
+            <p style='color:#5c5349;font-size:14px'><strong>Priority:</strong> $safePriority</p>
         </div>";
         return self::send($config['admin_email'], $subject, $body);
     }

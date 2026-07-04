@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 Auth::requireRole('admin');
+CsrfProtection::generate();
 
 include_once __DIR__ . '/../../../src/config/database.php';
 include_once __DIR__ . '/../../../src/models/Property.php';
@@ -46,6 +48,7 @@ if($property->readOne()){
         <h1 class="text-4xl font-display italic text-paper mb-4">Delete Property</h1>
         <p class="text-paper/40 text-sm font-body font-light mb-8">Are you sure you want to delete <strong class="text-paper/80"><?php echo htmlspecialchars($property->title); ?></strong>? This action cannot be undone.</p>
         <form method="post" class="flex justify-center space-x-4">
+            <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             <input type="hidden" name="confirm" value="1">
             <button type="submit" class="border-2 border-rust/60 text-rust px-8 py-3 text-xs font-body font-bold uppercase tracking-[0.2em] hover:bg-rust hover:text-ink transition-all duration-300">Delete</button>
             <a href="/admin/dashboard" class="border-2 border-paper/20 text-paper/40 px-8 py-3 text-xs font-body font-bold uppercase tracking-[0.2em] hover:border-paper/40 hover:text-paper/60 transition-all duration-300">Cancel</a>

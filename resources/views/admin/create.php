@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 Auth::requireRole('admin');
+CsrfProtection::generate();
 
 include_once __DIR__ . '/../../../src/config/database.php';
 include_once __DIR__ . '/../../../src/models/Property.php';
@@ -66,6 +68,7 @@ $success = $_GET['success'] ?? 0;
         <?php endif; ?>
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" class="space-y-6">
+            <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
                     <label class="block text-[9px] font-body font-bold uppercase tracking-[0.2em] text-paper/30 mb-2">Title</label>

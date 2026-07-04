@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
     <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="resources/js/tailwindcss.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -42,10 +42,10 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <!-- CDN Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="resources/js/three.min.js"></script>
+    <script src="resources/js/gsap.min.js"></script>
+    <script src="resources/js/ScrollTrigger.min.js"></script>
+    <script src="resources/js/angular.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Custom CSS -->
@@ -73,15 +73,15 @@
             <span class="hidden sm:inline">Aura Estates</span>
         </a>
         <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0">
-            <li><a href="/about" class="nav-link">About</a></li>
-            <li><a href="/properties" class="nav-link">Properties</a></li>
+            <li><a href="about" class="nav-link">About</a></li>
+            <li><a href="properties" class="nav-link">Properties</a></li>
             <li><a href="services" class="nav-link">Services</a></li>
             <li><a href="blog" class="nav-link">Journal</a></li>
             <li><a href="contact" class="nav-link">Contact</a></li>
         </ul>
         <div class="hidden md:flex items-center gap-3 shrink-0" ng-if="currentUser">
             <span class="font-sans text-[0.875rem] text-ink-secondary">Hi, {{currentUser.name}}</span>
-            <a ng-href="{{currentUser.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}}" class="btn-primary">Dashboard</a>
+            <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard' : 'user/dashboard'}}" class="btn-primary">Dashboard</a>
             <a href="user/logout" class="nav-link">Logout</a>
         </div>
         <a href="login" class="hidden md:inline-flex btn-primary" ng-if="!currentUser" data-magnetic>
@@ -106,7 +106,7 @@
             <li><a href="contact" ng-click="mobileNavOpen = false" class="font-sans font-medium text-3xl text-ink no-underline hover:text-accent transition-colors">Contact</a></li>
             <li class="mt-4" ng-if="currentUser">
                 <span class="font-sans text-xl text-ink-secondary block mb-4">Hi, {{currentUser.name}}</span>
-                <a ng-href="{{currentUser.role === 'admin' ? '/admin/dashboard' : '/user/dashboard'}}" class="btn-primary">Dashboard</a>
+                <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard' : 'user/dashboard'}}" class="btn-primary">Dashboard</a>
                 <a href="user/logout" class="font-mono text-[0.75rem] tracking-[0.02em] uppercase text-ink-secondary no-underline ml-4">Logout</a>
             </li>
             <li class="mt-4" ng-if="!currentUser"><a href="login" class="btn-primary">Sign In</a></li>

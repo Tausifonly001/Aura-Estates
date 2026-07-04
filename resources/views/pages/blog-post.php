@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../src/config/database.php';
+require_once __DIR__ . '/../../../src/core/HtmlSanitizer.php';
 
 $slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 $database = new Database();
@@ -61,7 +62,7 @@ $currentPage = 'blog';
         </div>
 
         <div class="font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.8] text-ink-secondary space-y-6">
-            <?php echo $post['content']; ?>
+            <?php echo HtmlSanitizer::sanitize($post['content']); ?>
         </div>
 
         <div class="mt-12 pt-8 border-t border-border flex items-center justify-between">

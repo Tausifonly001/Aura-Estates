@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 Auth::startSession();
+CsrfProtection::generate();
+
+if (!Auth::isAuthenticated() || ($_SESSION['role'] ?? '') !== 'admin') {
+    header("Location: " . Auth::getBasePrefix() . "/admin/login");
+    exit;
+}
 
 include_once __DIR__ . '/../../../src/config/database.php';
 include_once __DIR__ . '/../../../src/models/User.php';
@@ -13,36 +20,44 @@ $message = "";
 $messageClass = "";
 
 if($_POST){
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $confirm = $_POST['confirm_password'] ?? '';
-
-    if(empty($name) || empty($email) || empty($password)){
-        $message = "All fields are required.";
-        $messageClass = "text-ink/70";
-    } elseif($password !== $confirm){
-        $message = "Passwords do not match.";
-        $messageClass = "text-ink/70";
-    } elseif(strlen($password) < 6) {
-        $message = "Password must be at least 6 characters.";
-        $messageClass = "text-ink/70";
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $message = "Invalid security token. Please try again.";
+        $messageClass = "text-danger";
     } else {
-        $user->name = $name;
-        $user->email = $email;
-        $user->password = $password;
-        $user->role = 'admin';
-        $adminRoleStmt = $db->prepare("SELECT id FROM roles WHERE name = 'admin'");
-        $adminRoleStmt->execute();
-        $adminRole = $adminRoleStmt->fetchColumn();
-        $user->role_id = $adminRole ?: null;
+        $name = trim($_POST['name']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
+        $confirm = $_POST['confirm_password'] ?? '';
 
-        if($user->create()){
-            $message = "Account created successfully! You can now log in.";
-            $messageClass = "text-ink";
-        } else {
-            $message = "Registration failed. Email may already exist.";
+        if(empty($name) || empty($email) || empty($password)){
+            $message = "All fields are required.";
             $messageClass = "text-ink/70";
+        } elseif($password !== $confirm){
+            $message = "Passwords do not match.";
+            $messageClass = "text-ink/70";
+        } elseif(strlen($password) < 8) {
+            $message = "Password must be at least 8 characters.";
+            $messageClass = "text-ink/70";
+        } elseif(!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            $message = "Password must contain uppercase, lowercase, and a digit.";
+            $messageClass = "text-ink/70";
+        } else {
+            $user->name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+            $user->email = $email;
+            $user->password = $password;
+            $user->role = 'admin';
+            $adminRoleStmt = $db->prepare("SELECT id FROM roles WHERE name = 'admin'");
+            $adminRoleStmt->execute();
+            $adminRole = $adminRoleStmt->fetchColumn();
+            $user->role_id = $adminRole ?: null;
+
+            if($user->create()){
+                $message = "Account created successfully! You can now log in.";
+                $messageClass = "text-ink";
+            } else {
+                $message = "Registration failed. Email may already exist.";
+                $messageClass = "text-ink/70";
+            }
         }
     }
 }
@@ -78,11 +93,12 @@ if($_POST){
             <?php if($message): ?>
                 <div class="neo-flat p-4 mb-6 text-sm text-ink/70 flex items-center <?php echo $messageClass; ?>">
                     <span class="w-1 h-6 bg-clay mr-3 flex-shrink-0"></span>
-                    <span><?php echo $message; ?></span>
+                    <span><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></span>
                 </div>
             <?php endif; ?>
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" class="space-y-5">
+                <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? ''); ?>">
                 <div>
                     <label class="block text-[9px] font-sans font-medium uppercase tracking-[0.25em] text-graphite/50 mb-3">Full Name</label>
                     <input type="text" name="name" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>"

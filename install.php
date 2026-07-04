@@ -1,4 +1,10 @@
 <?php
+if (php_sapi_name() !== 'cli' && (!isset($_SERVER['HTTP_HOST']) || strpos($_SERVER['HTTP_HOST'], 'localhost') === false)) {
+    http_response_code(403);
+    echo "Access denied.";
+    exit;
+}
+
 $host = "localhost";
 $username = "root";
 $password = "";
@@ -11,6 +17,7 @@ try {
     $conn->exec($sql);
     echo "Database created successfully.";
 } catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    error_log("Install error: " . $e->getMessage());
+    echo "Error: Unable to create database.";
 }
 ?>

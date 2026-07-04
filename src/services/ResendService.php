@@ -49,13 +49,14 @@ class ResendService {
 
     public static function sendPasswordReset($email, $token, $name) {
         $base = rtrim(getenv('APP_URL') ?: '', '/');
-        $link = $base ? "$base/reset-password.php?token=$token" : "http://{$_SERVER['HTTP_HOST']}/reset-password.php?token=$token";
+        $link = $base ? "$base/reset-password.php?token=$token" : ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://{$_SERVER['HTTP_HOST']}/reset-password.php?token=$token");
+        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
         $subject = "Reset your Aura Estates password";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES</div>
             <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>Password Reset</h2>
-            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $name, we received a request to reset your password.</p>
+            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $safeName, we received a request to reset your password.</p>
             <a href='$link' style='display:inline-block;background:#3a322c;color:#faf8f4;padding:12px 32px;text-decoration:none;font-size:13px;margin:16px 0'>Reset Password</a>
             <p style='color:#9a9086;font-size:12px'>This link expires in 1 hour. If you didn't request this, ignore this email.</p>
         </div>";
@@ -63,25 +64,33 @@ class ResendService {
     }
 
     public static function sendBookingConfirmation($email, $name, $amenity, $date, $time) {
-        $subject = "Booking Confirmed — $amenity";
+        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $safeAmenity = htmlspecialchars($amenity, ENT_QUOTES, 'UTF-8');
+        $safeDate = htmlspecialchars($date, ENT_QUOTES, 'UTF-8');
+        $safeTime = htmlspecialchars($time, ENT_QUOTES, 'UTF-8');
+        $subject = "Booking Confirmed — $safeAmenity";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES</div>
             <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>Booking Confirmed</h2>
-            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $name, your booking for <strong>$amenity</strong> is confirmed.</p>
-            <p style='color:#5c5349;font-size:14px'>Date: $date<br>Time: $time</p>
+            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $safeName, your booking for <strong>$safeAmenity</strong> is confirmed.</p>
+            <p style='color:#5c5349;font-size:14px'>Date: $safeDate<br>Time: $safeTime</p>
         </div>";
         return self::send($email, $subject, $body);
     }
 
     public static function sendMaintenanceUpdate($email, $name, $property, $status, $note = '') {
-        $subject = "Maintenance Update — $property";
+        $safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+        $safeProperty = htmlspecialchars($property, ENT_QUOTES, 'UTF-8');
+        $safeStatus = htmlspecialchars($status, ENT_QUOTES, 'UTF-8');
+        $safeNote = htmlspecialchars($note, ENT_QUOTES, 'UTF-8');
+        $subject = "Maintenance Update — $safeProperty";
         $body = "
         <div style='font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;background:#faf8f4;border:1px solid #e1ddd4'>
             <div style='font-size:12px;letter-spacing:4px;color:#5c5349;margin-bottom:24px'>AURA ESTATES</div>
-            <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>Maintenance Status: $status</h2>
-            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $name, your maintenance request for <strong>$property</strong> has been updated to <strong>$status</strong>.</p>
-            " . ($note ? "<p style='color:#5c5349;font-size:14px'>Note: $note</p>" : '') . "
+            <h2 style='color:#1c1b18;font-size:20px;margin:0 0 16px'>Maintenance Status: $safeStatus</h2>
+            <p style='color:#5c5349;font-size:14px;line-height:1.6'>Hi $safeName, your maintenance request for <strong>$safeProperty</strong> has been updated to <strong>$safeStatus</strong>.</p>
+            " . ($note ? "<p style='color:#5c5349;font-size:14px'>Note: $safeNote</p>" : '') . "
         </div>";
         return self::send($email, $subject, $body);
     }

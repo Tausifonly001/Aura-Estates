@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once __DIR__ . '/../../../../src/core/CsrfProtection.php';
+CsrfProtection::generate();
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
     header('Location: ../login.php');
     exit;
@@ -118,6 +120,7 @@ if ($_POST) {
         <?php endif; ?>
 
         <form method="POST" class="max-w-4xl">
+            <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             <div class="neo-card p-8 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

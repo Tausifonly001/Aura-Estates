@@ -14,6 +14,13 @@ if ($html === false) {
     exit;
 }
 
+// Calculate and inject base href dynamically
+$docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$projectRoot = str_replace('\\', '/', __DIR__);
+$basePath = str_replace($docRoot, '', $projectRoot);
+$baseHref = rtrim($basePath, '/') . '/';
+$html = str_replace('<head>', "<head>\n    <base href=\"" . htmlspecialchars($baseHref) . "\">", $html);
+
 // Dynamic content replacements
 $html = str_replace(
     ['Bespoke property management defined by clarity',

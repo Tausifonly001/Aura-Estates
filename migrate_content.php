@@ -1,6 +1,19 @@
 <?php
+if (php_sapi_name() !== 'cli' && (!isset($_SERVER['HTTP_HOST']) || strpos($_SERVER['HTTP_HOST'], 'localhost') === false)) {
+    http_response_code(403);
+    echo "Access denied.";
+    exit;
+}
+
 try {
-    $db = new PDO('mysql:host=localhost;port=3306;dbname=aura_estates;charset=utf8mb4', 'root', '', [
+    $envFile = __DIR__ . '/.env';
+    $env = file_exists($envFile) ? parse_ini_file($envFile) : [];
+    $host = getenv('DB_HOST') ?: ($env['DB_HOST'] ?? 'localhost');
+    $user = getenv('DB_USER') ?: ($env['DB_USER'] ?? 'root');
+    $password = getenv('DB_PASSWORD') ?: ($env['DB_PASSWORD'] ?? '');
+    $dbName = getenv('DB_NAME') ?: ($env['DB_NAME'] ?? 'aura_estates');
+
+    $db = new PDO("mysql:host=$host;port=3306;dbname=$dbName;charset=utf8mb4", $user, $password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
@@ -48,5 +61,6 @@ try {
 
     echo "Default content seeded.\n";
 } catch(Exception $e) {
-    echo 'Error: ' . $e->getMessage() . "\n";
+    error_log("Migration error: " . $e->getMessage());
+    echo "Error: Unable to complete migration.\n";
 }

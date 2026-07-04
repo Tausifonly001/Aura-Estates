@@ -1,0 +1,17 @@
+.env
+.env.*
+cookies.txt
+.git
+.gitignore
+.vscode
+.bcode
+.playwright-cli
+node_modules
+storage/cache/*
+!storage/cache/.gitkeep
+*.log
+Thumbs.db
+.DS_Store
+docs/
+screenshots/
+migrations/

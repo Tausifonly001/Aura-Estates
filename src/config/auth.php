@@ -71,7 +71,7 @@ class Auth {
             if (self::isAjaxRequest()) {
                 echo json_encode(["message" => "Unauthorized.", "authenticated" => false]);
             } else {
-                header("Location: /admin/login");
+                header("Location: " . self::getBasePrefix() . "/admin/login");
             }
             exit;
         }
@@ -111,12 +111,16 @@ class Auth {
     public static function login($email, $password, $redirect = null) {
         self::startSession();
 
-        if (isset($_SESSION['_login_attempts']) && $_SESSION['_login_attempts'] >= 5) {
-            if (isset($_SESSION['_login_time']) && (time() - $_SESSION['_login_time'] < 900)) {
+        $ip = self::getClientIp();
+        $loginKey = "login_attempts_{$ip}";
+        $loginTimeKey = "login_time_{$ip}";
+
+        if (isset($_SESSION[$loginKey]) && $_SESSION[$loginKey] >= 5) {
+            if (isset($_SESSION[$loginTimeKey]) && (time() - $_SESSION[$loginTimeKey] < 900)) {
                 return false;
             }
-            $_SESSION['_login_attempts'] = 0;
-            $_SESSION['_login_time'] = null;
+            $_SESSION[$loginKey] = 0;
+            $_SESSION[$loginTimeKey] = null;
         }
 
         $db = self::getDB();
@@ -133,10 +137,10 @@ class Auth {
                 $_SESSION['role'] = $row['role'];
                 $_SESSION['user_role'] = $row['role'];
                 $_SESSION['role_id'] = $row['role_id'];
-                $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . self::getClientIp());
+                $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . $ip);
 
-                $_SESSION['_login_attempts'] = 0;
-                $_SESSION['_login_time'] = null;
+                $_SESSION[$loginKey] = 0;
+                $_SESSION[$loginTimeKey] = null;
                 
                 if ($redirect && !self::isAjaxRequest()) {
                     header("Location: " . $redirect);
@@ -146,11 +150,11 @@ class Auth {
             }
         }
 
-        if (!isset($_SESSION['_login_attempts'])) {
-            $_SESSION['_login_attempts'] = 0;
+        if (!isset($_SESSION[$loginKey])) {
+            $_SESSION[$loginKey] = 0;
         }
-        $_SESSION['_login_attempts']++;
-        $_SESSION['_login_time'] = time();
+        $_SESSION[$loginKey]++;
+        $_SESSION[$loginTimeKey] = time();
 
         return false;
     }
@@ -244,5 +248,16 @@ class Auth {
 
     public static function getPasswordRequirements() {
         return "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.";
+    }
+
+    public static function getBasePrefix() {
+        static $prefix = null;
+        if ($prefix === null) {
+            $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+            $projectRoot = str_replace('\\', '/', dirname(__DIR__, 2));
+            $basePath = str_replace($docRoot, '', $projectRoot);
+            $prefix = rtrim($basePath, '/');
+        }
+        return $prefix;
     }
 }

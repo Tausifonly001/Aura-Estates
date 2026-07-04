@@ -3,8 +3,15 @@ require_once __DIR__ . '/src/config/database.php';
 require_once __DIR__ . '/src/config/auth.php';
 
 Auth::startSession();
+
+// Calculate base path prefix dynamically
+$docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$projectRoot = str_replace('\\', '/', __DIR__);
+$basePath = str_replace($docRoot, '', $projectRoot);
+$basePrefix = rtrim($basePath, '/');
+
 if (isset($_SESSION['user_id'])) {
-    header("Location: /user/dashboard");
+    header("Location: " . $basePrefix . "/user/dashboard");
     exit;
 }
 
@@ -26,8 +33,11 @@ if ($_POST) {
             $message = 'Email already registered.';
         } else {
             $hash = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', 2)");
-            if ($stmt->execute([$name, $email, $hash])) {
+            $roleStmt = $db->prepare("SELECT id FROM roles WHERE name = 'tenant'");
+            $roleStmt->execute();
+            $tenantRoleId = $roleStmt->fetchColumn();
+            $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', ?)");
+            if ($stmt->execute([$name, $email, $hash, $tenantRoleId])) {
                 $uid = $db->lastInsertId();
                 Auth::startSession();
                 $_SESSION['user_id'] = $uid;
@@ -35,7 +45,7 @@ if ($_POST) {
                 $_SESSION['user_email'] = $email;
                 $_SESSION['role'] = 'tenant';
                 $_SESSION['user_role'] = 'tenant';
-                header("Location: /user/dashboard");
+                header("Location: " . $basePrefix . "/user/dashboard");
                 exit;
             }
             $message = 'Registration failed.';
@@ -49,13 +59,13 @@ if ($_POST) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account — Aura Estates</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="resources/js/tailwindcss.js"></script>
     <script>
         tailwind.config = { theme: { extend: { fontFamily: { sans: ['DM Sans', 'sans-serif'], display: ['Cormorant Garamond', 'serif'], mono: ['JetBrains Mono', 'monospace'] } } } }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="resources/js/gsap.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'DM Sans', sans-serif; overflow: hidden; height: 100vh; background: #fcfbfa; }

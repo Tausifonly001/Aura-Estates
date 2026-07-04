@@ -1,30 +1,40 @@
 <?php
 require_once __DIR__ . '/../../../src/config/database.php';
+require_once __DIR__ . '/../../../src/config/auth.php';
 require_once __DIR__ . '/../../../src/helpers.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
+
+Auth::startSession();
+CsrfProtection::generate();
 
 $message = '';
 $messageClass = '';
 
 if ($_POST) {
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $subject = trim($_POST['subject'] ?? '');
-    $msg = trim($_POST['message'] ?? '');
-    $propertyId = isset($_POST['property_id']) ? (int)$_POST['property_id'] : 0;
-
-    if (empty($name) || empty($email) || empty($msg)) {
-        $message = 'Please fill in all required fields.';
-        $messageClass = 'text-danger';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = 'Please enter a valid email address.';
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $message = 'Invalid security token. Please try again.';
         $messageClass = 'text-danger';
     } else {
-        $database = new Database();
-        $db = $database->getConnection();
-        $stmt = $db->prepare("INSERT INTO inquiries (property_id, name, email, phone, message, created_at) VALUES (?, ?, ?, '', ?, NOW())");
-        $stmt->execute([$propertyId ?: null, $name, $email, $msg]);
-        $message = 'Thank you! Your message has been received. We will get back to you shortly.';
-        $messageClass = 'text-success';
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $subject = trim($_POST['subject'] ?? '');
+        $msg = trim($_POST['message'] ?? '');
+        $propertyId = isset($_POST['property_id']) ? (int)$_POST['property_id'] : 0;
+
+        if (empty($name) || empty($email) || empty($msg)) {
+            $message = 'Please fill in all required fields.';
+            $messageClass = 'text-danger';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $message = 'Please enter a valid email address.';
+            $messageClass = 'text-danger';
+        } else {
+            $database = new Database();
+            $db = $database->getConnection();
+            $stmt = $db->prepare("INSERT INTO inquiries (property_id, name, email, phone, message, created_at) VALUES (?, ?, ?, '', ?, NOW())");
+            $stmt->execute([$propertyId ?: null, $name, $email, $msg]);
+            $message = 'Thank you! Your message has been received. We will get back to you shortly.';
+            $messageClass = 'text-success';
+        }
     }
 }
 
@@ -61,9 +71,10 @@ $currentPage = 'contact';
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <div>
                 <?php if ($message): ?>
-                <div class="p-4 border mb-6 font-sans text-[0.9375rem] <?php echo $messageClass; ?> border-current/20 bg-current/5" data-reveal><?php echo $message; ?></div>
+                <div class="p-4 border mb-6 font-sans text-[0.9375rem] <?php echo $messageClass; ?> border-current/20 bg-current/5" data-reveal><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></div>
                 <?php endif; ?>
                 <form method="POST" class="flex flex-col gap-5" data-reveal>
+                    <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                     <?php if ($propertyId): ?>
                     <input type="hidden" name="property_id" value="<?php echo $propertyId; ?>">
                     <?php endif; ?>

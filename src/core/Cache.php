@@ -17,7 +17,7 @@ class Cache {
         $path = self::dir() . '/' . self::hash($key) . '.cache';
         if (!file_exists($path)) return null;
         $data = file_get_contents($path);
-        $entry = @unserialize($data);
+        $entry = json_decode($data, true);
         if (!$entry || !isset($entry['expires']) || !isset($entry['value'])) {
             @unlink($path);
             return null;
@@ -32,7 +32,7 @@ class Cache {
     public static function set($key, $value, $ttl = null) {
         $ttl = $ttl ?? self::$defaultTTL;
         $path = self::dir() . '/' . self::hash($key) . '.cache';
-        $entry = serialize(['expires' => time() + $ttl, 'value' => $value]);
+        $entry = json_encode(['expires' => time() + $ttl, 'value' => $value]);
         file_put_contents($path, $entry, LOCK_EX);
     }
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password — Aura Estates</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="resources/js/tailwindcss.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>body { font-family: 'DM Sans', sans-serif; background: #e8e5db; color: #1c1b18; }</style>

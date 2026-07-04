@@ -34,7 +34,13 @@ class FileUploadService {
     }
 
     public static function delete($path) {
-        $full = __DIR__ . '/../../' . ltrim($path, '/');
+        $uploadDir = self::$uploadDir ?: __DIR__ . '/../../uploads';
+        $full = realpath($uploadDir . '/' . ltrim($path, '/'));
+        $realUploadDir = realpath($uploadDir);
+        if ($full === false || $realUploadDir === false || strpos($full, $realUploadDir) !== 0) {
+            return false;
+        }
         if (file_exists($full)) unlink($full);
+        return true;
     }
 }

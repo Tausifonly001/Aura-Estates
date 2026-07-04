@@ -2,8 +2,10 @@
 require_once __DIR__ . '/../../src/config/auth.php';
 require_once __DIR__ . '/../../src/config/database.php';
 require_once __DIR__ . '/../../src/models/SiteContent.php';
+require_once __DIR__ . '/../../src/core/CsrfProtection.php';
 
 Auth::startSession();
+CsrfProtection::generate();
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
     header("Location: login.php");
     exit;
@@ -87,6 +89,7 @@ $currentSection = $_GET['section'] ?? ($currentSections[0] ?? 'hero');
 
             <div class="card p-6">
                 <form method="post" class="space-y-4">
+                    <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                     <input type="hidden" name="action" value="save">
                     <?php
                     $items = $content->get($currentPage, $currentSection);

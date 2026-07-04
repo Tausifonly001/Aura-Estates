@@ -23,10 +23,10 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 
 COPY . /var/www/html/
 
-RUN chown -R www-data:www-data /var/www/html/uploads && \
+RUN rm -f /var/www/html/.env /var/www/html/cookies.txt && \
+    cp /var/www/html/.env.example /var/www/html/.env && \
+    chown -R www-data:www-data /var/www/html/uploads && \
     chmod -R 755 /var/www/html/uploads /var/www/html/storage
-
-RUN cp /var/www/html/.env.example /var/www/html/.env
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \

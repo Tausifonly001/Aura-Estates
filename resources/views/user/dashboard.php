@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../../src/config/auth.php';
 Auth::startSession();
 if(!isset($_SESSION['user_id'])) {
-    header("Location: /login");
+    header("Location: " . Auth::getBasePrefix() . "/login");
     exit;
 }
 ?>

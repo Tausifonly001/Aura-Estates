@@ -10,7 +10,7 @@ Auth::startSession();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — Aura Estates</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../resources/js/tailwindcss.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -41,8 +41,8 @@ Auth::startSession();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="../resources/js/angular.min.js"></script>
+    <script src="../resources/js/gsap.min.js"></script>
     <style>
         [ng-cloak] { display: none !important; }
         body { font-family: 'DM Sans', sans-serif; background-color: #e8e5db; color: #1c1b18; -webkit-font-smoothing: antialiased; }
@@ -155,10 +155,10 @@ Auth::startSession();
             <div class="p-4 border-t border-border-light">
                 <div class="flex items-center gap-3 mb-3 px-2">
                     <div class="w-8 h-8 flex items-center justify-center border border-border">
-                        <span class="text-ink font-sans font-medium text-[0.75rem]"><?php echo strtoupper(substr($_SESSION['user_name'], 0, 1)); ?></span>
+                        <span class="text-ink font-sans font-medium text-[0.75rem]"><?php echo htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? '', 0, 1)), ENT_QUOTES, 'UTF-8'); ?></span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="font-sans font-medium text-[0.875rem] text-ink truncate"><?php echo $_SESSION['user_name']; ?></div>
+                        <div class="font-sans font-medium text-[0.875rem] text-ink truncate"><?php echo htmlspecialchars($_SESSION['user_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
                         <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Administrator</div>
                     </div>
                 </div>
