@@ -60,11 +60,15 @@
 
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
+        <div class="preloader-grain"></div>
+        <div class="preloader-line preloader-line--top" id="lineTop"></div>
         <div class="loader-content">
             <div class="typing-text" id="typingText"></div>
             <div class="typing-cursor" id="typingCursor"></div>
         </div>
+        <div class="preloader-line preloader-line--bottom" id="lineBottom"></div>
         <div class="loader-sub" id="loaderSub">E S T A T E S</div>
+        <div class="preloader-counter" id="preloaderCounter">00</div>
     </div>
 
     <!-- Navigation -->
@@ -670,16 +674,39 @@
             var loader = document.getElementById('loadingScreen');
             if (!loader) return;
 
+            if (sessionStorage.getItem('preloader_shown')) {
+                loader.style.display = 'none';
+                loader.classList.add('hidden');
+                document.body.classList.add('page-entered');
+                if (typeof AuraAnimations !== 'undefined') {
+                    setTimeout(function() { AuraAnimations.initPage(); }, 50);
+                }
+                return;
+            }
+
             var textEl = document.getElementById('typingText');
             var cursorEl = document.getElementById('typingCursor');
             var subEl = document.getElementById('loaderSub');
+            var lineTop = document.getElementById('lineTop');
+            var lineBottom = document.getElementById('lineBottom');
+            var counter = document.getElementById('preloaderCounter');
             var brand = 'AURA';
             var i = 0;
             var startTime = Date.now();
-            var MIN_VISIBLE = 3200;
+            var MIN_VISIBLE = 3400;
+            var counterVal = 0;
+            var counterInterval = setInterval(function() {
+                counterVal = Math.min(99, counterVal + 1);
+                if (counter) counter.textContent = counterVal < 10 ? '0' + counterVal : '' + counterVal;
+            }, 35);
+
+            if (counter) counter.classList.add('visible');
 
             function hideLoader() {
                 if (loader.classList.contains('hidden')) return;
+                sessionStorage.setItem('preloader_shown', 'true');
+                clearInterval(counterInterval);
+                if (counter) counter.textContent = '100';
                 var elapsed = Date.now() - startTime;
                 var remaining = Math.max(0, MIN_VISIBLE - elapsed);
                 setTimeout(function() {
@@ -688,7 +715,7 @@
                         loader.classList.add('hidden');
                         if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
                         document.body.classList.add('page-entered');
-                    }, 800);
+                    }, 1000);
                 }, remaining);
             }
 
@@ -696,7 +723,7 @@
                 if (i < brand.length) {
                     textEl.textContent += brand.charAt(i);
                     i++;
-                    setTimeout(typeNext, 200 + Math.floor(Math.random() * 100));
+                    setTimeout(typeNext, 180 + Math.floor(Math.random() * 90));
                 } else {
                     typingDone();
                 }
@@ -705,15 +732,30 @@
             function typingDone() {
                 cursorEl.classList.remove('active');
                 cursorEl.classList.add('done');
+                textEl.classList.add('shimmer');
                 setTimeout(function() {
                     subEl.classList.add('visible');
-                }, 200);
+                    if (lineTop) lineTop.classList.add('fade-out');
+                    if (lineBottom) lineBottom.classList.add('fade-out');
+                }, 300);
                 hideLoader();
             }
 
-            cursorEl.classList.add('active');
-            setTimeout(typeNext, 500);
+            // Lines draw in
+            setTimeout(function() {
+                if (lineTop) lineTop.classList.add('drawn');
+                if (lineBottom) lineBottom.classList.add('drawn');
+            }, 200);
 
+            // Cursor appears
+            setTimeout(function() {
+                cursorEl.classList.add('active');
+            }, 600);
+
+            // Typing starts
+            setTimeout(typeNext, 900);
+
+            // Fallback
             setTimeout(function() {
                 if (i < brand.length) {
                     textEl.textContent = brand;

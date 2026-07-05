@@ -101,8 +101,14 @@ html.lenis { scroll-behavior: auto; }
 }
 
 /* Page entrance transition */
-body { opacity: 0; }
-body.page-entered { opacity: 1; }
+body { opacity: 1; }
+body:not(.page-entered) > *:not(.loading-screen):not(script):not(style) {
+    opacity: 0;
+    pointer-events: none;
+}
+body.page-entered > *:not(.loading-screen):not(script):not(style) {
+    transition: opacity 0.6s ease;
+}
 
 /* ── Split Text ── */
 .split-char {
@@ -423,8 +429,8 @@ body.page-entered { opacity: 1; }
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 0.75rem;
-    transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.6s ease, visibility 0.6s ease;
+    gap: 1.25rem;
+    overflow: hidden;
 }
 
 .loading-screen.hidden {
@@ -434,15 +440,68 @@ body.page-entered { opacity: 1; }
 }
 
 .loading-screen.exit {
-    transform: scale(1.08);
-    opacity: 0;
+    animation: screenExit 1s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
+@keyframes screenExit {
+    0% {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
+    40% {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
+    100% {
+        clip-path: inset(50% 0 50% 0);
+        opacity: 0;
+    }
+}
+
+/* Film grain overlay */
+.preloader-grain {
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0;
+    animation: grainFadeIn 0.5s ease forwards;
+    z-index: 1;
+}
+
+@keyframes grainFadeIn {
+    to { opacity: 1; }
+}
+
+/* Decorative horizontal lines */
+.preloader-line {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #8c7b6c 20%, #8c7b6c 80%, transparent);
+    transition: none;
+    z-index: 2;
+    position: relative;
+}
+
+.preloader-line.drawn {
+    width: 120px;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preloader-line.fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Typing content */
 .loader-content {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    z-index: 2;
 }
 
 /* Typing text */
@@ -457,6 +516,30 @@ body.page-entered { opacity: 1; }
     text-align: center;
     height: 3rem;
     line-height: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shimmer effect on text after typing */
+.typing-text.shimmer {
+    background: linear-gradient(
+        110deg,
+        #3a322c 0%,
+        #3a322c 40%,
+        #8c7b6c 50%,
+        #3a322c 60%,
+        #3a322c 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmerPass 1.2s ease forwards;
+}
+
+@keyframes shimmerPass {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
 }
 
 /* Blinking cursor */
@@ -477,9 +560,13 @@ body.page-entered { opacity: 1; }
 }
 
 .typing-cursor.done {
-    animation: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    animation: cursorPulse 0.3s ease forwards;
+}
+
+@keyframes cursorPulse {
+    0% { opacity: 1; transform: scaleX(1); }
+    50% { opacity: 1; transform: scaleX(3); }
+    100% { opacity: 0; transform: scaleX(0); }
 }
 
 @keyframes cursorBlink {
@@ -496,13 +583,33 @@ body.page-entered { opacity: 1; }
     text-transform: uppercase;
     color: #8c7b6c;
     opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(8px);
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 2;
 }
 
 .loader-sub.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Counter */
+.preloader-counter {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
+    font-family: 'DM Mono', 'DM Sans', monospace;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: #c4bdb4;
+    opacity: 0;
+    z-index: 2;
+    transition: opacity 0.4s ease;
+}
+
+.preloader-counter.visible {
+    opacity: 1;
 }
 
 /* ── Mobile Nav ── */
