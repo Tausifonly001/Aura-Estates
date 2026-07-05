@@ -129,7 +129,7 @@ if($_POST){
             </form>
 
             <div class="mt-8 pt-6 border-t border-clay/20 flex flex-col space-y-3 text-[10px] font-sans">
-                <a href="/admin/login" class="text-graphite/50 hover:text-ink transition font-medium uppercase tracking-[0.2em]">Already have an account? Sign In</a>
+                <a href="<?php echo Auth::getBasePrefix(); ?>/admin/login" class="text-graphite/50 hover:text-ink transition font-medium uppercase tracking-[0.2em]">Already have an account? Sign In</a>
                 <a href="../index.html" class="text-graphite/30 hover:text-graphite/60 transition uppercase tracking-[0.2em]">Back to Site</a>
             </div>
         </div>

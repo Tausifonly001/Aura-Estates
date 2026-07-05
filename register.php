@@ -162,7 +162,7 @@ if ($_POST) {
                 </button>
  
                 <p class="text-center mt-6 text-[0.6875rem] text-[#555555]">
-                    Already have an account? <a href="/login" class="slide-link font-medium text-[#8c7b6c]">Sign in</a>
+                    Already have an account? <a href="<?php echo $basePrefix; ?>/login" class="slide-link font-medium text-[#8c7b6c]">Sign in</a>
                 </p>
             </div>
         </div>

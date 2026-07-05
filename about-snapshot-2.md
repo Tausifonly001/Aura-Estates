@@ -1,0 +1,270 @@
+- generic [active] [ref=f15e1] [box=0,0,1530,3253]:
+  - navigation [ref=f15e2] [box=253,16,1024,59]:
+    - link "A Aura Estates" [ref=f15e3] [cursor=pointer] [box=286,32,152,28]:
+      - /url: index.html
+      - generic [ref=f15e4] [box=286,32,28,28]: A
+      - generic [ref=f15e5] [box=326,36,112,20]: Aura Estates
+    - generic [ref=f15e6] [box=546,37,380,17]:
+      - link "About" [ref=f15e7] [cursor=pointer] [box=546,37,34,17]:
+        - /url: about
+      - link "Properties" [ref=f15e8] [cursor=pointer] [box=612,37,68,17]:
+        - /url: properties
+      - link "Services" [ref=f15e9] [cursor=pointer] [box=712,37,55,17]:
+        - /url: services
+      - link "Journal" [ref=f15e10] [cursor=pointer] [box=799,37,48,17]:
+        - /url: blog
+      - link "Contact" [ref=f15e11] [cursor=pointer] [box=879,37,48,17]:
+        - /url: contact
+    - generic [ref=f15e12] [box=1034,29,210,34]:
+      - link "Sign In" [ref=f15e13] [cursor=pointer] [box=1034,29,77,33]:
+        - /url: login
+      - link "Get Started" [ref=f15e14] [cursor=pointer] [box=1123,29,121,34]:
+        - /url: register
+        - text: Get Started
+        - img [ref=f15e15] [box=1212,40,12,12]
+  - generic [box=0,0,1530,674]:
+    - generic [box=40,40,1450,36]:
+      - generic [box=40,44,36,28]: Aura
+      - button "Close menu" [box=1454,40,36,36]:
+        - img [box=1462,48,20,20]
+    - list [box=40,140,1450,328]:
+      - listitem [box=40,140,1450,40]:
+        - link "About" [box=40,136,98,47]:
+          - /url: about
+      - listitem [box=40,212,1450,40]:
+        - link "Properties" [box=40,208,163,47]:
+          - /url: properties
+      - listitem [box=40,284,1450,40]:
+        - link "Services" [box=40,280,134,47]:
+          - /url: services
+      - listitem [box=40,356,1450,40]:
+        - link "Journal" [box=40,352,115,47]:
+          - /url: blog
+      - listitem [box=40,428,1450,40]:
+        - link "Contact" [box=40,424,129,47]:
+          - /url: contact
+    - generic [box=40,557,1450,77]:
+      - link "Sign In" [box=40,597,714,37]:
+        - /url: login
+      - link "Get Started" [box=770,597,720,37]:
+        - /url: register
+  - main [ref=f15e17] [box=0,0,1530,2566]:
+    - generic [ref=f15e19] [box=0,128,1530,171]:
+      - paragraph [ref=f15e20] [box=48,128,1434,21]: Our Story
+      - heading "A d e c a d e o f r e d e f i n i n g l u x u r y l i v i n g ." [level=1] [ref=f15e21] [box=48,165,867,134]:
+        - generic [ref=f15e23] [box=48,165,41,67]: A
+        - generic [ref=f15e25] [box=101,165,211,67]:
+          - generic [ref=f15e26] [box=101,165,38,67]: d
+          - generic [ref=f15e27] [box=139,165,34,67]: e
+          - generic [ref=f15e28] [box=173,165,34,67]: c
+          - generic [ref=f15e29] [box=207,165,33,67]: a
+          - generic [ref=f15e30] [box=240,165,38,67]: d
+          - generic [ref=f15e31] [box=278,165,34,67]: e
+        - generic [ref=f15e33] [box=325,165,55,67]:
+          - generic [ref=f15e34] [box=325,165,35,67]: o
+          - generic [ref=f15e35] [box=360,165,20,67]: f
+        - generic [ref=f15e37] [box=393,165,278,67]:
+          - generic [ref=f15e38] [box=393,165,21,67]: r
+          - generic [ref=f15e39] [box=414,165,34,67]: e
+          - generic [ref=f15e40] [box=448,165,38,67]: d
+          - generic [ref=f15e41] [box=486,165,34,67]: e
+          - generic [ref=f15e42] [box=520,165,20,67]: f
+          - generic [ref=f15e43] [box=540,165,14,67]: i
+          - generic [ref=f15e44] [box=553,165,34,67]: "n"
+          - generic [ref=f15e45] [box=588,165,14,67]: i
+          - generic [ref=f15e46] [box=601,165,34,67]: "n"
+          - generic [ref=f15e47] [box=635,165,36,67]: g
+        - generic [ref=f15e49] [box=684,165,168,67]:
+          - generic [ref=f15e50] [box=684,165,12,67]: l
+          - generic [ref=f15e51] [box=696,165,34,67]: u
+          - generic [ref=f15e52] [box=730,165,32,67]: x
+          - generic [ref=f15e53] [box=762,165,34,67]: u
+          - generic [ref=f15e54] [box=796,165,21,67]: r
+          - generic [ref=f15e55] [box=817,165,35,67]: "y"
+        - generic [ref=f15e57] [box=48,232,154,67]:
+          - generic [ref=f15e58] [box=48,232,12,67]: l
+          - generic [ref=f15e59] [box=60,232,14,67]: i
+          - generic [ref=f15e60] [box=74,232,32,67]: v
+          - generic [ref=f15e61] [box=105,232,14,67]: i
+          - generic [ref=f15e62] [box=119,232,34,67]: "n"
+          - generic [ref=f15e63] [box=153,232,36,67]: g
+          - generic [ref=f15e64] [box=189,232,13,67]: .
+    - generic [ref=f15e67] [box=48,443,1434,582]:
+      - generic [ref=f15e68] [box=48,443,677,582]:
+        - paragraph [ref=f15e69] [box=48,443,677,21]: Our Story
+        - heading "B u i l t o n c l a r i t y , m a t e r i a l i t y , a n d t r u s t ." [level=2] [ref=f15e70] [box=48,480,677,37]:
+          - generic [ref=f15e71] [box=48,480,66,37]:
+            - generic [ref=f15e72] [box=48,480,20,37]: B
+            - generic [ref=f15e73] [box=68,480,19,37]: u
+            - generic [ref=f15e74] [box=87,480,8,37]: i
+            - generic [ref=f15e75] [box=94,480,7,37]: l
+            - generic [ref=f15e76] [box=102,480,12,37]: t
+          - generic [ref=f15e78] [box=121,480,38,37]:
+            - generic [ref=f15e79] [box=121,480,19,37]: o
+            - generic [ref=f15e80] [box=141,480,19,37]: "n"
+          - generic [ref=f15e82] [box=167,480,101,37]:
+            - generic [ref=f15e83] [box=167,480,19,37]: c
+            - generic [ref=f15e84] [box=186,480,7,37]: l
+            - generic [ref=f15e85] [box=193,480,18,37]: a
+            - generic [ref=f15e86] [box=211,480,12,37]: r
+            - generic [ref=f15e87] [box=223,480,8,37]: i
+            - generic [ref=f15e88] [box=230,480,12,37]: t
+            - generic [ref=f15e89] [box=243,480,19,37]: "y"
+            - generic [ref=f15e90] [box=261,480,6,37]: ","
+          - generic [ref=f15e92] [box=275,480,169,37]:
+            - generic [ref=f15e93] [box=275,480,30,37]: m
+            - generic [ref=f15e94] [box=305,480,18,37]: a
+            - generic [ref=f15e95] [box=323,480,12,37]: t
+            - generic [ref=f15e96] [box=335,480,19,37]: e
+            - generic [ref=f15e97] [box=354,480,12,37]: r
+            - generic [ref=f15e98] [box=366,480,8,37]: i
+            - generic [ref=f15e99] [box=374,480,18,37]: a
+            - generic [ref=f15e100] [box=392,480,7,37]: l
+            - generic [ref=f15e101] [box=399,480,8,37]: i
+            - generic [ref=f15e102] [box=406,480,12,37]: t
+            - generic [ref=f15e103] [box=419,480,19,37]: "y"
+            - generic [ref=f15e104] [box=437,480,6,37]: ","
+          - generic [ref=f15e106] [box=451,480,57,37]:
+            - generic [ref=f15e107] [box=451,480,18,37]: a
+            - generic [ref=f15e108] [box=469,480,19,37]: "n"
+            - generic [ref=f15e109] [box=488,480,21,37]: d
+          - generic [ref=f15e111] [box=516,480,78,37]:
+            - generic [ref=f15e112] [box=516,480,12,37]: t
+            - generic [ref=f15e113] [box=529,480,12,37]: r
+            - generic [ref=f15e114] [box=540,480,19,37]: u
+            - generic [ref=f15e115] [box=559,480,16,37]: s
+            - generic [ref=f15e116] [box=575,480,12,37]: t
+            - generic [ref=f15e117] [box=588,480,7,37]: .
+        - generic [ref=f15e118] [box=48,542,677,304]:
+          - paragraph [ref=f15e119] [box=48,542,677,109]: "Aura Estates was founded in 2020 with a simple belief: property management should feel seamless, transparent, and deeply human. We saw an industry bogged down by fragmented communication, opaque processes, and systems that prioritised paperwork over people."
+          - paragraph [ref=f15e120] [box=48,667,677,109]: Our approach is different. Every property we manage is treated with the same care and attention that goes into the finest architectural projects — from the first conversation through to the smallest operational detail. We combine design thinking with rigorous operational discipline.
+          - paragraph [ref=f15e121] [box=48,791,677,54]: Today, we manage over 500 properties across Berlin and beyond, serving homeowners, investors, and tenants who expect more from their property management experience.
+      - generic [ref=f15e122] [box=805,443,677,582]:
+        - paragraph [ref=f15e123] [box=854,492,580,14]: Our Principles
+        - generic [ref=f15e124] [box=854,530,580,447]:
+          - generic [ref=f15e125] [box=854,530,580,128]:
+            - paragraph [ref=f15e126] [box=854,555,580,15]: "01"
+            - heading "Considered" [level=3] [ref=f15e127] [box=854,578,580,27]
+            - paragraph [ref=f15e128] [box=854,613,580,45]: Every decision is deliberate. From tenant placement to maintenance scheduling, each action follows a clear rationale.
+          - generic [ref=f15e129] [box=854,689,580,128]:
+            - paragraph [ref=f15e130] [box=854,714,580,15]: "02"
+            - heading "Crafted" [level=3] [ref=f15e131] [box=854,737,580,27]
+            - paragraph [ref=f15e132] [box=854,772,580,45]: Attention to detail defines every interaction. Systems are built to serve people, not the other way around.
+          - generic [ref=f15e133] [box=854,849,580,128]:
+            - paragraph [ref=f15e134] [box=854,874,580,15]: "03"
+            - heading "Lasting" [level=3] [ref=f15e135] [box=854,897,580,27]
+            - paragraph [ref=f15e136] [box=854,932,580,45]: Solutions are built to endure. Relationships with tenants, owners, and partners are measured in years, not quarters.
+    - generic [ref=f15e138] [box=0,1217,1530,761]:
+      - generic [ref=f15e139] [box=48,1217,1434,74]:
+        - paragraph [ref=f15e140] [box=48,1217,1434,21]: Leadership
+        - heading "T h e t e a m b e h i n d t h e p r a c t i c e ." [level=2] [ref=f15e141] [box=48,1254,1434,37]:
+          - generic [ref=f15e142] [box=48,1254,56,37]:
+            - generic [ref=f15e143] [box=48,1304,18,37]: T
+            - generic [ref=f15e144] [box=66,1304,19,37]: h
+            - generic [ref=f15e145] [box=85,1304,19,37]: e
+          - generic [ref=f15e147] [box=112,1254,79,37]:
+            - generic [ref=f15e148] [box=112,1304,12,37]: t
+            - generic [ref=f15e149] [box=124,1304,19,37]: e
+            - generic [ref=f15e150] [box=143,1304,18,37]: a
+            - generic [ref=f15e151] [box=161,1304,30,37]: m
+          - generic [ref=f15e153] [box=198,1254,106,37]:
+            - generic [ref=f15e154] [box=198,1304,21,37]: b
+            - generic [ref=f15e155] [box=219,1304,19,37]: e
+            - generic [ref=f15e156] [box=237,1304,19,37]: h
+            - generic [ref=f15e157] [box=256,1304,8,37]: i
+            - generic [ref=f15e158] [box=264,1304,19,37]: "n"
+            - generic [ref=f15e159] [box=283,1304,21,37]: d
+          - generic [ref=f15e161] [box=311,1254,50,37]:
+            - generic [ref=f15e162] [box=311,1304,12,37]: t
+            - generic [ref=f15e163] [box=323,1304,19,37]: h
+            - generic [ref=f15e164] [box=342,1304,19,37]: e
+          - generic [ref=f15e166] [box=369,1254,134,37]:
+            - generic [ref=f15e167] [box=369,1304,21,37]: p
+            - generic [ref=f15e168] [box=389,1304,12,37]: r
+            - generic [ref=f15e169] [box=401,1304,18,37]: a
+            - generic [ref=f15e170] [box=419,1304,19,37]: c
+            - generic [ref=f15e171] [box=438,1304,12,37]: t
+            - generic [ref=f15e172] [box=450,1304,8,37]: i
+            - generic [ref=f15e173] [box=458,1304,19,37]: c
+            - generic [ref=f15e174] [box=476,1304,19,37]: e
+            - generic [ref=f15e175] [box=495,1304,7,37]: .
+      - generic [ref=f15e176] [box=48,1356,1434,622]:
+        - generic [ref=f15e177] [box=66,1451,410,572]:
+          - img "Lukas Walker" [ref=f15e179] [box=67,1451,409,512]
+          - paragraph [ref=f15e180] [box=66,1982,410,25]: Lukas Walker
+          - paragraph [ref=f15e181] [box=66,2011,410,12]: Founder & Principal
+        - generic [ref=f15e182] [box=560,1451,410,572]:
+          - img "Hanna Bennett" [ref=f15e184] [box=561,1451,409,512]
+          - paragraph [ref=f15e185] [box=560,1982,410,25]: Hanna Bennett
+          - paragraph [ref=f15e186] [box=560,2011,410,12]: Head of Operations
+        - generic [ref=f15e187] [box=1054,1451,410,572]:
+          - img "Emma Hofstetter" [ref=f15e189] [box=1055,1451,409,512]
+          - paragraph [ref=f15e190] [box=1054,1982,410,25]: Emma Hofstetter
+          - paragraph [ref=f15e191] [box=1054,2011,410,12]: Director of Client Relations
+    - generic [ref=f15e194] [box=381,2170,768,301]:
+      - img [ref=f15e195] [box=749,2218,32,32]
+      - paragraph [ref=f15e198] [box=381,2274,768,102]: We founded Aura Estates with the belief that property management should feel seamless, transparent, and deeply human. Every relationship is approached with clarity, warmth, and careful attention to detail.
+      - paragraph [ref=f15e199] [box=381,2400,768,23]: The Aura Estates Team
+  - contentinfo [ref=f15e200] [box=0,2630,1530,623]:
+    - generic [ref=f15e201] [box=0,2743,1530,398]:
+      - generic [ref=f15e202] [box=48,2743,1434,272]:
+        - generic [ref=f15e203] [box=48,2743,317,272]:
+          - generic [ref=f15e204] [box=48,2743,317,32]:
+            - generic [ref=f15e205] [box=48,2743,32,32]: A
+            - generic [ref=f15e206] [box=92,2749,112,20]: Aura Estates
+          - paragraph [ref=f15e207] [box=48,2795,308,51]: Architecture-led property management — thoughtful, transparent, built to last.
+          - generic [ref=f15e208] [box=48,2870,317,63]:
+            - paragraph [ref=f15e209] [box=48,2870,317,12]: Contact
+            - paragraph [ref=f15e210] [box=48,2888,317,22]: hello@auraestates.com
+            - paragraph [ref=f15e211] [box=48,2911,317,22]: +49 30 28 04 8000
+          - generic [ref=f15e212] [box=48,2949,317,40]:
+            - paragraph [ref=f15e213] [box=48,2949,317,12]: Address
+            - paragraph [ref=f15e214] [box=48,2967,317,22]: Linienstrasse 156, Berlin
+        - generic [ref=f15e215] [box=421,2743,317,272]:
+          - paragraph [ref=f15e216] [box=421,2743,317,14]: Pages
+          - generic [ref=f15e217] [box=421,2777,317,238]:
+            - link "Home" [ref=f15e218] [cursor=pointer] [box=421,2777,317,21]:
+              - /url: /aura-estates/
+            - link "About" [ref=f15e219] [cursor=pointer] [box=421,2808,317,21]:
+              - /url: /aura-estates/about
+            - link "Services" [ref=f15e220] [cursor=pointer] [box=421,2839,317,21]:
+              - /url: /aura-estates/services
+            - link "Properties" [ref=f15e221] [cursor=pointer] [box=421,2870,317,21]:
+              - /url: /aura-estates/properties
+            - link "Journal" [ref=f15e222] [cursor=pointer] [box=421,2901,317,21]:
+              - /url: /aura-estates/blog
+            - link "Contact" [ref=f15e223] [cursor=pointer] [box=421,2932,317,21]:
+              - /url: /aura-estates/contact
+            - link "FAQ" [ref=f15e224] [cursor=pointer] [box=421,2963,317,21]:
+              - /url: /aura-estates/faq
+            - link "Careers" [ref=f15e225] [cursor=pointer] [box=421,2994,317,21]:
+              - /url: /aura-estates/careers
+        - generic [ref=f15e226] [box=793,2743,317,272]:
+          - paragraph [ref=f15e227] [box=793,2743,317,14]: Services
+          - generic [ref=f15e228] [box=793,2777,317,114]:
+            - link "Residential" [ref=f15e229] [cursor=pointer] [box=793,2777,317,21]:
+              - /url: /aura-estates/services#residential
+            - link "Commercial" [ref=f15e230] [cursor=pointer] [box=793,2808,317,21]:
+              - /url: /aura-estates/services#commercial
+            - link "Consulting" [ref=f15e231] [cursor=pointer] [box=793,2839,317,21]:
+              - /url: /aura-estates/services#consulting
+            - link "Maintenance" [ref=f15e232] [cursor=pointer] [box=793,2870,317,21]:
+              - /url: /aura-estates/services#maintenance
+        - generic [ref=f15e233] [box=1166,2743,317,272]:
+          - paragraph [ref=f15e234] [box=1166,2743,317,14]: Account
+          - generic [ref=f15e235] [box=1166,2777,317,114]:
+            - link "Sign In" [ref=f15e236] [cursor=pointer] [box=1166,2777,317,21]:
+              - /url: /aura-estates/login
+            - link "Register" [ref=f15e237] [cursor=pointer] [box=1166,2808,317,21]:
+              - /url: /aura-estates/register
+            - link "Dashboard" [ref=f15e238] [cursor=pointer] [box=1166,2839,317,21]:
+              - /url: /aura-estates/user/dashboard
+            - link "Support" [ref=f15e239] [cursor=pointer] [box=1166,2870,317,21]:
+              - /url: /aura-estates/contact
+      - generic [ref=f15e240] [box=48,3095,1434,46]:
+        - generic [ref=f15e241] [box=48,3127,229,14]: © 2026 Aura Estates. All rights reserved.
+        - generic [ref=f15e242] [box=1391,3127,91,14]:
+          - link "Privacy" [ref=f15e243] [cursor=pointer] [box=1391,3127,39,14]:
+            - /url: /aura-estates/privacy
+          - link "Terms" [ref=f15e244] [cursor=pointer] [box=1455,3127,28,14]:
+            - /url: /aura-estates/terms

@@ -124,4 +124,25 @@ $currentPage = 'contact';
     </div>
 </section>
 
+<section class="py-16 lg:py-24 border-t border-border/40" data-reveal>
+    <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+        <div class="flex flex-col gap-4 mb-8">
+            <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">Office</p>
+            <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">Find Us</h2>
+        </div>
+        <div id="office-map" class="w-full h-[350px] lg:h-[450px] bg-bg-alt border border-border-light rounded-2xl overflow-hidden"></div>
+    </div>
+</section>
+<script>
+(function() {
+    function initMap() {
+        if (typeof AuraMaps !== 'undefined' && window.__googleMapsReady) {
+            AuraMaps.initOfficeMap('office-map', 52.5273, 13.4028, 'Aura Estates');
+        }
+    }
+    if (window.__googleMapsReady) { initMap(); }
+    else { document.addEventListener('google-maps-ready', initMap); }
+})();
+</script>
+
 <?php include __DIR__ . '/../partials/footer.php'; ?>

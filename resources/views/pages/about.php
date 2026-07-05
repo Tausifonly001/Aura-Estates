@@ -54,21 +54,21 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12" data-stagger>
             <div data-stagger-item>
                 <div class="aspect-[4/5] bg-surface border border-border-light mb-5 flex items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600" alt="Lukas Walker" class="w-full h-full object-cover" data-image-reveal>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600" alt="Lukas Walker" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/lukas.svg';">
                 </div>
                 <p class="font-sans font-medium text-[1.125rem] text-ink mb-1">Lukas Walker</p>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted">Founder & Principal</p>
             </div>
             <div data-stagger-item>
                 <div class="aspect-[4/5] bg-surface border border-border-light mb-5 flex items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600" alt="Hanna Bennett" class="w-full h-full object-cover" data-image-reveal>
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600" alt="Hanna Bennett" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/hanna.svg';">
                 </div>
                 <p class="font-sans font-medium text-[1.125rem] text-ink mb-1">Hanna Bennett</p>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted">Head of Operations</p>
             </div>
             <div data-stagger-item>
                 <div class="aspect-[4/5] bg-surface border border-border-light mb-5 flex items-center justify-center overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=600" alt="Emma Hofstetter" class="w-full h-full object-cover" data-image-reveal>
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=600" alt="Emma Hofstetter" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/emma.svg';">
                 </div>
                 <p class="font-sans font-medium text-[1.125rem] text-ink mb-1">Emma Hofstetter</p>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted">Director of Client Relations</p>

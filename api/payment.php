@@ -19,7 +19,7 @@ switch ($method) {
 
             try {
                 $order = PaymentService::createOrder(
-                    $data->amount,
+                    (float)$data->amount,
                     $data->currency ?? 'INR',
                     $data->receipt ?? null,
                     ['user_id' => $_SESSION['user_id'] ?? '', 'purpose' => $data->purpose ?? 'general']

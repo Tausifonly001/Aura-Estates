@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../../src/config/auth.php';
-require_once __DIR__ . '/../../src/config/database.php';
-require_once __DIR__ . '/../../src/models/SiteContent.php';
-require_once __DIR__ . '/../../src/core/CsrfProtection.php';
+require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/config/database.php';
+require_once __DIR__ . '/../../../src/models/SiteContent.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 
 Auth::startSession();
 CsrfProtection::generate();
@@ -16,8 +16,17 @@ $content = new SiteContent($db);
 
 // Handle save
 if ($_POST && isset($_POST['action']) && $_POST['action'] === 'save') {
-    $content->set($_POST['page'], $_POST['section'], $_POST['key_name'], $_POST['value'], $_POST['type'] ?? 'text', (int)($_POST['sort_order'] ?? 0));
-    $msg = "Saved: {$_POST['page']} / {$_POST['section']} / {$_POST['key_name']}";
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $keyNames = $_POST['key_name'] ?? [];
+    $values = $_POST['value'] ?? [];
+    $types = $_POST['type'] ?? [];
+    $sortOrders = $_POST['sort_order'] ?? [];
+    for ($i = 0; $i < count($keyNames); $i++) {
+        $content->set($_POST['page'], $_POST['section'], $keyNames[$i], $values[$i], $types[$i] ?? 'text', (int)($sortOrders[$i] ?? $i));
+    }
+    $msg = "Saved: {$_POST['page']} / {$_POST['section']}";
 }
 
 $allContent = $content->getAll();

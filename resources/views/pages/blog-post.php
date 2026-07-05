@@ -58,7 +58,11 @@ $currentPage = 'blog';
         </div>
 
         <div class="aspect-[16/9] bg-surface border border-border-light overflow-hidden mb-10" data-reveal>
-            <img src="<?php echo htmlspecialchars($post['cover_image']); ?>" class="w-full h-full object-cover" alt="<?php echo htmlspecialchars($post['title']); ?>" data-image-reveal>
+            <?php if (!empty($post['cover_image'])): ?>
+            <img src="<?php echo htmlspecialchars($post['cover_image']); ?>" class="w-full h-full object-cover" alt="<?php echo htmlspecialchars($post['title']); ?>" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-1.svg';">
+            <?php else: ?>
+            <div class="w-full h-full flex items-center justify-center bg-bg-alt"><i class="fas fa-newspaper text-4xl text-muted"></i></div>
+            <?php endif; ?>
         </div>
 
         <div class="font-sans text-[0.9375rem] lg:text-[1rem] leading-[1.8] text-ink-secondary space-y-6">

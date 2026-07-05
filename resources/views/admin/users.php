@@ -12,7 +12,10 @@ $db = $database->getConnection();
 $userModel = new User($db);
 
 if (isset($_POST['update_role'])) {
-    $userId = $_POST['user_id'];
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $userId = (int)$_POST['user_id'];
     $newRole = $_POST['role'];
     $userModel->updateRole($userId, $newRole);
     header("Location: users.php?updated=1");
@@ -20,8 +23,11 @@ if (isset($_POST['update_role'])) {
 }
 
 if (isset($_POST['delete_user'])) {
-    $userId = $_POST['user_id'];
-    if ($userId != $_SESSION['user_id']) {
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $userId = (int)$_POST['user_id'];
+    if ($userId !== (int)$_SESSION['user_id']) {
         $userModel->delete($userId);
     }
     header("Location: users.php?deleted=1");

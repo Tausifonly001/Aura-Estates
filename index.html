@@ -84,10 +84,13 @@
             <a ng-href="{{currentUser.role === 'admin' ? 'admin/dashboard' : 'user/dashboard'}}" class="btn-primary">Dashboard</a>
             <a href="user/logout" class="nav-link">Logout</a>
         </div>
-        <a href="login" class="hidden md:inline-flex btn-primary" ng-if="!currentUser" data-magnetic>
-            Sign In
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        <div class="hidden md:flex items-center gap-3 shrink-0" ng-if="!currentUser">
+            <a href="login" class="btn-outline" data-magnetic>Sign In</a>
+            <a href="register" class="btn-primary" data-magnetic>
+                Get Started
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 11L11 1M11 1H4M11 1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+        </div>
         <button class="md:hidden p-2 text-ink bg-none border-none cursor-pointer" ng-click="mobileNavOpen = true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
         </button>
@@ -146,14 +149,10 @@
                         </div>
                     </div>
  
-                    <!-- Hero Right: Framed Interactive ThreeJS Visual -->
-                    <div class="lg:col-span-5 hidden lg:block">
-                        <div class="relative w-full aspect-[4/5] max-w-sm ml-auto border border-border/60 p-5 rounded-[2rem] bg-surface/30 backdrop-blur-md shadow-2xl shadow-ink/5">
-                            <div class="absolute top-6 left-6 font-mono text-[0.5625rem] text-muted tracking-wider">AURA PRELOADER // STAGED</div>
-                            <div class="absolute bottom-6 left-6 font-mono text-[0.5625rem] text-muted tracking-wider">LAT. 52.5200° N<br>LONG. 13.4050° E</div>
-                            <div class="w-full h-full rounded-[1.5rem] overflow-hidden bg-bg-alt/30 relative">
-                                <div class="three-canvas hero-particles" hero-particles></div>
-                            </div>
+                    <!-- Hero Right: ThreeJS Visual (Direct, No Card) -->
+                    <div class="lg:col-span-5 hidden lg:block relative">
+                        <div class="w-full aspect-[4/5] max-w-sm ml-auto relative">
+                            <div class="three-canvas hero-particles" hero-particles></div>
                         </div>
                     </div>
                 </div>
@@ -254,7 +253,7 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6" data-stagger>
                                 <a href="/services#residential" data-stagger-item class="service-card group rounded-2xl">
-                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" alt="Residential" loading="lazy" data-image-reveal>
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800" alt="Residential" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/residential.svg';">
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
                                         <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Residential</h4>
@@ -262,7 +261,7 @@
                                     </div>
                                 </a>
                                 <a href="/services#commercial" data-stagger-item class="service-card group rounded-2xl">
-                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Commercial" loading="lazy" data-image-reveal>
+                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800" alt="Commercial" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/commercial.svg';">
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
                                         <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Commercial</h4>
@@ -270,7 +269,7 @@
                                     </div>
                                 </a>
                                 <a href="/services#consulting" data-stagger-item class="service-card group rounded-2xl">
-                                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=800" alt="Consulting" loading="lazy" data-image-reveal>
+                                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=800" alt="Consulting" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/consulting.svg';">
                                     <div class="service-overlay"></div>
                                     <div class="service-card-content">
                                         <h4 class="font-sans font-medium text-[1.25rem] text-white mb-2">Consulting</h4>
@@ -399,7 +398,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6" data-stagger>
                             <div data-stagger-item class="bg-surface border border-border/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl shadow-ink/5">
                                 <div class="h-44 overflow-hidden relative">
-                                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b5e6a8b?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal>
+                                    <img src="https://images.unsplash.com/photo-1576013551627-0cc20b5e6a8b?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/pool.svg';">
                                     <span class="absolute top-4 right-4 badge badge-success bg-surface">Available</span>
                                 </div>
                                 <div class="p-6">
@@ -414,7 +413,7 @@
                             </div>
                             <div data-stagger-item class="bg-surface border border-border/50 rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl shadow-ink/5">
                                 <div class="h-44 overflow-hidden relative">
-                                    <img src="https://images.unsplash.com/photo-1506521781265-d8422e82f816?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal>
+                                    <img src="https://images.unsplash.com/photo-1506521781265-d8422e82f816?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/parking.svg';">
                                     <span class="absolute top-4 right-4 badge badge-success bg-surface">3 Spots Left</span>
                                 </div>
                                 <div class="p-6">
@@ -476,7 +475,7 @@
                             "From architecture to interior styling, the entire process felt thoughtful and seamless. The atmosphere they created exceeded our expectations."
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy" onerror="this.onerror=null;this.src='resources/placeholders/hanna.svg';">
                             <div>
                                 <p class="font-sans font-medium text-[0.875rem] text-ink">Hanna Bennett</p>
                                 <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Homeowner</p>
@@ -488,7 +487,7 @@
                             "Working with Aura Estates felt collaborative from the very beginning. The balance of service, communication, and professionalism completely changed how we experience property management."
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy" onerror="this.onerror=null;this.src='resources/placeholders/lukas.svg';">
                             <div>
                                 <p class="font-sans font-medium text-[0.875rem] text-ink">Lukas Walker</p>
                                 <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Residence Owner</p>
@@ -500,7 +499,7 @@
                             "The level of refinement throughout the process was exceptional. Everything feels intentional, balanced, and beautifully composed."
                         </p>
                         <div class="flex items-center gap-4">
-                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200" class="w-10 h-10 rounded-full object-cover" loading="lazy" onerror="this.onerror=null;this.src='resources/placeholders/emma.svg';">
                             <div>
                                 <p class="font-sans font-medium text-[0.875rem] text-ink">Emma Hofstetter</p>
                                 <p class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted">Private Client</p>
@@ -523,7 +522,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12" data-stagger>
                     <a href="blog" data-stagger-item class="journal-card group no-underline block">
                         <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
-                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-1.svg';">
                         </div>
                         <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-accent mt-6 mb-2">Project Stories</p>
                         <h3 class="font-sans font-medium text-[1.125rem] leading-[1.4] text-ink mb-4 group-hover:text-accent transition-colors">Embodied carbon in heritage buildings: A counterintuitive case</h3>
@@ -534,7 +533,7 @@
                     </a>
                     <a href="blog" data-stagger-item class="journal-card group no-underline block">
                         <div class="overflow-hidden aspect-[16/10] rounded-3xl border border-border/30 shadow-xl shadow-ink/2">
-                            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-2.svg';">
                         </div>
                         <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-accent mt-6 mb-2">Design Insights</p>
                         <h3 class="font-sans font-medium text-[1.125rem] leading-[1.4] text-ink mb-4 group-hover:text-accent transition-colors">Why we still draw by hand before we draw on screen</h3>

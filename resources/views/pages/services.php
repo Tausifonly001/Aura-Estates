@@ -29,7 +29,7 @@
                 </ul>
             </div>
             <div class="aspect-[4/3] bg-surface border border-border-light overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000" alt="Residential" class="w-full h-full object-cover" data-image-reveal>
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1000" alt="Residential" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/residential.svg';">
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div class="order-2 lg:order-1 aspect-[4/3] bg-surface border border-border-light overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000" alt="Commercial" class="w-full h-full object-cover" data-image-reveal>
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000" alt="Commercial" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/commercial.svg';">
             </div>
             <div class="order-1 lg:order-2">
                 <span class="inline-block font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted border border-border px-3 py-1 mb-6">Tailored to context</span>
@@ -81,7 +81,7 @@
                 </ul>
             </div>
             <div class="aspect-[4/3] bg-surface border border-border-light overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=1000" alt="Consulting" class="w-full h-full object-cover" data-image-reveal>
+                <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=1000" alt="Consulting" class="w-full h-full object-cover" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/consulting.svg';">
             </div>
         </div>
     </div>

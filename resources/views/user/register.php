@@ -87,8 +87,8 @@ if(isset($_SESSION['user_id'])){
             </form>
 
             <div class="mt-8 pt-6 border-t border-border-light flex flex-col gap-3 font-mono text-[0.625rem] tracking-[0.02em] uppercase">
-                <a href="/login" class="text-ink-secondary hover:text-ink transition-colors">Already have an account? Sign In</a>
-                <a href="/" class="text-muted hover:text-ink-secondary transition-colors">Back to Site</a>
+                <a href="<?php echo Auth::getBasePrefix(); ?>/login" class="text-ink-secondary hover:text-ink transition-colors">Already have an account? Sign In</a>
+                <a href="<?php echo Auth::getBasePrefix(); ?>/" class="text-muted hover:text-ink-secondary transition-colors">Back to Site</a>
             </div>
         </div>
     </div>
@@ -119,7 +119,7 @@ if(isset($_SESSION['user_id'])){
                 if(data.success) {
                     msg.className = 'bg-success/10 border border-success/20 text-success p-4 mb-6 font-mono text-[0.75rem]';
                     msg.textContent = data.message + ' Redirecting...';
-                    setTimeout(function() { window.location.href = 'login.php'; }, 1500);
+                    setTimeout(function() { window.location.href = '<?php echo Auth::getBasePrefix(); ?>/login'; }, 1500);
                 } else {
                     msg.className = 'bg-danger/10 border border-danger/20 text-danger p-4 mb-6 font-mono text-[0.75rem]';
                     msg.textContent = data.message || 'Registration failed.';

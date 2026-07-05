@@ -157,7 +157,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
                             <input type="checkbox" class="w-3.5 h-3.5 accent-[#8c7b6c]">
                             <span class="text-[0.625rem] text-[#555555] group-hover:text-[#111111] transition-colors">Remember me</span>
                         </label>
-                        <a href="/forgot-password" class="slide-link">Forgot?</a>
+                        <a href="<?php echo $basePrefix; ?>/forgot-password" class="slide-link">Forgot?</a>
                     </div>
                     <button type="submit" class="btn-primary w-full rounded-xl py-3.5" id="submitBtn">
                         <span class="relative z-10">Sign In</span>
@@ -175,7 +175,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
                 </button>
 
                 <p class="text-center mt-7 text-[0.625rem] text-[#555555]">
-                    No account? <a href="/register" class="slide-link font-medium text-[#8c7b6c]">Create one</a>
+                    No account? <a href="<?php echo $basePrefix; ?>/register" class="slide-link font-medium text-[#8c7b6c]">Create one</a>
                 </p>
             </div>
         </div>

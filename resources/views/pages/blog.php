@@ -30,7 +30,7 @@ $currentPage = 'blog';
         <?php if (count($posts) === 0): ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12" data-stagger>
             <a href="#" class="journal-card group" data-stagger-item>
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-1.svg';">
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-2">Project Stories</p>
                 <h3 class="font-sans font-medium text-[1rem] lg:text-[1.125rem] leading-[1.3] text-ink mb-4">Embodied carbon in heritage buildings: A counterintuitive case</h3>
                 <div class="flex items-center justify-between text-ink group-hover:text-accent transition-colors py-3">
@@ -39,7 +39,7 @@ $currentPage = 'blog';
                 </div>
             </a>
             <a href="#" class="journal-card group" data-stagger-item>
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal>
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-2.svg';">
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-2">Design Insights</p>
                 <h3 class="font-sans font-medium text-[1rem] lg:text-[1.125rem] leading-[1.3] text-ink mb-4">Why we still draw by hand before we draw on screen</h3>
                 <div class="flex items-center justify-between text-ink group-hover:text-accent transition-colors py-3">
@@ -54,7 +54,7 @@ $currentPage = 'blog';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12" data-stagger>
             <?php foreach ($posts as $post): ?>
             <a href="/blog-post?slug=<?php echo urlencode($post['slug']); ?>" class="journal-card group" data-stagger-item>
-                <img src="<?php echo htmlspecialchars($post['cover_image'] ?: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800'); ?>" loading="lazy" data-image-reveal>
+                <img src="<?php echo htmlspecialchars($post['cover_image'] ?: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800'); ?>" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-1.svg';">
                 <div class="flex gap-3 font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-2">
                     <span><?php echo htmlspecialchars($post['category']); ?></span>
                     <span>&middot;</span>

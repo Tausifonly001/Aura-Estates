@@ -111,13 +111,16 @@ CREATE TABLE IF NOT EXISTS properties (
     description TEXT,
     price DECIMAL(15, 2) NOT NULL,
     location VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 7) DEFAULT NULL,
+    longitude DECIMAL(10, 7) DEFAULT NULL,
     property_type VARCHAR(100) NOT NULL,
     bedrooms INT NOT NULL,
     bathrooms INT NOT NULL,
     area_sqft INT NOT NULL,
     main_image VARCHAR(255),
     is_available TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_coordinates (latitude, longitude)
 );
 
 CREATE TABLE IF NOT EXISTS rentals (
@@ -187,14 +190,14 @@ CREATE TABLE IF NOT EXISTS amenity_bookings (
     INDEX idx_amenity_date (amenity_id, booking_date)
 );
 
-INSERT IGNORE INTO users (name, email, password, role) VALUES 
-('Admin User', 'admin@aura.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+-- Default admin credentials removed for security.
+-- Use the CLI setup to create the first admin account.
 
-INSERT IGNORE INTO properties (title, description, price, location, property_type, bedrooms, bathrooms, area_sqft, main_image) VALUES
-('The Sapphire Penthouse', 'A stunning penthouse with panoramic ocean views and private elevator access.', 5000000.00, 'Beverly Hills, CA', 'Penthouse', 4, 5, 4500, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000'),
-('Onyx Villa', 'Modern architectural masterpiece nestled in the hills with infinity pool.', 3500000.00, 'Malibu, CA', 'Villa', 5, 6, 6000, 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1000'),
-('Emerald Estate', 'Classic luxury estate with sprawling gardens and tennis court.', 8200000.00, 'Hamptons, NY', 'Estate', 7, 8, 12000, 'https://images.unsplash.com/photo-1600596542815-2a4d9fdb252b?auto=format&fit=crop&q=80&w=1000'),
-('Golden Loft', 'Industrial chic loft in the heart of the city with floor-to-ceiling windows.', 1200000.00, 'Tribeca, NY', 'Loft', 2, 2, 2500, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&q=80&w=1000');
+INSERT IGNORE INTO properties (title, description, price, location, latitude, longitude, property_type, bedrooms, bathrooms, area_sqft, main_image) VALUES
+('The Sapphire Penthouse', 'A stunning penthouse with panoramic ocean views and private elevator access.', 5000000.00, 'Beverly Hills, CA', 34.0736, -118.4004, 'Penthouse', 4, 5, 4500, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000'),
+('Onyx Villa', 'Modern architectural masterpiece nestled in the hills with infinity pool.', 3500000.00, 'Malibu, CA', 34.0259, -118.7798, 'Villa', 5, 6, 6000, 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1000'),
+('Emerald Estate', 'Classic luxury estate with sprawling gardens and tennis court.', 8200000.00, 'Hamptons, NY', 40.9006, -72.3018, 'Estate', 7, 8, 12000, 'https://images.unsplash.com/photo-1600596542815-2a4d9fdb252b?auto=format&fit=crop&q=80&w=1000'),
+('Golden Loft', 'Industrial chic loft in the heart of the city with floor-to-ceiling windows.', 1200000.00, 'Tribeca, NY', 40.7178, -74.0060, 'Loft', 2, 2, 2500, 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&q=80&w=1000');
 
 INSERT IGNORE INTO amenities (property_id, name, description, capacity, location) VALUES
 (1, 'Infinity Pool', 'Rooftop infinity pool with panoramic ocean views', 20, 'Rooftop - Floor 45'),
@@ -220,3 +223,39 @@ INSERT IGNORE INTO amenity_bookings (amenity_id, user_id, guest_name, booking_da
 (1, 1, 'John Smith', '2026-06-22', '10:00:00', '12:00:00', 'confirmed'),
 (4, 1, 'Sarah Johnson', '2026-06-23', '14:00:00', '16:00:00', 'confirmed'),
 (2, 1, 'Emma Wilson', '2026-06-21', '07:00:00', '08:30:00', 'checked_in');
+
+CREATE TABLE IF NOT EXISTS payment_orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    razorpay_order_id VARCHAR(100) NOT NULL UNIQUE,
+    user_id INT NOT NULL,
+    amount INT NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'INR',
+    purpose VARCHAR(255) DEFAULT NULL,
+    reference_type VARCHAR(50) DEFAULT NULL,
+    reference_id INT DEFAULT NULL,
+    status ENUM('created', 'attempted', 'paid', 'failed') DEFAULT 'created',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user (user_id),
+    INDEX idx_razorpay (razorpay_order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS uploads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT DEFAULT NULL,
+    subdir VARCHAR(50) NOT NULL,
+    filename VARCHAR(255) NOT NULL,
+    original_name VARCHAR(255) NOT NULL,
+    mime_type VARCHAR(100) NOT NULL,
+    file_size INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user (user_id),
+    INDEX idx_filename (filename)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS sse_connections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    connected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_time (user_id, connected_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

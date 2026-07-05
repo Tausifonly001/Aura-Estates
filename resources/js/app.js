@@ -241,12 +241,7 @@ app.directive('heroParticles', function($timeout) {
             $timeout(function() {
                 if (window.AuraThree) {
                     scope.heroScene = AuraThree.createParticleField(element[0], {
-                        count: 2500,
-                        spread: 35,
-                        speed: 0.4,
-                        size: 0.06,
-                        color: 0x3a322c,
-                        opacity: 0.3
+                        autoRotateSpeed: 0.12
                     });
                     scope.heroSceneReady = true;
                     element[0].style.opacity = '1';
@@ -256,6 +251,30 @@ app.directive('heroParticles', function($timeout) {
             scope.$on('$destroy', function() {
                 if (window.AuraThree && scope.heroScene) {
                     scope.heroScene.dispose();
+                }
+            });
+        }
+    };
+});
+
+app.directive('buildingSkyline', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            $timeout(function() {
+                if (window.AuraThree) {
+                    scope.buildingScene = AuraThree.createBuildingSkyline(element[0], {
+                        autoRotateSpeed: 0.1,
+                        buildingCount: 35
+                    });
+                    scope.buildingSceneReady = true;
+                    element[0].style.opacity = '1';
+                }
+            }, 400);
+
+            scope.$on('$destroy', function() {
+                if (window.AuraThree && scope.buildingScene) {
+                    scope.buildingScene.dispose();
                 }
             });
         }

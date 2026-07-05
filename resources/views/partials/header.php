@@ -19,7 +19,9 @@
     <meta property="og:description" content="Bespoke property management defined by clarity, materiality, and trust.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="<?php echo 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>">
+    <meta property="og:image" content="<?php echo 'https://' . $_SERVER['HTTP_HOST'] . strtok($_SERVER['REQUEST_URI'], '?'); ?>/favicon.svg">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="<?php echo 'https://' . $_SERVER['HTTP_HOST'] . strtok($_SERVER['REQUEST_URI'], '?'); ?>/favicon.svg">
     <title><?php echo $pageTitle ?? 'Aura Estates'; ?> — Aura Estates</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
@@ -62,6 +64,36 @@
     <script src="resources/js/gsap.min.js"></script>
     <script src="resources/js/ScrollTrigger.min.js"></script>
     <script src="resources/js/gsap-animations.js"></script>
+
+    <?php
+    $googleMapsKey = $_ENV['GOOGLE_MAPS_API_KEY'] ?? getenv('GOOGLE_MAPS_API_KEY') ?: '';
+    if (empty($googleMapsKey) || $googleMapsKey === 'YOUR_API_KEY_HERE') {
+        $dotenvPath = str_replace('\\', '/', dirname(__DIR__, 3)) . '/.env';
+        if (file_exists($dotenvPath)) {
+            $envLines = file($dotenvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($envLines as $line) {
+                $line = trim($line);
+                if (empty($line) || $line[0] === '#') continue;
+                if (strpos($line, '=') !== false) {
+                    list($k, $v) = explode('=', $line, 2);
+                    if (trim($k) === 'GOOGLE_MAPS_API_KEY') {
+                        $v = trim(trim($v), '"\'');
+                        if (!empty($v) && $v !== 'YOUR_API_KEY_HERE') {
+                            $googleMapsKey = $v;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    ?>
+    <?php if (!empty($googleMapsKey)): ?>
+    <script>
+        (function(){var s=document.createElement('script');s.src='https://maps.googleapis.com/maps/api/js?key=<?php echo htmlspecialchars($googleMapsKey, ENT_QUOTES, 'UTF-8'); ?>&callback=__onGoogleMapsLoaded&libraries=places';s.async=true;s.defer=true;window.__onGoogleMapsLoaded=function(){window.__googleMapsReady=true;document.dispatchEvent(new Event('google-maps-ready'));};document.head.appendChild(s);})();
+    </script>
+    <?php endif; ?>
+    <script src="resources/js/maps.js"></script>
 
     <style>
         .page-hero { min-height: 40vh; display: flex; align-items: flex-end; padding: 8rem 0 3rem; position: relative; overflow: hidden; }

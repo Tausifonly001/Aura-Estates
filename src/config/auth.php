@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core/RateLimiter.php';
 class Auth {
     private static $db = null;
 
@@ -17,11 +18,18 @@ class Auth {
         return $ip;
     }
 
+    private static function clearSessionCookie() {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 3600, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+    }
+
     public static function startSession() {
         if (session_status() === PHP_SESSION_NONE) {
+            $isSecure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+            $isSecure = $isSecure || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
             session_set_cookie_params([
                 'httponly' => true,
-                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+                'secure' => $isSecure,
                 'samesite' => 'Strict'
             ]);
             session_start();
@@ -30,6 +38,7 @@ class Auth {
         $inactive = time() - ($_SESSION['_last_activity'] ?? time());
         if ($inactive > 7200) {
             $_SESSION = [];
+            self::clearSessionCookie();
             session_destroy();
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
@@ -45,6 +54,7 @@ class Auth {
             $expectedFingerprint = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . self::getClientIp());
             if (!isset($_SESSION['_fingerprint']) || $_SESSION['_fingerprint'] !== $expectedFingerprint) {
                 $_SESSION = [];
+                self::clearSessionCookie();
                 session_destroy();
                 return null;
             }
@@ -112,15 +122,10 @@ class Auth {
         self::startSession();
 
         $ip = self::getClientIp();
-        $loginKey = "login_attempts_{$ip}";
-        $loginTimeKey = "login_time_{$ip}";
 
-        if (isset($_SESSION[$loginKey]) && $_SESSION[$loginKey] >= 5) {
-            if (isset($_SESSION[$loginTimeKey]) && (time() - $_SESSION[$loginTimeKey] < 900)) {
-                return false;
-            }
-            $_SESSION[$loginKey] = 0;
-            $_SESSION[$loginTimeKey] = null;
+        // Check persistent rate limits before attempting login
+        if (!RateLimiter::checkLoginAttempts($email)) {
+            return false;
         }
 
         $db = self::getDB();
@@ -138,9 +143,6 @@ class Auth {
                 $_SESSION['user_role'] = $row['role'];
                 $_SESSION['role_id'] = $row['role_id'];
                 $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . $ip);
-
-                $_SESSION[$loginKey] = 0;
-                $_SESSION[$loginTimeKey] = null;
                 
                 if ($redirect && !self::isAjaxRequest()) {
                     header("Location: " . $redirect);
@@ -150,18 +152,13 @@ class Auth {
             }
         }
 
-        if (!isset($_SESSION[$loginKey])) {
-            $_SESSION[$loginKey] = 0;
-        }
-        $_SESSION[$loginKey]++;
-        $_SESSION[$loginTimeKey] = time();
-
         return false;
     }
 
     public static function logout($redirect = null) {
         self::startSession();
         $_SESSION = [];
+        self::clearSessionCookie();
         session_destroy();
         if ($redirect) {
             header("Location: " . $redirect);

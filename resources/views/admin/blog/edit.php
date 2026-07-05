@@ -36,6 +36,9 @@ if (isset($_GET['id'])) {
 }
 
 if ($_POST) {
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $error = 'Invalid security token. Please refresh and try again.';
+    } else {
     $title = trim($_POST['title']);
     $slug = trim($_POST['slug']) ?: preg_replace('/[^a-z0-9]+/', '-', strtolower($title));
     $slug = trim($slug, '-');
@@ -55,7 +58,7 @@ if ($_POST) {
         $stmt->execute([$slug, $post['id']]);
         if ($stmt->fetch()) {
             $error = 'A post with this slug already exists.';
-        } else {
+            } else if (!$error) {
             if ($isEdit) {
                 $stmt = $db->prepare("UPDATE blog_posts SET title=?, slug=?, excerpt=?, content=?, author=?, category=?, cover_image=?, status=?, published_at=? WHERE id=?");
                 $stmt->execute([$title, $slug, $excerpt, $content, $author, $category, $cover_image, $status, $published_at, $post['id']]);
@@ -66,6 +69,7 @@ if ($_POST) {
             header('Location: ../blog.php?updated=1');
             exit;
         }
+    }
     }
 }
 ?>

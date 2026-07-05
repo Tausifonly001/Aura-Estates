@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../src/core/Middleware.php';
 require_once __DIR__ . '/../src/core/AuditLogger.php';
+require_once __DIR__ . '/../src/config/database.php';
 
 Middleware::api();
 Middleware::auth('dashboard_view');
@@ -46,7 +47,7 @@ $tableMap = [
 ];
 
 // Track export for audit
-AuditLogger::log('export', $type, null, "Exported $type as $format");
+AuditLogger::log('export', $type, $_SESSION['user_id'] ?? null, "Exported $type as $format");
 
 $table = $tableMap[$type];
 $cols = implode(', ', $columns[$type]);

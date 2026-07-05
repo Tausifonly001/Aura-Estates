@@ -29,10 +29,11 @@ class Middleware {
 
     public static function api() {
         self::cors();
-        RateLimiter::check($_SERVER['REQUEST_URI'] ?? 'api', 120, 60);
+        $endpoint = parse_url($_SERVER['REQUEST_URI'] ?? 'api', PHP_URL_PATH);
+        RateLimiter::check($endpoint, 120, 60);
         if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE'])) {
-            if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false) {
-                CsrfProtection::validate();
+            if (strpos($endpoint, '/api/') !== false) {
+                CsrfProtection::validateOrFail();
             }
         }
     }

@@ -1,5 +1,10 @@
 </main>
 
+<?php
+$docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$projectRoot = str_replace('\\', '/', dirname(__DIR__, 3));
+$basePrefix = rtrim(str_replace($docRoot, '', $projectRoot), '/');
+?>
 <footer class="py-20 lg:py-28 border-t border-border/60 mt-16">
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-14 mb-14 lg:mb-20">
@@ -22,40 +27,40 @@
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Pages</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="/" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Home</a>
-                    <a href="/about" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">About</a>
-                    <a href="/services" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Services</a>
-                    <a href="/properties" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Properties</a>
-                    <a href="/blog" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Journal</a>
-                    <a href="/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Contact</a>
-                    <a href="/faq" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">FAQ</a>
-                    <a href="/careers" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Careers</a>
+                    <a href="<?php echo $basePrefix; ?>/" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Home</a>
+                    <a href="<?php echo $basePrefix; ?>/about" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">About</a>
+                    <a href="<?php echo $basePrefix; ?>/services" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Services</a>
+                    <a href="<?php echo $basePrefix; ?>/properties" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Properties</a>
+                    <a href="<?php echo $basePrefix; ?>/blog" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Journal</a>
+                    <a href="<?php echo $basePrefix; ?>/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Contact</a>
+                    <a href="<?php echo $basePrefix; ?>/faq" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">FAQ</a>
+                    <a href="<?php echo $basePrefix; ?>/careers" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Careers</a>
                 </div>
             </div>
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Services</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="/services#residential" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Residential</a>
-                    <a href="/services#commercial" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Commercial</a>
-                    <a href="/services#consulting" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Consulting</a>
-                    <a href="/services#maintenance" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Maintenance</a>
+                    <a href="<?php echo $basePrefix; ?>/services#residential" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Residential</a>
+                    <a href="<?php echo $basePrefix; ?>/services#commercial" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Commercial</a>
+                    <a href="<?php echo $basePrefix; ?>/services#consulting" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Consulting</a>
+                    <a href="<?php echo $basePrefix; ?>/services#maintenance" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Maintenance</a>
                 </div>
             </div>
             <div>
                 <p class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-5">Account</p>
                 <div class="flex flex-col gap-2.5">
-                    <a href="/login" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Sign In</a>
-                    <a href="/register" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Register</a>
-                    <a href="/user/dashboard" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Dashboard</a>
-                    <a href="/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Support</a>
+                    <a href="<?php echo $basePrefix; ?>/login" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Sign In</a>
+                    <a href="<?php echo $basePrefix; ?>/register" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Register</a>
+                    <a href="<?php echo $basePrefix; ?>/user/dashboard" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Dashboard</a>
+                    <a href="<?php echo $basePrefix; ?>/contact" class="font-sans text-[0.875rem] text-ink-secondary hover:text-ink transition-colors no-underline">Support</a>
                 </div>
             </div>
         </div>
         <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border-light font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted gap-4">
             <span>&copy; 2026 Aura Estates. All rights reserved.</span>
             <div class="flex gap-6">
-                <a href="/privacy" class="hover:text-ink transition-colors no-underline">Privacy</a>
-                <a href="/terms" class="hover:text-ink transition-colors no-underline">Terms</a>
+                <a href="<?php echo $basePrefix; ?>/privacy" class="hover:text-ink transition-colors no-underline">Privacy</a>
+                <a href="<?php echo $basePrefix; ?>/terms" class="hover:text-ink transition-colors no-underline">Terms</a>
             </div>
         </div>
     </div>

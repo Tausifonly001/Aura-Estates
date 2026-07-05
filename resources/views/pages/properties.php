@@ -89,6 +89,44 @@ $currentPage = 'properties';
             </div>
         </form>
 
+        <?php
+        $mapProperties = array_filter($properties, function($p) {
+            return !empty($p['latitude']) && !empty($p['longitude']);
+        });
+        $mapProperties = array_values($mapProperties);
+        ?>
+        <?php if (count($mapProperties) > 0): ?>
+        <div class="mb-10" data-reveal>
+            <div id="properties-map" class="w-full h-[350px] lg:h-[450px] bg-bg-alt border border-border-light rounded-2xl overflow-hidden"></div>
+        </div>
+        <script>
+        (function() {
+            function initMap() {
+                if (typeof AuraMaps !== 'undefined' && window.__googleMapsReady) {
+                    var props = <?php echo json_encode(array_map(function($p) {
+                        return [
+                            'id' => $p['id'],
+                            'title' => $p['title'],
+                            'location' => $p['location'],
+                            'property_type' => $p['property_type'],
+                            'bedrooms' => $p['bedrooms'],
+                            'bathrooms' => $p['bathrooms'],
+                            'area_sqft' => $p['area_sqft'],
+                            'price' => $p['price'],
+                            'main_image' => $p['main_image'],
+                            'latitude' => $p['latitude'],
+                            'longitude' => $p['longitude']
+                        ];
+                    }, $mapProperties), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+                    AuraMaps.initMultiPropertyMap('properties-map', props);
+                }
+            }
+            if (window.__googleMapsReady) { initMap(); }
+            else { document.addEventListener('google-maps-ready', initMap); }
+        })();
+        </script>
+        <?php endif; ?>
+
         <?php if (count($properties) === 0): ?>
         <div class="text-center py-16 lg:py-24">
             <i class="fas fa-search text-3xl text-muted mb-4"></i>
@@ -101,7 +139,7 @@ $currentPage = 'properties';
             <?php foreach ($properties as $p): ?>
             <a href="/property-detail?id=<?php echo $p['id']; ?>" class="property-card no-underline" data-stagger-item>
                 <?php if (!empty($p['main_image'])): ?>
-                <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy">
+                <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy" onerror="this.onerror=null;this.src='resources/placeholders/property.svg';">
                 <?php else: ?>
                 <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center"><i class="fas fa-building text-3xl text-muted"></i></div>
                 <?php endif; ?>

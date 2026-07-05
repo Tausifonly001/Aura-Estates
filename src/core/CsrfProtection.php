@@ -20,14 +20,21 @@ class CsrfProtection {
     public static function validate($token = null) {
         Auth::startSession();
         if (empty($_SESSION['_csrf_token'])) {
-            return;
+            return false;
         }
         $token = $token ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf_token'] ?? null;
         if (!$token || !hash_equals($_SESSION['_csrf_token'], $token)) {
-            self::fail();
+            return false;
         }
         if (time() - $_SESSION['_csrf_time'] > 7200) {
-            self::fail('CSRF token expired. Please refresh.');
+            return false;
+        }
+        return true;
+    }
+
+    public static function validateOrFail($token = null) {
+        if (!self::validate($token)) {
+            self::fail();
         }
     }
 
@@ -38,7 +45,7 @@ class CsrfProtection {
         foreach ($noCsrfPaths as $path) {
             if (strpos($uri, $path) !== false) return;
         }
-        self::validate();
+        self::validateOrFail();
     }
 
     private static function fail($msg = 'Invalid CSRF token.') {

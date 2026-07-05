@@ -1,4 +1,9 @@
-<?php require_once __DIR__ . '/src/config/database.php'; ?>
+<?php
+require_once __DIR__ . '/src/config/database.php';
+$docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$projectRoot = str_replace('\\', '/', __DIR__);
+$basePrefix = rtrim(str_replace($docRoot, '', $projectRoot), '/');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +30,7 @@
             <input type="password" name="confirm" placeholder="Confirm password" required minlength="8" class="font-sans text-sm text-[#1c1b18] bg-transparent border border-[#d6d2c8] px-4 py-3 outline-none focus:border-[#3a322c] transition-colors">
             <button type="submit" class="font-sans font-medium text-sm text-[#faf8f4] bg-[#3a322c] px-6 py-3 hover:bg-[#2a2420] transition-colors">Reset Password</button>
         </form>
-        <a href="/login" class="block text-center font-sans text-xs text-[#5c5349] mt-6 hover:text-[#1c1b18] transition-colors no-underline">Back to login</a>
+        <a href="<?php echo $basePrefix; ?>/login" class="block text-center font-sans text-xs text-[#5c5349] mt-6 hover:text-[#1c1b18] transition-colors no-underline">Back to login</a>
     </div>
     <script>
         document.getElementById('resetForm').addEventListener('submit', async (e) => {
@@ -50,7 +55,7 @@
                     msg.className = 'font-sans text-sm p-4 mb-4 bg-[#e8f5e9] text-[#2e7d32] border border-[#c8e6c9]';
                     msg.textContent = data.message;
                     msg.classList.remove('hidden');
-                    setTimeout(() => window.location.href = 'login.php', 2000);
+                    setTimeout(() => window.location.href = '<?php echo $basePrefix; ?>/login', 2000);
                 } else {
                     msg.className = 'font-sans text-sm p-4 mb-4 bg-[#fce4ec] text-[#c62828] border border-[#f8bbd0]';
                     msg.textContent = data.message;

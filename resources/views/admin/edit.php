@@ -26,6 +26,8 @@ if($_POST){
     $property->description = $_POST['description'];
     $property->price = $_POST['price'];
     $property->location = $_POST['location'];
+    $property->latitude = !empty($_POST['latitude']) ? $_POST['latitude'] : null;
+    $property->longitude = !empty($_POST['longitude']) ? $_POST['longitude'] : null;
     $property->property_type = $_POST['property_type'];
     $property->bedrooms = $_POST['bedrooms'];
     $property->bathrooms = $_POST['bathrooms'];
@@ -119,6 +121,21 @@ $updated = $_GET['updated'] ?? 0;
                         <img src="<?php echo htmlspecialchars($property->main_image); ?>" class="w-32 h-24 object-cover mt-3 border border-paper/10">
                     <?php endif; ?>
                 </div>
+                <div class="md:col-span-2 border-t border-paper/10 pt-6 mt-2">
+                    <label class="block text-[9px] font-body font-bold uppercase tracking-[0.2em] text-paper/30 mb-2">Coordinates</label>
+                    <p class="text-[10px] text-paper/20 font-body mb-3">Enter coordinates manually or use the geocode button to auto-fill from location.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[9px] font-body font-bold uppercase tracking-[0.2em] text-paper/30 mb-2">Latitude</label>
+                            <input type="text" name="latitude" id="field-latitude" value="<?php echo htmlspecialchars($property->latitude ?? ''); ?>" class="w-full bg-paper/[0.02] border border-paper/10 p-4 text-paper text-sm focus:outline-none focus:border-rust/50 transition" placeholder="34.0736">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] font-body font-bold uppercase tracking-[0.2em] text-paper/30 mb-2">Longitude</label>
+                            <input type="text" name="longitude" id="field-longitude" value="<?php echo htmlspecialchars($property->longitude ?? ''); ?>" class="w-full bg-paper/[0.02] border border-paper/10 p-4 text-paper text-sm focus:outline-none focus:border-rust/50 transition" placeholder="-118.4004">
+                        </div>
+                    </div>
+                    <button type="button" onclick="geocodeLocation()" class="mt-3 border border-rust/40 text-rust/70 py-2 px-4 text-[9px] font-body font-bold uppercase tracking-[0.2em] hover:bg-rust/10 transition">Geocode from Location</button>
+                </div>
             </div>
             <div class="flex items-center space-x-3">
                 <input type="checkbox" name="is_available" value="1" <?php echo $property->is_available ? 'checked' : ''; ?> class="rounded bg-paper/[0.02] border-paper/10">
@@ -127,5 +144,41 @@ $updated = $_GET['updated'] ?? 0;
             <button type="submit" class="w-full border-2 border-rust/60 text-rust py-4 text-xs font-body font-bold uppercase tracking-[0.25em] hover:bg-rust hover:text-ink transition-all duration-300">Update Property</button>
         </form>
     </div>
+    <script>
+    function geocodeLocation() {
+        var location = document.querySelector('input[name="location"]').value;
+        if (!location) { alert('Please enter a location first.'); return; }
+        var apiKey = '<?php
+            $key = $_ENV['GOOGLE_MAPS_API_KEY'] ?? getenv('GOOGLE_MAPS_API_KEY') ?: '';
+            if (empty($key) || $key === 'YOUR_API_KEY_HERE') {
+                $dotenvPath = str_replace('\\', '/', dirname(__DIR__, 3)) . '/.env';
+                if (file_exists($dotenvPath)) {
+                    foreach (file($dotenvPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                        $line = trim($line);
+                        if (empty($line) || $line[0] === '#') continue;
+                        if (strpos($line, '=') !== false) {
+                            list($k, $v) = explode('=', $line, 2);
+                            if (trim($k) === 'GOOGLE_MAPS_API_KEY') { $v = trim(trim($v), '"\''); if (!empty($v) && $v !== 'YOUR_API_KEY_HERE') $key = $v; break; }
+                        }
+                    }
+                }
+            }
+            echo htmlspecialchars($key, ENT_QUOTES, 'UTF-8');
+        ?>';
+        if (!apiKey || apiKey === 'YOUR_API_KEY_HERE') { alert('Google Maps API key not configured.'); return; }
+        fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(location) + '&key=' + apiKey)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.status === 'OK' && data.results.length > 0) {
+                    var loc = data.results[0].geometry.location;
+                    document.getElementById('field-latitude').value = loc.lat.toFixed(7);
+                    document.getElementById('field-longitude').value = loc.lng.toFixed(7);
+                } else {
+                    alert('Could not geocode this location. Please enter coordinates manually.');
+                }
+            })
+            .catch(function() { alert('Geocoding request failed.'); });
+    }
+    </script>
 </body>
 </html>

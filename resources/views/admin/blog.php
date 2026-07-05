@@ -1,26 +1,31 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header('Location: login.php');
-    exit;
-}
+require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
+Auth::requireRole('admin');
+CsrfProtection::generate();
 
 require_once __DIR__ . '/../../../src/config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 
 // Handle delete
-if (isset($_GET['delete'])) {
-    $id = (int)$_GET['delete'];
+if (isset($_POST['delete'])) {
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $id = (int)$_POST['delete'];
     $db->prepare("DELETE FROM blog_posts WHERE id = ?")->execute([$id]);
     header('Location: blog.php?deleted=1');
     exit;
 }
 
 // Handle status toggle
-if (isset($_GET['toggle']) && isset($_GET['status'])) {
-    $id = (int)$_GET['toggle'];
-    $status = $_GET['status'] === 'published' ? 'published' : 'draft';
+if (isset($_POST['toggle'])) {
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $id = (int)$_POST['toggle'];
+    $status = $_POST['new_status'] === 'published' ? 'published' : 'draft';
     $db->prepare("UPDATE blog_posts SET status = ? WHERE id = ?")->execute([$status, $id]);
     header('Location: blog.php?updated=1');
     exit;
@@ -120,10 +125,19 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-3">
                                 <a href="/admin/blog/edit?id=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">Edit</a>
-                                <a href="/admin/blog?toggle=<?php echo $p['id']; ?>&status=<?php echo $p['status'] === 'published' ? 'draft' : 'published'; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">
-                                    <?php echo $p['status'] === 'published' ? 'Draft' : 'Publish'; ?>
-                                </a>
-                                <a href="/admin/blog?delete=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-danger/70 hover:text-danger transition-colors no-underline" onclick="return confirm('Delete this post?')">Delete</a>
+                                <form method="POST" style="display:inline">
+                                    <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                    <input type="hidden" name="toggle" value="<?php echo $p['id']; ?>">
+                                    <input type="hidden" name="new_status" value="<?php echo $p['status'] === 'published' ? 'draft' : 'published'; ?>">
+                                    <button type="submit" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline bg-transparent border-0 cursor-pointer" style="background:none;border:none;cursor:pointer">
+                                        <?php echo $p['status'] === 'published' ? 'Draft' : 'Publish'; ?>
+                                    </button>
+                                </form>
+                                <form method="POST" style="display:inline" onsubmit="return confirm('Delete this post?')">
+                                    <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                    <input type="hidden" name="delete" value="<?php echo $p['id']; ?>">
+                                    <button type="submit" class="font-mono text-[0.625rem] uppercase tracking-wider text-danger/70 hover:text-danger transition-colors no-underline bg-transparent border-0 cursor-pointer" style="background:none;border:none;cursor:pointer">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

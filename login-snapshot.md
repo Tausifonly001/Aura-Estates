@@ -1,0 +1,52 @@
+- generic [active] [ref=f8e1]:
+  - link "A Aura" [ref=f8e5] [cursor=pointer]:
+    - /url: index.html
+    - generic [ref=f8e6]: A
+    - generic [ref=f8e7]: Aura
+  - generic [ref=f8e9]:
+    - generic [ref=f8e10]:
+      - generic [ref=f8e11]:
+        - generic [ref=f8e14]: Est. 2020 // Resident Portal
+        - generic [ref=f8e15]:
+          - text: Welcome
+          - text: Back
+        - paragraph [ref=f8e16]: Access the secure portal for refined property management, amenity bookings, and real-time maintenance dispatch.
+        - generic [ref=f8e17]: LAT. 52.5200° N // LONG. 13.4050° E
+      - generic [ref=f8e18]:
+        - generic [ref=f8e19]:
+          - generic [ref=f8e20]: "150"
+          - generic [ref=f8e21]: Properties
+        - generic [ref=f8e22]:
+          - generic [ref=f8e23]: "2400"
+          - generic [ref=f8e24]: Residents
+        - generic [ref=f8e25]:
+          - generic [ref=f8e26]: "12"
+          - generic [ref=f8e27]: Years
+    - generic [ref=f8e29]:
+      - generic [ref=f8e30]:
+        - generic [ref=f8e31]: Access Portal
+        - heading "Sign in to dashboard" [level=1] [ref=f8e32]
+      - generic [ref=f8e33]:
+        - generic [ref=f8e34]:
+          - textbox "Email" [ref=f8e35]:
+            - /placeholder: " "
+          - generic: Email
+        - generic [ref=f8e36]:
+          - textbox "Password" [ref=f8e37]:
+            - /placeholder: " "
+          - generic: Password
+        - generic [ref=f8e38]:
+          - generic [ref=f8e39] [cursor=pointer]:
+            - checkbox "Remember me" [ref=f8e40]
+            - generic [ref=f8e41]: Remember me
+          - link "Forgot?" [ref=f8e42] [cursor=pointer]:
+            - /url: /aura-estates/forgot-password
+        - button "Sign In" [ref=f8e43] [cursor=pointer]
+      - generic [ref=f8e48]: or
+      - button "Sign in with Google" [disabled] [ref=f8e49]:
+        - img [ref=f8e50]
+        - text: Sign in with Google
+      - paragraph [ref=f8e55]:
+        - text: No account?
+        - link "Create one" [ref=f8e56] [cursor=pointer]:
+          - /url: /aura-estates/register

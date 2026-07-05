@@ -37,7 +37,7 @@ $currentPage = 'properties';
             <div class="lg:col-span-3">
                 <div class="aspect-[16/10] bg-surface border border-border-light overflow-hidden mb-8">
                     <?php if (!empty($property['main_image'])): ?>
-                    <img src="<?php echo htmlspecialchars($property['main_image']); ?>" class="w-full h-full object-cover" alt="<?php echo htmlspecialchars($property['title']); ?>" data-image-reveal>
+                    <img src="<?php echo htmlspecialchars($property['main_image']); ?>" class="w-full h-full object-cover" alt="<?php echo htmlspecialchars($property['title']); ?>" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/property.svg';">
                     <?php else: ?>
                     <div class="w-full h-full flex items-center justify-center"><i class="fas fa-building text-4xl text-muted"></i></div>
                     <?php endif; ?>
@@ -88,5 +88,54 @@ $currentPage = 'properties';
         </div>
     </div>
 </section>
+
+<?php if (!empty($property['latitude']) && !empty($property['longitude'])): ?>
+<section class="py-16 lg:py-24 border-t border-border/40" data-reveal>
+    <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
+        <div class="flex flex-col gap-4 mb-8">
+            <p class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-muted">Location</p>
+            <h2 class="font-sans font-light text-[2rem] lg:text-[2.75rem] leading-[1.1] text-ink">
+                <?php echo htmlspecialchars($property['location']); ?>
+            </h2>
+        </div>
+        <div id="property-map" class="w-full h-[400px] lg:h-[500px] bg-bg-alt border border-border-light rounded-2xl overflow-hidden"></div>
+        <div class="mt-6 flex flex-wrap gap-6">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=<?php echo htmlspecialchars($property['latitude'] . ',' . $property['longitude']); ?>"
+               target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-accent transition-colors no-underline border border-border px-4 py-2 rounded-full">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                Get Directions
+            </a>
+            <span class="font-mono text-[0.5625rem] tracking-[0.02em] text-muted self-center">
+                LAT. <?php echo number_format((float)$property['latitude'], 4); ?>&deg; &nbsp; LONG. <?php echo number_format((float)$property['longitude'], 4); ?>&deg;
+            </span>
+        </div>
+    </div>
+</section>
+<script>
+(function() {
+    function initMap() {
+        if (typeof AuraMaps !== 'undefined' && window.__googleMapsReady) {
+            AuraMaps.initSinglePropertyMap('property-map',
+                '<?php echo htmlspecialchars($property['latitude']); ?>',
+                '<?php echo htmlspecialchars($property['longitude']); ?>',
+                <?php echo json_encode([
+                    'title' => $property['title'],
+                    'location' => $property['location'],
+                    'property_type' => $property['property_type'],
+                    'bedrooms' => $property['bedrooms'],
+                    'bathrooms' => $property['bathrooms'],
+                    'area_sqft' => $property['area_sqft'],
+                    'price' => $property['price'],
+                    'main_image' => $property['main_image']
+                ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT); ?>
+            );
+        }
+    }
+    if (window.__googleMapsReady) { initMap(); }
+    else { document.addEventListener('google-maps-ready', initMap); }
+})();
+</script>
+<?php endif; ?>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

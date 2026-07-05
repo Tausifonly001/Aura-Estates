@@ -96,7 +96,7 @@ if($_POST){
             <div class="err-msg" style="opacity:0;"><?php echo $message; ?></div>
         <?php endif; ?>
 
-        <form action="/aura-estates/admin/login" method="post">
+        <form action="<?php echo Auth::getBasePrefix(); ?>/admin/login" method="post">
             <div class="relative mb-7">
                 <input type="email" name="email" id="email" class="input-line" placeholder=" " value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
                 <label for="email" class="input-label">Email</label>
@@ -111,8 +111,8 @@ if($_POST){
         </form>
 
         <div class="mt-8 pt-6 border-t border-border-light flex flex-col gap-3" style="opacity:0;">
-            <a href="/admin/register" class="link-underline">Create Account</a>
-            <a href="/admin/forgot-password" class="link-underline">Forgot Password?</a>
+            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/register" class="link-underline">Create Account</a>
+            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/forgot-password" class="link-underline">Forgot Password?</a>
             <a href="../../index.html" class="link-underline text-muted hover:text-ink-secondary">Back to Site</a>
         </div>
     </div>

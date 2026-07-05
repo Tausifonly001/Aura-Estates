@@ -9,6 +9,8 @@ class Property {
     public $description;
     public $price;
     public $location;
+    public $latitude;
+    public $longitude;
     public $property_type;
     public $bedrooms;
     public $bathrooms;
@@ -42,6 +44,8 @@ class Property {
             $this->description = $row['description'];
             $this->price = $row['price'];
             $this->location = $row['location'];
+            $this->latitude = $row['latitude'];
+            $this->longitude = $row['longitude'];
             $this->property_type = $row['property_type'];
             $this->bedrooms = $row['bedrooms'];
             $this->bathrooms = $row['bathrooms'];
@@ -60,6 +64,7 @@ class Property {
 
         $query = "INSERT INTO " . $this->table_name . " SET
             title=:title, description=:description, price=:price, location=:location, 
+            latitude=:latitude, longitude=:longitude,
             property_type=:property_type, bedrooms=:bedrooms, bathrooms=:bathrooms, 
             area_sqft=:area_sqft, main_image=:main_image, is_available=:is_available";
 
@@ -70,6 +75,8 @@ class Property {
         $this->description=htmlspecialchars(strip_tags($this->description));
         $this->price=htmlspecialchars(strip_tags($this->price));
         $this->location=htmlspecialchars(strip_tags($this->location));
+        $this->latitude=htmlspecialchars(strip_tags($this->latitude ?? ''));
+        $this->longitude=htmlspecialchars(strip_tags($this->longitude ?? ''));
         $this->property_type=htmlspecialchars(strip_tags($this->property_type));
         $this->bedrooms=htmlspecialchars(strip_tags($this->bedrooms));
         $this->bathrooms=htmlspecialchars(strip_tags($this->bathrooms));
@@ -82,6 +89,8 @@ class Property {
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":location", $this->location);
+        $stmt->bindParam(":latitude", $this->latitude);
+        $stmt->bindParam(":longitude", $this->longitude);
         $stmt->bindParam(":property_type", $this->property_type);
         $stmt->bindParam(":bedrooms", $this->bedrooms);
         $stmt->bindParam(":bathrooms", $this->bathrooms);
@@ -104,6 +113,7 @@ class Property {
 
         $query = "UPDATE " . $this->table_name . " SET
             title=:title, description=:description, price=:price, location=:location, 
+            latitude=:latitude, longitude=:longitude,
             property_type=:property_type, bedrooms=:bedrooms, bathrooms=:bathrooms, 
             area_sqft=:area_sqft, main_image=:main_image, is_available=:is_available
             WHERE id = :id";
@@ -115,6 +125,8 @@ class Property {
         $this->description=htmlspecialchars(strip_tags($this->description));
         $this->price=htmlspecialchars(strip_tags($this->price));
         $this->location=htmlspecialchars(strip_tags($this->location));
+        $this->latitude=htmlspecialchars(strip_tags($this->latitude ?? ''));
+        $this->longitude=htmlspecialchars(strip_tags($this->longitude ?? ''));
         $this->property_type=htmlspecialchars(strip_tags($this->property_type));
         $this->bedrooms=htmlspecialchars(strip_tags($this->bedrooms));
         $this->bathrooms=htmlspecialchars(strip_tags($this->bathrooms));
@@ -128,6 +140,8 @@ class Property {
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":location", $this->location);
+        $stmt->bindParam(":latitude", $this->latitude);
+        $stmt->bindParam(":longitude", $this->longitude);
         $stmt->bindParam(":property_type", $this->property_type);
         $stmt->bindParam(":bedrooms", $this->bedrooms);
         $stmt->bindParam(":bathrooms", $this->bathrooms);

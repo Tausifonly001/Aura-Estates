@@ -112,197 +112,330 @@ var AuraThree = (function() {
     AuraScene.resumeAll = function() { animating = true; };
     AuraScene._mainLoopStarted = false;
 
-    // ── Hero Particle Field ──
-    var _sharedParticleGeo = null;
-
+    // ── Hero: Realistic Architectural Sculpture ──
     AuraScene.createParticleField = function(container, opts) {
         opts = Object.assign({
-            count: 4000,
-            spread: 50,
-            speed: 0.4,
-            size: 0.06,
-            color: 0x8c7b6c,
-            opacity: 0.5,
-            gradient: true
+            autoRotateSpeed: 0.12
         }, opts);
 
         var scene = new AuraScene(container, {
             alpha: true,
-            antialias: false,
+            antialias: true,
             fogColor: 0xfcfbfa,
-            fogNear: 5,
-            fogFar: 60
+            fogNear: 12,
+            fogFar: 35
         });
 
-        if (!_sharedParticleGeo) {
-            _sharedParticleGeo = new THREE.BufferGeometry();
-            var total = 4000;
-            var pos = new Float32Array(total * 3);
-            var col = new Float32Array(total * 3);
-            var sz = new Float32Array(total);
-            var spd = new Float32Array(total);
-            var phs = new Float32Array(total);
-            var baseColor = new THREE.Color(0x8c7b6c);
-            for (var i = 0; i < total; i++) {
-                var radius = 5 + Math.random() * 45;
-                var theta = Math.random() * Math.PI * 2;
-                var phi = Math.random() * Math.PI * 2;
-                pos[i * 3] = Math.sin(theta) * Math.cos(phi) * radius;
-                pos[i * 3 + 1] = Math.sin(theta) * Math.sin(phi) * radius * 0.6;
-                pos[i * 3 + 2] = Math.cos(theta) * radius * 0.8;
-                sz[i] = 0.06 * (0.3 + Math.random() * 1.2);
-                spd[i] = 0.1 + Math.random() * 0.5;
-                phs[i] = Math.random() * Math.PI * 2;
-                var c = baseColor.clone().lerp(new THREE.Color(0xd6cec5), Math.random() * 0.4);
-                col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
-            }
-            _sharedParticleGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-            _sharedParticleGeo.setAttribute('size', new THREE.BufferAttribute(sz, 1));
-            _sharedParticleGeo.setAttribute('speed', new THREE.BufferAttribute(spd, 1));
-            _sharedParticleGeo.setAttribute('phase', new THREE.BufferAttribute(phs, 1));
-            _sharedParticleGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-            _sharedParticleGeo._speeds = spd;
-            _sharedParticleGeo._phases = phs;
-        }
+        var sculptureGroup = new THREE.Group();
+        var orbiters = [];
 
-        var geometry = _sharedParticleGeo.clone();
-
-        var material = new THREE.PointsMaterial({
-            size: 0.06,
+        var goldMat = new THREE.MeshPhysicalMaterial({
+            color: 0x8c7b6c,
+            roughness: 0.15,
+            metalness: 0.9,
+            clearcoat: 0.6,
+            clearcoatRoughness: 0.15,
+            envMapIntensity: 1.5
+        });
+        var darkMat = new THREE.MeshPhysicalMaterial({
+            color: 0x3a322c,
+            roughness: 0.2,
+            metalness: 0.85,
+            clearcoat: 0.4,
+            clearcoatRoughness: 0.2
+        });
+        var glassMat = new THREE.MeshPhysicalMaterial({
+            color: 0xd6cec5,
+            roughness: 0.05,
+            metalness: 0.3,
+            transmission: 0.6,
+            thickness: 0.5,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
             transparent: true,
-            opacity: 0.5,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            sizeAttenuation: true,
-            vertexColors: true
+            opacity: 0.85
+        });
+        var lightMat = new THREE.MeshPhysicalMaterial({
+            color: 0xc4b8ab,
+            roughness: 0.25,
+            metalness: 0.7,
+            clearcoat: 0.5,
+            clearcoatRoughness: 0.2
         });
 
-        var points = new THREE.Points(geometry, material);
-        scene.add(points);
-        scene.camera.position.z = 22;
+        var ringGeo = new THREE.TorusGeometry(1.4, 0.06, 24, 64);
+        var ring = new THREE.Mesh(ringGeo, goldMat);
+        sculptureGroup.add(ring);
 
-        var driftX = 0, driftY = 0;
-        var targetDriftX = 0, targetDriftY = 0;
+        var ring2Geo = new THREE.TorusGeometry(1.1, 0.04, 20, 48);
+        var ring2 = new THREE.Mesh(ring2Geo, darkMat);
+        ring2.rotation.x = Math.PI / 2.5;
+        ring2.rotation.z = Math.PI / 4;
+        sculptureGroup.add(ring2);
+
+        var coreGeo = new THREE.IcosahedronGeometry(0.35, 1);
+        var core = new THREE.Mesh(coreGeo, glassMat);
+        sculptureGroup.add(core);
+
+        var shapes = [
+            { geo: new THREE.OctahedronGeometry(0.18, 0), mat: goldMat, orbit: 1.8, speed: 0.3, phase: 0, floatAmp: 0.15, floatSpeed: 0.6 },
+            { geo: new THREE.TetrahedronGeometry(0.15, 0), mat: darkMat, orbit: 2.0, speed: 0.22, phase: Math.PI * 0.4, floatAmp: 0.12, floatSpeed: 0.8 },
+            { geo: new THREE.IcosahedronGeometry(0.14, 0), mat: lightMat, orbit: 2.2, speed: 0.18, phase: Math.PI * 0.8, floatAmp: 0.18, floatSpeed: 0.5 },
+            { geo: new THREE.OctahedronGeometry(0.12, 0), mat: glassMat, orbit: 1.6, speed: 0.35, phase: Math.PI * 1.2, floatAmp: 0.1, floatSpeed: 0.7 },
+            { geo: new THREE.DodecahedronGeometry(0.13, 0), mat: goldMat, orbit: 2.4, speed: 0.15, phase: Math.PI * 1.6, floatAmp: 0.14, floatSpeed: 0.45 }
+        ];
+
+        shapes.forEach(function(s) {
+            var mesh = new THREE.Mesh(s.geo, s.mat);
+            mesh.userData = {
+                orbitRadius: s.orbit,
+                orbitSpeed: s.speed,
+                orbitPhase: s.phase,
+                floatAmp: s.floatAmp,
+                floatSpeed: s.floatSpeed,
+                rotSpeed: (Math.random() - 0.5) * 0.015
+            };
+            sculptureGroup.add(mesh);
+            orbiters.push(mesh);
+        });
+
+        var dustCount = 300;
+        var dustGeo = new THREE.BufferGeometry();
+        var dustPos = new Float32Array(dustCount * 3);
+        var dustSizes = new Float32Array(dustCount);
+        for (var i = 0; i < dustCount; i++) {
+            dustPos[i * 3] = (Math.random() - 0.5) * 14;
+            dustPos[i * 3 + 1] = (Math.random() - 0.5) * 10;
+            dustPos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+            dustSizes[i] = 0.02 + Math.random() * 0.04;
+        }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+        var dustMat = new THREE.PointsMaterial({
+            color: 0xc4b8ab,
+            size: 0.04,
+            transparent: true,
+            opacity: 0.35,
+            depthWrite: false,
+            sizeAttenuation: true
+        });
+        var dust = new THREE.Points(dustGeo, dustMat);
+        scene.add(dust);
+
+        scene.add(sculptureGroup);
+
+        var ambientLight = new THREE.AmbientLight(0xfcfbfa, 0.5);
+        scene.add(ambientLight);
+        var keyLight = new THREE.DirectionalLight(0xffffff, 1.3);
+        keyLight.position.set(4, 8, 5);
+        scene.add(keyLight);
+        var fillLight = new THREE.DirectionalLight(0x8c7b6c, 0.4);
+        fillLight.position.set(-5, 3, -3);
+        scene.add(fillLight);
+        var rimLight = new THREE.DirectionalLight(0xd6cec5, 0.6);
+        rimLight.position.set(-2, -4, -6);
+        scene.add(rimLight);
+        var topLight = new THREE.PointLight(0xfff8ed, 0.5, 20);
+        topLight.position.set(0, 6, 0);
+        scene.add(topLight);
+
+        scene.camera.position.set(2.5, 1.2, 4.5);
+        scene.camera.lookAt(0, 0, 0);
 
         scene.onUpdate = function(delta, elapsed, mx, my) {
-            var pos = geometry.attributes.position.array;
-            var szArr = geometry.attributes.size.array;
-            var spdArr = _sharedParticleGeo._speeds;
-            var phsArr = _sharedParticleGeo._phases;
+            sculptureGroup.rotation.y += delta * opts.autoRotateSpeed;
+            sculptureGroup.rotation.x = Math.sin(elapsed * 0.06) * 0.04 + my * 0.03;
 
-            targetDriftX = mx * 0.4;
-            targetDriftY = my * 0.4;
-            driftX += (targetDriftX - driftX) * 0.02;
-            driftY += (targetDriftY - driftY) * 0.02;
+            core.rotation.x = elapsed * 0.15;
+            core.rotation.y = elapsed * 0.2;
 
-            for (var i = 0; i < total; i++) {
-                var i3 = i * 3;
-                var wave = Math.sin(elapsed * spdArr[i] + phsArr[i]);
-                var wave2 = Math.cos(elapsed * spdArr[i] * 0.7 + phsArr[i] * 1.3);
-                pos[i3] += wave * 0.004 + driftX * 0.001;
-                pos[i3 + 1] += wave2 * 0.004 + driftY * 0.001;
-                pos[i3 + 2] += Math.sin(elapsed * spdArr[i] * 0.5 + phsArr[i]) * 0.003;
-                szArr[i] = 0.06 * (0.5 + 0.5 * Math.sin(elapsed * 0.8 + phsArr[i]));
+            ring.rotation.z = elapsed * 0.04;
+            ring2.rotation.y = elapsed * 0.06;
+
+            orbiters.forEach(function(mesh) {
+                var ud = mesh.userData;
+                var angle = ud.orbitPhase + elapsed * ud.orbitSpeed;
+                mesh.position.x = Math.cos(angle) * ud.orbitRadius;
+                mesh.position.z = Math.sin(angle) * ud.orbitRadius;
+                mesh.position.y = Math.sin(elapsed * ud.floatSpeed + ud.orbitPhase) * ud.floatAmp;
+                mesh.rotation.x += ud.rotSpeed;
+                mesh.rotation.y += ud.rotSpeed * 1.3;
+            });
+
+            dust.rotation.y += delta * 0.003;
+            dust.rotation.x = Math.sin(elapsed * 0.04) * 0.01;
+            var dPos = dustGeo.attributes.position.array;
+            for (var i = 0; i < dustCount; i++) {
+                dPos[i * 3 + 1] += Math.sin(elapsed * 0.3 + i) * 0.0005;
             }
-            geometry.attributes.position.needsUpdate = true;
-            geometry.attributes.size.needsUpdate = true;
-            points.rotation.y += delta * 0.008;
-            material.opacity = 0.5 * (0.8 + 0.2 * Math.sin(elapsed * 0.15));
+            dustGeo.attributes.position.needsUpdate = true;
         };
 
         return scene;
     };
 
-    // ── 3D Building Skyline (Real GLB Model) ──
+    // ── 3D Procedural City Skyline (Realistic) ──
     AuraScene.createBuildingSkyline = function(container, opts) {
         opts = Object.assign({
-            scale: 2.5,
-            autoRotateSpeed: 0.3
+            autoRotateSpeed: 0.1,
+            buildingCount: 35
         }, opts);
 
         var scene = new AuraScene(container, {
             alpha: true,
-            fogColor: 0xfcfbfa,
+            fogColor: 0xf2efe9,
             fogNear: 8,
-            fogFar: 35
+            fogFar: 30
         });
 
-        var modelGroup = new THREE.Group();
-        var modelLoaded = false;
+        var cityGroup = new THREE.Group();
 
-        var ambientLight = new THREE.AmbientLight(0xfcfbfa, 0.8);
-        scene.add(ambientLight);
-        var dirLight = new THREE.DirectionalLight(0x8c7b6c, 1.0);
-        dirLight.position.set(5, 15, 10);
-        scene.add(dirLight);
-        var fillLight = new THREE.DirectionalLight(0xf5f3f0, 0.4);
-        fillLight.position.set(-5, 5, -5);
-        scene.add(fillLight);
-        var rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        rimLight.position.set(-3, -2, -8);
-        scene.add(rimLight);
+        var palette = [
+            { color: 0x8c7b6c, roughness: 0.2, metalness: 0.8 },
+            { color: 0xa09385, roughness: 0.25, metalness: 0.75 },
+            { color: 0x6f5f51, roughness: 0.15, metalness: 0.85 },
+            { color: 0xc4b8ab, roughness: 0.3, metalness: 0.6 },
+            { color: 0x555049, roughness: 0.18, metalness: 0.9 }
+        ];
+
+        var glassPalette = [0x88aacc, 0x99bbdd, 0x7799bb, 0xaabbcc];
+
+        var gridCols = 8;
+        var gridRows = 5;
+        var spacingX = 0.75;
+        var spacingZ = 0.65;
+        var idx = 0;
+
+        for (var row = 0; row < gridRows; row++) {
+            for (var col = 0; col < gridCols; col++) {
+                if (idx >= opts.buildingCount) break;
+
+                var p = palette[idx % palette.length];
+                var distFromCenter = Math.sqrt(
+                    Math.pow((col - gridCols / 2) / gridCols, 2) +
+                    Math.pow((row - gridRows / 2) / gridRows, 2)
+                );
+                var heightBias = 1 - distFromCenter * 0.6;
+                var h = 0.3 + Math.pow(Math.random(), 1.5) * 2.8 * heightBias + 0.2;
+                var w = 0.2 + Math.random() * 0.3;
+                var d = 0.2 + Math.random() * 0.25;
+
+                var isTower = h > 1.8;
+                var isSkyscraper = h > 2.4;
+
+                var buildingMat = new THREE.MeshPhysicalMaterial({
+                    color: p.color,
+                    roughness: p.roughness,
+                    metalness: p.metalness,
+                    clearcoat: 0.3,
+                    clearcoatRoughness: 0.3
+                });
+
+                var geo, mesh;
+                if (isTower && Math.random() > 0.4) {
+                    var radius = 0.1 + Math.random() * 0.12;
+                    geo = new THREE.CylinderGeometry(radius, radius * 1.02, h, 12);
+                    mesh = new THREE.Mesh(geo, buildingMat);
+                } else {
+                    geo = new THREE.BoxGeometry(w, h, d);
+                    mesh = new THREE.Mesh(geo, buildingMat);
+                }
+
+                var x = (col - gridCols / 2 + 0.5) * spacingX + (Math.random() - 0.5) * 0.12;
+                var z = (row - gridRows / 2 + 0.5) * spacingZ + (Math.random() - 0.5) * 0.1;
+                mesh.position.set(x, h / 2 - 0.6, z);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                cityGroup.add(mesh);
+
+                if (isSkyscraper) {
+                    var spireGeo = new THREE.ConeGeometry(0.02, 0.5, 6);
+                    var spireMat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.2, metalness: 0.9 });
+                    var spire = new THREE.Mesh(spireGeo, spireMat);
+                    spire.position.set(x, h - 0.6 + 0.25, z);
+                    cityGroup.add(spire);
+                } else if (isTower && Math.random() > 0.5) {
+                    var capGeo = new THREE.ConeGeometry(0.08 + Math.random() * 0.06, 0.2, 8);
+                    var capMat = new THREE.MeshStandardMaterial({ color: 0xd6cec5, roughness: 0.2, metalness: 0.8 });
+                    var cap = new THREE.Mesh(capGeo, capMat);
+                    cap.position.set(x, h - 0.6 + 0.1, z);
+                    cityGroup.add(cap);
+                }
+
+                var glassColor = glassPalette[Math.floor(Math.random() * glassPalette.length)];
+                var winRows = Math.floor(h * 4);
+                var winCols = isTower ? 4 : Math.max(2, Math.floor(w * 6));
+                for (var wr = 0; wr < winRows; wr++) {
+                    for (var wc = 0; wc < winCols; wc++) {
+                        if (Math.random() > 0.65) continue;
+                        var winGeo = new THREE.PlaneGeometry(0.025, 0.02);
+                        var lit = Math.random() > 0.4;
+                        var winMat = new THREE.MeshPhysicalMaterial({
+                            color: lit ? 0xfff3dc : glassColor,
+                            roughness: 0.05,
+                            metalness: 0.4,
+                            transparent: true,
+                            opacity: lit ? 0.7 + Math.random() * 0.3 : 0.3 + Math.random() * 0.2,
+                            emissive: lit ? 0xfff3dc : 0x000000,
+                            emissiveIntensity: lit ? 0.15 : 0
+                        });
+                        var win = new THREE.Mesh(winGeo, winMat);
+
+                        var faceIdx = Math.floor(Math.random() * 4);
+                        var wx, wz, ry;
+                        if (faceIdx === 0) { wx = x + w / 2 + 0.003; wz = z + (wc / (winCols - 1) - 0.5) * d * 0.8; ry = 0; }
+                        else if (faceIdx === 1) { wx = x - w / 2 - 0.003; wz = z + (wc / (winCols - 1) - 0.5) * d * 0.8; ry = Math.PI; }
+                        else if (faceIdx === 2) { wx = x + (wc / (winCols - 1) - 0.5) * w * 0.8; wz = z + d / 2 + 0.003; ry = Math.PI / 2; }
+                        else { wx = x + (wc / (winCols - 1) - 0.5) * w * 0.8; wz = z - d / 2 - 0.003; ry = -Math.PI / 2; }
+                        win.position.set(wx, 0.05 + wr * 0.1 - 0.6, wz);
+                        win.rotation.y = ry;
+                        cityGroup.add(win);
+                    }
+                }
+
+                idx++;
+            }
+        }
 
         var groundMat = new THREE.MeshStandardMaterial({
-            color: 0xf5f3f0,
-            transparent: true,
-            opacity: 0.2,
-            roughness: 0.9,
+            color: 0xe8e4de,
+            roughness: 0.85,
             metalness: 0
         });
-        var ground = new THREE.Mesh(new THREE.CircleGeometry(12, 32), groundMat);
+        var ground = new THREE.Mesh(new THREE.PlaneGeometry(12, 8), groundMat);
         ground.rotation.x = -Math.PI / 2;
-        ground.position.y = -1.5;
-        scene.add(ground);
+        ground.position.y = -0.6;
+        ground.receiveShadow = true;
+        cityGroup.add(ground);
 
-        scene.camera.position.set(0, 0.5, 8);
-        scene.camera.lookAt(0, 0, 0);
+        var gridHelper = new THREE.GridHelper(12, 24, 0xd6cec5, 0xe8e4de);
+        gridHelper.position.y = -0.59;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.15;
+        cityGroup.add(gridHelper);
 
-        function loadModel() {
-            if (typeof THREE.GLTFLoader !== 'undefined') {
-                var loader = new THREE.GLTFLoader();
-                loader.load('resources/models/building.glb', function(gltf) {
-                    var model = gltf.scene;
-                    model.scale.setScalar(opts.scale);
-                    model.position.y = -0.5;
-                    model.traverse(function(child) {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                        }
-                    });
-                    modelGroup.add(model);
-                    modelLoaded = true;
-                }, undefined, function(error) {
-                    console.error('Building model load error:', error);
-                    fallbackModel();
-                });
-            } else {
-                console.warn('GLTFLoader not available');
-                fallbackModel();
-            }
-        }
+        scene.add(cityGroup);
 
-        function fallbackModel() {
-            var geo = new THREE.BoxGeometry(2.5, 3.5, 1.8);
-            var mat = new THREE.MeshStandardMaterial({
-                color: 0x8c7b6c,
-                roughness: 0.2,
-                metalness: 0.8
-            });
-            var mesh = new THREE.Mesh(geo, mat);
-            mesh.position.y = -0.3;
-            modelGroup.add(mesh);
-            modelLoaded = true;
-        }
+        var ambientLight = new THREE.AmbientLight(0xf5f0ea, 0.6);
+        scene.add(ambientLight);
+        var sunLight = new THREE.DirectionalLight(0xfff5e6, 1.4);
+        sunLight.position.set(5, 12, 6);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.set(1024, 1024);
+        scene.add(sunLight);
+        var fillLight = new THREE.DirectionalLight(0x8c7b6c, 0.3);
+        fillLight.position.set(-5, 4, -4);
+        scene.add(fillLight);
+        var bounceLight = new THREE.DirectionalLight(0xf5f3f0, 0.25);
+        bounceLight.position.set(0, -3, -5);
+        scene.add(bounceLight);
 
-        scene.add(modelGroup);
-        loadModel();
+        scene.camera.position.set(3, 2.2, 4.5);
+        scene.camera.lookAt(0, 0.3, 0);
 
         scene.onUpdate = function(delta, elapsed, mx, my) {
-            if (modelLoaded) {
-                modelGroup.rotation.y += delta * opts.autoRotateSpeed;
-                modelGroup.rotation.x = Math.sin(elapsed * 0.015) * 0.02 + my * 0.02;
-            }
+            cityGroup.rotation.y += delta * opts.autoRotateSpeed;
+            cityGroup.rotation.x = Math.sin(elapsed * 0.018) * 0.012 + my * 0.012;
+            cityGroup.position.y = Math.sin(elapsed * 0.08) * 0.01;
         };
 
         return scene;

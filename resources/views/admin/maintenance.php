@@ -12,7 +12,10 @@ $db = $database->getConnection();
 $maintenance = new MaintenanceRequest($db);
 
 if(isset($_POST['update_status'])){
-    $maintenance->id = $_POST['request_id'];
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $maintenance->id = (int)$_POST['request_id'];
     $maintenance->status = $_POST['status'];
     $maintenance->resolved_at = ($_POST['status'] == 'completed') ? date('Y-m-d H:i:s') : null;
     $maintenance->update();
@@ -21,15 +24,21 @@ if(isset($_POST['update_status'])){
 }
 
 if(isset($_POST['assign_staff'])){
-    $maintenance->id = $_POST['request_id'];
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $maintenance->id = (int)$_POST['request_id'];
     $maintenance->assigned_to = $_POST['assigned_to'] ?: null;
     $maintenance->assign();
     header("Location: maintenance.php");
     exit;
 }
 
-if(isset($_GET['delete'])){
-    $maintenance->id = $_GET['delete'];
+if(isset($_POST['delete'])){
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        die('Invalid CSRF token.');
+    }
+    $maintenance->id = (int)$_POST['delete'];
     $maintenance->delete();
     header("Location: maintenance.php");
     exit;
@@ -151,7 +160,11 @@ $stats = $maintenance->getStats();
                                                     ?>
                                                 </select>
                                             </form>
-                                            <a href="?delete=<?php echo $row['id']; ?>" class="neo-btn neo-btn-sm neo-btn-ghost text-graphite/50 hover:text-ink" onclick="return confirm('Delete this request?')">Delete</a>
+                                            <form method="POST" onsubmit="return confirm('Delete this request?')">
+                                                <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                <input type="hidden" name="delete" value="<?php echo $row['id']; ?>">
+                                                <button type="submit" class="neo-btn neo-btn-sm neo-btn-ghost text-graphite/50 hover:text-ink" style="background:none;border:none;cursor:pointer">Delete</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
