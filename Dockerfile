@@ -22,9 +22,10 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 
 COPY . /var/www/html/
 
-RUN rm -f /var/www/html/.env /var/www/html/cookies.txt && \
+RUN mkdir -p /var/www/html/uploads /var/www/html/storage && \
+    rm -f /var/www/html/.env /var/www/html/cookies.txt && \
     cp /var/www/html/.env.example /var/www/html/.env && \
-    chown -R www-data:www-data /var/www/html/uploads && \
+    chown -R www-data:www-data /var/www/html/uploads /var/www/html/storage && \
     chmod -R 755 /var/www/html/uploads /var/www/html/storage
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
