@@ -38,10 +38,9 @@ class SSEService {
 
         // Register this connection
         $db->prepare("CREATE TABLE IF NOT EXISTS sse_connections (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT NOT NULL,
-            connected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_user_time (user_id, connected_at)
+            connected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )")->execute();
         $connStmt = $db->prepare("INSERT INTO sse_connections (user_id) VALUES (?)");
         $connStmt->execute([$userId]);

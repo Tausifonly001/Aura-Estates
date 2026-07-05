@@ -31,7 +31,7 @@ class SiteContent {
     }
 
     public function set($page, $section, $keyName, $value, $type = 'text', $sortOrder = 0) {
-        $stmt = $this->db->prepare("INSERT INTO site_content (page, section, key_name, value, type, sort_order) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value), type = VALUES(type), sort_order = VALUES(sort_order)");
+        $stmt = $this->db->prepare("INSERT INTO site_content (page, section, key_name, value, type, sort_order) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT (page, section, key_name) DO UPDATE SET value = EXCLUDED.value, type = EXCLUDED.type, sort_order = EXCLUDED.sort_order");
         return $stmt->execute([$page, $section, $keyName, $value, $type, $sortOrder]);
     }
 

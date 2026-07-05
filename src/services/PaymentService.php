@@ -27,7 +27,7 @@ class PaymentService {
     private static function ensureTable() {
         $db = self::getDb();
         $db->exec("CREATE TABLE IF NOT EXISTS payment_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             razorpay_order_id VARCHAR(100) NOT NULL UNIQUE,
             user_id INT NOT NULL,
             amount INT NOT NULL,
@@ -35,11 +35,9 @@ class PaymentService {
             purpose VARCHAR(255) DEFAULT NULL,
             reference_type VARCHAR(50) DEFAULT NULL,
             reference_id INT DEFAULT NULL,
-            status ENUM('created', 'attempted', 'paid', 'failed') DEFAULT 'created',
+            status VARCHAR(20) DEFAULT 'created',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_user (user_id),
-            INDEX idx_razorpay (razorpay_order_id)
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )");
     }
 

@@ -57,7 +57,7 @@ class FileUploadService {
 
         $db = self::getDb();
         $db->prepare("CREATE TABLE IF NOT EXISTS uploads (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT DEFAULT NULL,
             subdir VARCHAR(50) NOT NULL,
             filename VARCHAR(255) NOT NULL,

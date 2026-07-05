@@ -6,9 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     libapache2-mod-php8.2 \
     php8.2 \
-    php8.2-mysqli \
+    php8.2-pgsql \
     php8.2-pdo \
-    php8.2-mysql \
     php8.2-gd \
     php8.2-zip \
     php8.2-mbstring \

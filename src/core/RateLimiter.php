@@ -21,14 +21,12 @@ class RateLimiter {
 
     private static function ensureTable() {
         self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+            id BIGSERIAL PRIMARY KEY,
             identifier VARCHAR(255) NOT NULL,
             endpoint VARCHAR(100) NOT NULL,
-            hits INT UNSIGNED DEFAULT 1,
-            window_start DATETIME NOT NULL,
-            INDEX idx_lookup (identifier, endpoint, window_start),
-            INDEX idx_cleanup (window_start)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+            hits INT DEFAULT 1,
+            window_start TIMESTAMP NOT NULL
+        )");
     }
 
     public static function check($endpoint, $maxRequests = 60, $windowSeconds = 60) {

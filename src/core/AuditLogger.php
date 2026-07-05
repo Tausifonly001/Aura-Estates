@@ -15,23 +15,19 @@ class AuditLogger {
 
     private static function ensureTable() {
         self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+            id BIGSERIAL PRIMARY KEY,
             user_id INT DEFAULT NULL,
             user_name VARCHAR(100) DEFAULT NULL,
             action VARCHAR(50) NOT NULL,
             entity_type VARCHAR(50) NOT NULL,
             entity_id VARCHAR(50) DEFAULT NULL,
             description TEXT DEFAULT NULL,
-            old_values JSON DEFAULT NULL,
-            new_values JSON DEFAULT NULL,
+            old_values JSONB DEFAULT NULL,
+            new_values JSONB DEFAULT NULL,
             ip_address VARCHAR(45) DEFAULT NULL,
             user_agent VARCHAR(500) DEFAULT NULL,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_user (user_id),
-            INDEX idx_action (action),
-            INDEX idx_entity (entity_type, entity_id),
-            INDEX idx_created (created_at)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )");
     }
 
     public static function log($action, $entityType, $entityId = null, $description = null, $oldValues = null, $newValues = null) {
