@@ -60,9 +60,19 @@
 
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="logo-mark">A</div>
-        <div class="loading-bar">
-            <div class="loading-bar-inner"></div>
+        <div class="loader-content">
+            <div class="loader-ring"></div>
+            <div class="loader-logo">
+                <span class="loader-letter" style="--i:0">A</span>
+            </div>
+            <div class="loader-brand">
+                <span class="loader-char" style="--i:0">A</span><span class="loader-char" style="--i:1">U</span><span class="loader-char" style="--i:2">R</span><span class="loader-char" style="--i:3">A</span>
+                <span class="loader-dot">&middot;</span>
+                <span class="loader-char" style="--i:5">E</span><span class="loader-char" style="--i:6">S</span><span class="loader-char" style="--i:7">T</span><span class="loader-char" style="--i:8">A</span><span class="loader-char" style="--i:9">T</span><span class="loader-char" style="--i:10">E</span><span class="loader-char" style="--i:11">S</span>
+            </div>
+            <div class="loader-line">
+                <div class="loader-line-fill"></div>
+            </div>
         </div>
     </div>
 
@@ -665,21 +675,28 @@
     <script src="resources/js/app.js?v=27"></script>
 
     <script>
-        // Force-hide loading screen after 3s fallback (CDN scripts may be slow/blocked)
-        setTimeout(function() {
+        (function() {
             var loader = document.getElementById('loadingScreen');
-            if (loader) loader.classList.add('hidden');
-        }, 3000);
+            if (!loader) return;
 
-        // Loading screen
-        window.addEventListener('load', function() {
-            var loader = document.getElementById('loadingScreen');
-            if (loader) {
-                setTimeout(function() { loader.classList.add('hidden'); }, 400);
+            function hideLoader() {
+                if (loader.classList.contains('hidden')) return;
+                loader.classList.add('exit');
+                setTimeout(function() {
+                    loader.classList.add('hidden');
+                    AuraAnimations.initPage();
+                    document.body.classList.add('page-entered');
+                }, 500);
             }
-            AuraAnimations.initPage();
-            document.body.classList.add('page-entered');
-        });
+
+            // Fallback: force hide after 4s
+            setTimeout(hideLoader, 4000);
+
+            // Hide when page fully loaded
+            window.addEventListener('load', function() {
+                setTimeout(hideLoader, 2200);
+            });
+        })();
 
         // Navbar scroll effect
         document.addEventListener('scroll', function() {
