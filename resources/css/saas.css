@@ -423,164 +423,86 @@ body.page-entered { opacity: 1; }
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 0.75rem;
+    transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.5s ease;
 }
 
 .loading-screen.hidden {
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
+    transform: scale(1.05);
+}
+
+.loading-screen.exit {
+    transform: scale(1.05);
+    opacity: 0;
 }
 
 .loader-content {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-/* Pulsing ring around logo */
-.loader-ring {
-    position: absolute;
-    width: 5rem;
-    height: 5rem;
-    border: 1px solid #8c7b6c;
-    border-radius: 50%;
-    opacity: 0;
-    animation: ringPulse 2s ease-in-out infinite;
-    animation-delay: 0.3s;
-}
-
-@keyframes ringPulse {
-    0% { transform: scale(0.8); opacity: 0; }
-    30% { opacity: 0.4; }
-    100% { transform: scale(1.6); opacity: 0; }
-}
-
-/* Logo "A" */
-.loader-logo {
-    width: 3.5rem;
-    height: 3.5rem;
-    background: #8c7b6c;
-    color: #ffffff;
-    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 0.05em;
-    opacity: 0;
-    transform: scale(0.6);
-    animation: logoReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.2s;
     position: relative;
-    z-index: 2;
 }
 
-@keyframes logoReveal {
-    0% { opacity: 0; transform: scale(0.6); }
-    60% { opacity: 1; transform: scale(1.05); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-/* Brand name */
-.loader-brand {
+/* Typing text */
+.typing-text {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.6875rem;
+    font-size: 2rem;
     font-weight: 500;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: #8c7b6c;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    overflow: hidden;
+    color: #3a322c;
+    min-width: 5.5rem;
+    text-align: center;
+    height: 2.5rem;
+    line-height: 2.5rem;
 }
 
-.loader-char {
+/* Blinking cursor */
+.typing-cursor {
     display: inline-block;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: charReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: calc(0.6s + var(--i) * 0.04s);
-}
-
-.loader-dot {
-    display: inline-block;
-    opacity: 0;
-    margin: 0 0.4em;
-    animation: charReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.85s;
-    font-size: 0.5rem;
-}
-
-@keyframes charReveal {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Progress line */
-.loader-line {
-    width: 80px;
-    height: 1px;
-    background: #e8e6e1;
-    overflow: hidden;
-    opacity: 0;
-    animation: fadeIn 0.4s ease forwards;
-    animation-delay: 1s;
-}
-
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
-.loader-line-fill {
-    height: 100%;
-    width: 0%;
+    width: 1.5px;
+    height: 2rem;
     background: #8c7b6c;
-    animation: loadingProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    animation-delay: 1s;
+    margin-left: 0.15rem;
+    animation: cursorBlink 0.8s steps(2) infinite;
+    vertical-align: middle;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
-@keyframes loadingProgress {
-    0% { width: 0%; }
-    20% { width: 30%; }
-    60% { width: 70%; }
-    100% { width: 100%; }
+.typing-cursor.active {
+    opacity: 1;
 }
 
-/* Exit animation */
-.loading-screen.exit .loader-logo {
-    animation: logoExit 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
-}
-
-.loading-screen.exit .loader-brand {
-    animation: brandExit 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
-}
-
-.loading-screen.exit .loader-line {
-    animation: lineExit 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
-}
-
-.loading-screen.exit .loader-ring {
+.typing-cursor.done {
     animation: none;
     opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-@keyframes logoExit {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0.8); }
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
-@keyframes brandExit {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-8px); }
+/* Subtitle "ESTATES" */
+.loader-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.625rem;
+    font-weight: 400;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: #8c7b6c;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-@keyframes lineExit {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+.loader-sub.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* ── Mobile Nav ── */

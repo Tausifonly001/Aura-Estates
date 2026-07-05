@@ -61,19 +61,10 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader-content">
-            <div class="loader-ring"></div>
-            <div class="loader-logo">
-                <span class="loader-letter" style="--i:0">A</span>
-            </div>
-            <div class="loader-brand">
-                <span class="loader-char" style="--i:0">A</span><span class="loader-char" style="--i:1">U</span><span class="loader-char" style="--i:2">R</span><span class="loader-char" style="--i:3">A</span>
-                <span class="loader-dot">&middot;</span>
-                <span class="loader-char" style="--i:5">E</span><span class="loader-char" style="--i:6">S</span><span class="loader-char" style="--i:7">T</span><span class="loader-char" style="--i:8">A</span><span class="loader-char" style="--i:9">T</span><span class="loader-char" style="--i:10">E</span><span class="loader-char" style="--i:11">S</span>
-            </div>
-            <div class="loader-line">
-                <div class="loader-line-fill"></div>
-            </div>
+            <div class="typing-text" id="typingText"></div>
+            <div class="typing-cursor" id="typingCursor"></div>
         </div>
+        <div class="loader-sub" id="loaderSub">E S T A T E S</div>
     </div>
 
     <!-- Navigation -->
@@ -679,23 +670,56 @@
             var loader = document.getElementById('loadingScreen');
             if (!loader) return;
 
-            function hideLoader() {
-                if (loader.classList.contains('hidden')) return;
-                loader.classList.add('exit');
-                setTimeout(function() {
-                    loader.classList.add('hidden');
-                    AuraAnimations.initPage();
-                    document.body.classList.add('page-entered');
-                }, 500);
+            var textEl = document.getElementById('typingText');
+            var cursorEl = document.getElementById('typingCursor');
+            var subEl = document.getElementById('loaderSub');
+            var brand = 'AURA';
+            var i = 0;
+            var started = false;
+
+            function typeNext() {
+                if (i < brand.length) {
+                    textEl.textContent += brand.charAt(i);
+                    i++;
+                    setTimeout(typeNext, 180 + Math.random() * 80);
+                } else {
+                    typingDone();
+                }
             }
 
-            // Fallback: force hide after 4s
-            setTimeout(hideLoader, 4000);
+            function typingDone() {
+                cursorEl.classList.remove('active');
+                cursorEl.classList.add('done');
+                setTimeout(function() {
+                    subEl.classList.add('visible');
+                }, 200);
+                setTimeout(function() {
+                    loader.classList.add('exit');
+                    setTimeout(function() {
+                        loader.classList.add('hidden');
+                        if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
+                        document.body.classList.add('page-entered');
+                    }, 800);
+                }, 900);
+            }
 
-            // Hide when page fully loaded
-            window.addEventListener('load', function() {
-                setTimeout(hideLoader, 2200);
-            });
+            function startTyping() {
+                if (started) return;
+                started = true;
+                cursorEl.classList.add('active');
+                setTimeout(typeNext, 400);
+            }
+
+            startTyping();
+            setTimeout(startTyping, 600);
+            setTimeout(function() {
+                if (!started) startTyping();
+            }, 1500);
+
+            setTimeout(function() {
+                if (loader.classList.contains('hidden')) return;
+                typingDone();
+            }, 5000);
         })();
 
         // Navbar scroll effect
