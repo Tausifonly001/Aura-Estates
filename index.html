@@ -69,6 +69,11 @@
         <div class="preloader-line preloader-line--bottom" id="lineBottom"></div>
         <div class="loader-sub" id="loaderSub">E S T A T E S</div>
         <div class="preloader-counter" id="preloaderCounter">00</div>
+        <div class="shutter-slat" id="slat1"></div>
+        <div class="shutter-slat" id="slat2"></div>
+        <div class="shutter-slat" id="slat3"></div>
+        <div class="shutter-slat" id="slat4"></div>
+        <div class="shutter-slat" id="slat5"></div>
     </div>
 
     <!-- Navigation -->
@@ -710,12 +715,15 @@
                 var elapsed = Date.now() - startTime;
                 var remaining = Math.max(0, MIN_VISIBLE - elapsed);
                 setTimeout(function() {
-                    loader.classList.add('exit');
+                    loader.classList.add('slats-visible');
                     setTimeout(function() {
-                        loader.classList.add('hidden');
-                        if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
-                        document.body.classList.add('page-entered');
-                    }, 1400);
+                        loader.classList.add('exit');
+                        setTimeout(function() {
+                            loader.classList.add('hidden');
+                            if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
+                            document.body.classList.add('page-entered');
+                        }, 1600);
+                    }, 300);
                 }, remaining);
             }
 
