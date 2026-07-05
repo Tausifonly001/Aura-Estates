@@ -675,13 +675,28 @@
             var subEl = document.getElementById('loaderSub');
             var brand = 'AURA';
             var i = 0;
-            var started = false;
+            var startTime = Date.now();
+            var MIN_VISIBLE = 3200;
+
+            function hideLoader() {
+                if (loader.classList.contains('hidden')) return;
+                var elapsed = Date.now() - startTime;
+                var remaining = Math.max(0, MIN_VISIBLE - elapsed);
+                setTimeout(function() {
+                    loader.classList.add('exit');
+                    setTimeout(function() {
+                        loader.classList.add('hidden');
+                        if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
+                        document.body.classList.add('page-entered');
+                    }, 800);
+                }, remaining);
+            }
 
             function typeNext() {
                 if (i < brand.length) {
                     textEl.textContent += brand.charAt(i);
                     i++;
-                    setTimeout(typeNext, 180 + Math.random() * 80);
+                    setTimeout(typeNext, 200 + Math.floor(Math.random() * 100));
                 } else {
                     typingDone();
                 }
@@ -693,32 +708,18 @@
                 setTimeout(function() {
                     subEl.classList.add('visible');
                 }, 200);
-                setTimeout(function() {
-                    loader.classList.add('exit');
-                    setTimeout(function() {
-                        loader.classList.add('hidden');
-                        if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
-                        document.body.classList.add('page-entered');
-                    }, 800);
-                }, 900);
+                hideLoader();
             }
 
-            function startTyping() {
-                if (started) return;
-                started = true;
-                cursorEl.classList.add('active');
-                setTimeout(typeNext, 400);
-            }
-
-            startTyping();
-            setTimeout(startTyping, 600);
-            setTimeout(function() {
-                if (!started) startTyping();
-            }, 1500);
+            cursorEl.classList.add('active');
+            setTimeout(typeNext, 500);
 
             setTimeout(function() {
-                if (loader.classList.contains('hidden')) return;
-                typingDone();
+                if (i < brand.length) {
+                    textEl.textContent = brand;
+                    i = brand.length;
+                    typingDone();
+                }
             }, 5000);
         })();
 

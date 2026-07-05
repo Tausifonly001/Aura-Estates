@@ -430,11 +430,11 @@ body.page-entered { opacity: 1; }
 .loading-screen.hidden {
     opacity: 0;
     pointer-events: none;
-    transform: scale(1.05);
+    visibility: hidden;
 }
 
 .loading-screen.exit {
-    transform: scale(1.05);
+    transform: scale(1.08);
     opacity: 0;
 }
 
