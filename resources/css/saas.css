@@ -458,28 +458,6 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
     }
 }
 
-/* Shutter slat lines */
-.shutter-slat {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(140, 123, 108, 0.08);
-    z-index: 3;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.loading-screen.slats-visible .shutter-slat {
-    opacity: 1;
-}
-
-#slat1 { top: 20%; }
-#slat2 { top: 35%; }
-#slat3 { top: 50%; }
-#slat4 { top: 65%; }
-#slat5 { top: 80%; }
-
 /* Film grain overlay */
 .preloader-grain {
     position: absolute;
