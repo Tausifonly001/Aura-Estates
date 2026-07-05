@@ -693,12 +693,12 @@
             var brand = 'AURA';
             var i = 0;
             var startTime = Date.now();
-            var MIN_VISIBLE = 3400;
+            var MIN_VISIBLE = 5000;
             var counterVal = 0;
             var counterInterval = setInterval(function() {
                 counterVal = Math.min(99, counterVal + 1);
                 if (counter) counter.textContent = counterVal < 10 ? '0' + counterVal : '' + counterVal;
-            }, 35);
+            }, 50);
 
             if (counter) counter.classList.add('visible');
 
@@ -715,7 +715,7 @@
                         loader.classList.add('hidden');
                         if (typeof AuraAnimations !== 'undefined') AuraAnimations.initPage();
                         document.body.classList.add('page-entered');
-                    }, 1000);
+                    }, 1400);
                 }, remaining);
             }
 
@@ -723,21 +723,27 @@
                 if (i < brand.length) {
                     textEl.textContent += brand.charAt(i);
                     i++;
-                    setTimeout(typeNext, 180 + Math.floor(Math.random() * 90));
+                    setTimeout(typeNext, 280 + Math.floor(Math.random() * 120));
                 } else {
                     typingDone();
                 }
             }
 
             function typingDone() {
-                cursorEl.classList.remove('active');
-                cursorEl.classList.add('done');
-                textEl.classList.add('shimmer');
+                setTimeout(function() {
+                    cursorEl.classList.remove('active');
+                    cursorEl.classList.add('done');
+                }, 200);
+                setTimeout(function() {
+                    textEl.classList.add('shimmer');
+                }, 400);
                 setTimeout(function() {
                     subEl.classList.add('visible');
+                }, 800);
+                setTimeout(function() {
                     if (lineTop) lineTop.classList.add('fade-out');
                     if (lineBottom) lineBottom.classList.add('fade-out');
-                }, 300);
+                }, 1000);
                 hideLoader();
             }
 
@@ -745,15 +751,15 @@
             setTimeout(function() {
                 if (lineTop) lineTop.classList.add('drawn');
                 if (lineBottom) lineBottom.classList.add('drawn');
-            }, 200);
+            }, 400);
 
             // Cursor appears
             setTimeout(function() {
                 cursorEl.classList.add('active');
-            }, 600);
+            }, 1000);
 
             // Typing starts
-            setTimeout(typeNext, 900);
+            setTimeout(typeNext, 1400);
 
             // Fallback
             setTimeout(function() {
@@ -762,7 +768,7 @@
                     i = brand.length;
                     typingDone();
                 }
-            }, 5000);
+            }, 8000);
         })();
 
         // Navbar scroll effect
