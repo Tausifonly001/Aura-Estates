@@ -33,7 +33,7 @@ class Property {
 
     // Read single property
     public function readOne() {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 0,1";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
@@ -177,7 +177,8 @@ class Property {
         $binds = [];
 
         if ($p['search']) {
-            $where[] = "MATCH(title, description, location) AGAINST(:search IN BOOLEAN MODE)";
+            $where[] = "(title LIKE :search OR description LIKE :search OR location LIKE :search)";
+            $binds[':search'] = '%' . $p['search'] . '%';
         }
 
         foreach ($p['filter'] as $key => $value) {
@@ -200,13 +201,11 @@ class Property {
 
         $countSql = "SELECT COUNT(*) $baseQuery $whereClause";
         $countStmt = $this->conn->prepare($countSql);
-        if ($p['search']) $countStmt->bindValue(':search', $p['search'], PDO::PARAM_STR);
         foreach ($binds as $param => $value) $countStmt->bindValue($param, $value);
         $countStmt->execute();
 
         $dataSql = "SELECT * $baseQuery $whereClause $orderClause $limitClause";
         $dataStmt = $this->conn->prepare($dataSql);
-        if ($p['search']) $dataStmt->bindValue(':search', $p['search'], PDO::PARAM_STR);
         foreach ($binds as $param => $value) $dataStmt->bindValue($param, $value);
         $dataStmt->execute();
 

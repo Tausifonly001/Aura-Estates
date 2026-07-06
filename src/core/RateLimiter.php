@@ -20,13 +20,26 @@ class RateLimiter {
     }
 
     private static function ensureTable() {
-        self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
-            id BIGSERIAL PRIMARY KEY,
-            identifier VARCHAR(255) NOT NULL,
-            endpoint VARCHAR(100) NOT NULL,
-            hits INT DEFAULT 1,
-            window_start TIMESTAMP NOT NULL
-        )");
+        $db = self::$db;
+        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'pgsql') {
+            $sql = "CREATE TABLE IF NOT EXISTS " . self::$table . " (
+                id BIGSERIAL PRIMARY KEY,
+                identifier VARCHAR(255) NOT NULL,
+                endpoint VARCHAR(100) NOT NULL,
+                hits INT DEFAULT 1,
+                window_start TIMESTAMP NOT NULL
+            )";
+        } else {
+            $sql = "CREATE TABLE IF NOT EXISTS " . self::$table . " (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                identifier VARCHAR(255) NOT NULL,
+                endpoint VARCHAR(100) NOT NULL,
+                hits INT DEFAULT 1,
+                window_start TIMESTAMP NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+        }
+        $db->exec($sql);
     }
 
     public static function check($endpoint, $maxRequests = 60, $windowSeconds = 60) {
@@ -70,7 +83,12 @@ class RateLimiter {
 
     private static function cleanup() {
         $db = self::$db;
-        $db->exec("DELETE FROM " . self::$table . " WHERE window_start < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+        $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'pgsql') {
+            $db->exec("DELETE FROM " . self::$table . " WHERE window_start < NOW() - INTERVAL '1 hour'");
+        } else {
+            $db->exec("DELETE FROM " . self::$table . " WHERE window_start < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+        }
     }
 
     public static function checkLoginAttempts($email) {

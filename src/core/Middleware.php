@@ -76,7 +76,7 @@ class Middleware {
         }
         return [
             'page' => max(1, (int)($_GET['page'] ?? 1)),
-            'per_page' => min(100, max(1, (int)($_GET['per_page'] ?? 20))),
+            'per_page' => min(100, max(1, (int)($_GET['per_page'] ?? 50))),
             'search' => trim($_GET['search'] ?? ''),
             'sort' => $sort,
             'order' => strtoupper($_GET['order'] ?? 'DESC') === 'ASC' ? 'ASC' : 'DESC',
