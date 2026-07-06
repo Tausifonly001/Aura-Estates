@@ -161,7 +161,7 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 .portfolio-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem 4rem;
+    gap: 2rem 2.5rem;
 }
 
 .portfolio-item {
@@ -169,36 +169,37 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 }
 
 .portfolio-item--offset {
-    margin-top: 6rem;
+    margin-top: 3.5rem;
 }
 
 .portfolio-item__image {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 4/3;
+    aspect-ratio: 3/2;
+    border-radius: 0.5rem;
 }
 
 .portfolio-item__image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .portfolio-item:hover .portfolio-item__image img {
-    transform: scale(1.06);
+    transform: scale(1.04);
 }
 
 .portfolio-item__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(58,50,44,0.5) 0%, transparent 50%);
+    background: linear-gradient(to top, rgba(58,50,44,0.45) 0%, transparent 40%);
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
-    padding: 1.5rem;
+    padding: 1rem;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
 }
 
 .portfolio-item:hover .portfolio-item__overlay {
@@ -207,36 +208,35 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 
 .portfolio-item__cta {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #ffffff;
     background: rgba(140, 123, 108, 0.85);
     backdrop-filter: blur(8px);
-    padding: 0.625rem 1.25rem;
+    padding: 0.5rem 1rem;
     border-radius: 2rem;
-    transition: background 0.3s ease, transform 0.3s ease;
+    transition: background 0.3s ease;
 }
 
 .portfolio-item:hover .portfolio-item__cta:hover {
     background: rgba(140, 123, 108, 1);
-    transform: translateX(-4px);
 }
 
 .portfolio-item__number {
     position: absolute;
-    top: 1.25rem;
-    left: 1.25rem;
+    top: 0.75rem;
+    left: 0.75rem;
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: #ffffff;
-    background: rgba(58, 50, 44, 0.6);
+    background: rgba(58, 50, 44, 0.55);
     backdrop-filter: blur(6px);
-    width: 2rem;
-    height: 2rem;
+    width: 1.625rem;
+    height: 1.625rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,31 +244,31 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 }
 
 .portfolio-item__info {
-    padding: 1.5rem 0 0;
+    padding: 0.875rem 0 0;
 }
 
 .portfolio-item__type {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.625rem;
+    font-size: 0.5625rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #8c7b6c;
 }
 
-.portfolio-item:hover .portfolio-item__info h3 {
-    color: #8c7b6c;
+.portfolio-item__info h3 {
+    font-size: 1rem;
     transition: color 0.4s ease;
 }
 
-.portfolio-item__info h3 {
-    transition: color 0.4s ease;
+.portfolio-item:hover .portfolio-item__info h3 {
+    color: #8c7b6c;
 }
 
 @media (max-width: 768px) {
     .portfolio-grid {
         grid-template-columns: 1fr;
-        gap: 3rem;
+        gap: 2rem;
     }
     .portfolio-item--offset {
         margin-top: 0;
