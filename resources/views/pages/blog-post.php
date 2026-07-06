@@ -3,15 +3,15 @@ require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/core/HtmlSanitizer.php';
 
 $slug = isset($_GET['slug']) ? $_GET['slug'] : '';
-$database = new Database();
-$db = $database->getConnection();
 
 $post = null;
 try {
+    $database = new Database();
+    $db = $database->getConnection();
     $stmt = $db->prepare("SELECT * FROM blog_posts WHERE slug = ? AND status = 'published'");
     $stmt->execute([$slug]);
     $post = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {}
+} catch (Exception $e) {}
 
 if (!$post) {
     // Static fallback for demo

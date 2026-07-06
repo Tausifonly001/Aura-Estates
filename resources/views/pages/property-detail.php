@@ -1,15 +1,18 @@
 <?php
 require_once __DIR__ . '/../../../src/config/database.php';
-$database = new Database();
-$db = $database->getConnection();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$stmt = $db->prepare("SELECT * FROM properties WHERE id = ?");
-$stmt->execute([$id]);
-$property = $stmt->fetch(PDO::FETCH_ASSOC);
+$property = null;
+try {
+    $database = new Database();
+    $db = $database->getConnection();
+    $stmt = $db->prepare("SELECT * FROM properties WHERE id = ?");
+    $stmt->execute([$id]);
+    $property = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (Exception $e) {}
 
 if (!$property) {
-    header('Location: properties.php');
+    header('Location: properties');
     exit;
 }
 

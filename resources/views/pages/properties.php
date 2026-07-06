@@ -1,7 +1,5 @@
 <?php
 require_once __DIR__ . '/../../../src/config/database.php';
-$database = new Database();
-$db = $database->getConnection();
 
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $type = isset($_GET['type']) ? $_GET['type'] : '';
@@ -9,37 +7,45 @@ $minPrice = isset($_GET['min_price']) ? (int)$_GET['min_price'] : 0;
 $maxPrice = isset($_GET['max_price']) ? (int)$_GET['max_price'] : 0;
 $bedrooms = isset($_GET['bedrooms']) ? (int)$_GET['bedrooms'] : 0;
 
-$sql = "SELECT * FROM properties WHERE 1=1";
-$params = [];
+$properties = [];
+try {
+    $database = new Database();
+    $db = $database->getConnection();
 
-if (!empty($search)) {
-    $sql .= " AND (title LIKE ? OR description LIKE ? OR location LIKE ?)";
-    $s = "%$search%";
-    $params[] = $s;
-    $params[] = $s;
-    $params[] = $s;
-}
-if (!empty($type)) {
-    $sql .= " AND property_type = ?";
-    $params[] = $type;
-}
-if ($minPrice > 0) {
-    $sql .= " AND price >= ?";
-    $params[] = $minPrice;
-}
-if ($maxPrice > 0) {
-    $sql .= " AND price <= ?";
-    $params[] = $maxPrice;
-}
-if ($bedrooms > 0) {
-    $sql .= " AND bedrooms >= ?";
-    $params[] = $bedrooms;
-}
+    $sql = "SELECT * FROM properties WHERE 1=1";
+    $params = [];
 
-$sql .= " ORDER BY created_at DESC";
-$stmt = $db->prepare($sql);
-$stmt->execute($params);
-$properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($search)) {
+        $sql .= " AND (title LIKE ? OR description LIKE ? OR location LIKE ?)";
+        $s = "%$search%";
+        $params[] = $s;
+        $params[] = $s;
+        $params[] = $s;
+    }
+    if (!empty($type)) {
+        $sql .= " AND property_type = ?";
+        $params[] = $type;
+    }
+    if ($minPrice > 0) {
+        $sql .= " AND price >= ?";
+        $params[] = $minPrice;
+    }
+    if ($maxPrice > 0) {
+        $sql .= " AND price <= ?";
+        $params[] = $maxPrice;
+    }
+    if ($bedrooms > 0) {
+        $sql .= " AND bedrooms >= ?";
+        $params[] = $bedrooms;
+    }
+
+    $sql .= " ORDER BY created_at DESC";
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    $properties = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $properties = [];
+}
 
 $pageTitle = 'Properties';
 $currentPage = 'properties';

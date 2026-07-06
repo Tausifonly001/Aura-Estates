@@ -1,16 +1,14 @@
 <?php
 require_once __DIR__ . '/../../../src/config/database.php';
 
-$database = new Database();
-$db = $database->getConnection();
-
-// Check if blog table exists
 $posts = [];
 try {
+    $database = new Database();
+    $db = $database->getConnection();
     $stmt = $db->query("SELECT id, title, slug, excerpt, author, category, published_at, cover_image FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC");
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // Table doesn't exist yet
+} catch (Exception $e) {
+    $posts = [];
 }
 
 $pageTitle = 'Journal';
