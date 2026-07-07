@@ -38,6 +38,11 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(about|properties|services|blog|contact|faq|careers|privacy|terms|property-detail|blog-post)$ resources/views/pages/$1.php [L,QSA]
 
+# Rewrite /property-detail/123 → property-detail.php?id=123
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^property-detail/([0-9]+)$ resources/views/pages/property-detail.php?id=$1 [L,QSA]
+
 # Rewrite /api/* → api/*.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
