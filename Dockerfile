@@ -1,4 +1,4 @@
-# Cache bust 2026-07-05-v2
+# Cache bust 2026-07-07-v3
 FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -7,7 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     libapache2-mod-php8.2 \
     php8.2 \
+    php8.2-cli \
     php8.2-pgsql \
+    php8.2-mysql \
     php8.2-pdo \
     php8.2-gd \
     php8.2-zip \
@@ -16,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php8.2-xml \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN php -m | grep -i pdo && php -m | grep -i pgsql
 
 RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite headers
 
