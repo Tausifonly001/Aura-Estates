@@ -11,7 +11,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
     $scope.heroSceneReady = false;
     $scope.buildingSceneReady = false;
 
-    $http.get('api/auth.php?action=me').then(function(res) {
+    $http.get('api/auth?action=me').then(function(res) {
         if (res.data.authenticated) {
             $scope.currentUser = res.data.user;
         }
@@ -92,7 +92,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
     ];
 
     $scope.fetchProperties = function() {
-        $http.get('api/properties.php')
+        $http.get('api/properties')
         .then(function(response) {
             if (response.data && response.data.records && response.data.records.length > 0) {
                 $scope.properties = response.data.records;
@@ -151,7 +151,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
             message: $scope.inquiry.message || 'Interested in leasing this property'
         };
 
-        $http.post('api/inquiry.php', data)
+        $http.post('api/inquiry', data)
         .then(function(response) {
             $scope.successMessage = "Thank you! We will contact you shortly.";
             $scope.inquiry = {};
@@ -179,7 +179,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
             tenant_email: $scope.maint.email
         };
 
-        $http.post('api/maintenance.php', data)
+        $http.post('api/maintenance', data)
         .then(function(response) {
             $scope.maintenanceSuccess = "Request submitted successfully!";
             $scope.maintenanceError = '';
@@ -202,7 +202,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
             check_out_time: timeSlot.split('-')[1].trim()
         };
 
-        $http.post('api/amenity_bookings.php', data)
+        $http.post('api/amenity_bookings', data)
         .then(function(response) {
             $scope.bookingMsg = amenityName + " booked successfully!";
             $timeout(function() { $scope.bookingMsg = ''; }, 3000);
