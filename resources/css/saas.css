@@ -175,10 +175,16 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 
 .property-card img {
     width: 100%;
+    height: 100%;
     aspect-ratio: 16/10;
     object-fit: cover;
     display: block;
     transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.property-card > div:first-child {
+    aspect-ratio: 16/10;
+    overflow: hidden;
 }
 
 .property-card:hover img {
