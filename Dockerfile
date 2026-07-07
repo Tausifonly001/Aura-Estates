@@ -1,11 +1,13 @@
-# Cache bust 2026-07-07-v4
+# Cache bust 2026-07-07-v5
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     unzip \
-    && docker-php-ext-install pdo pdo_pgsql pgsql \
+    && docker-php-ext-install pgsql pdo_pgsql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN php -m | grep -i pgsql || (echo "pgsql extension MISSING" && exit 1)
 
 RUN a2enmod rewrite headers
 

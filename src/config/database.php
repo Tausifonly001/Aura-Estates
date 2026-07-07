@@ -7,6 +7,7 @@ class Database {
     private $port;
     private $charset = "utf8mb4";
     public $conn;
+    private $dsn_from_url = null;
 
     public function __construct() {
         $this->host = getenv('DB_HOST') ?: 'localhost';
