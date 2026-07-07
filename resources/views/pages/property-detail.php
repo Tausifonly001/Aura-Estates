@@ -2,6 +2,12 @@
 require_once __DIR__ . '/../../../src/config/database.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+if ($id === 0) {
+    $path = $_SERVER['REQUEST_URI'] ?? '';
+    if (preg_match('#/property-detail/(\d+)#', $path, $m)) {
+        $id = (int)$m[1];
+    }
+}
 if ($id === 0 && !empty($_SERVER['QUERY_STRING'])) {
     parse_str($_SERVER['QUERY_STRING'], $qs);
     $id = isset($qs['id']) ? (int)$qs['id'] : 0;
