@@ -88,16 +88,18 @@ $currentPage = 'properties';
 ?>
 <?php include __DIR__ . '/../partials/header.php'; ?>
 
-<section class="page-hero bg-bg-alt" style="background: linear-gradient(180deg, #f2efe9 0%, #e8e5db 100%);">
+<section class="page-hero" style="background: linear-gradient(180deg, #f2efe9 0%, #e8e5db 100%); padding: 5rem 0 3rem;">
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12 w-full relative z-10">
-        <p class="font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[-0.02em] uppercase text-ink-secondary opacity-60 mb-4">Portfolio</p>
-        <h1 class="font-sans font-medium text-[2.5rem] lg:text-[4rem] leading-[1.05] text-ink">Our Properties</h1>
+        <p class="font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[-0.02em] uppercase text-ink-secondary opacity-60 mb-3">Portfolio</p>
+        <h1 class="font-sans font-medium text-[2.5rem] lg:text-[4rem] leading-[1.05] text-ink mb-4">Our Properties</h1>
+        <p class="font-sans text-[1rem] lg:text-[1.125rem] text-ink-secondary max-w-[42rem] leading-relaxed">Explore our curated collection of exceptional residences across the world's most coveted addresses.</p>
     </div>
 </section>
 
-<section class="py-16 lg:py-24" data-reveal>
+<section class="py-12 lg:py-20" data-reveal>
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12">
-        <form method="GET" class="mb-10 p-6 bg-surface border border-border-light" data-reveal>
+
+        <form method="GET" class="mb-12 p-6 lg:p-8 bg-surface border border-border-light rounded-xl" data-reveal>
             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div class="md:col-span-2">
                     <label class="input-label">Search</label>
@@ -138,8 +140,8 @@ $currentPage = 'properties';
         $mapProperties = array_values($mapProperties);
         ?>
         <?php if (count($mapProperties) > 0): ?>
-        <div class="mb-10" data-reveal>
-            <div id="properties-map" class="w-full h-[350px] lg:h-[450px] bg-bg-alt border border-border-light rounded-2xl overflow-hidden"></div>
+        <div class="mb-12" data-reveal>
+            <div id="properties-map" class="w-full h-[300px] lg:h-[400px] bg-bg-alt border border-border-light rounded-xl overflow-hidden"></div>
         </div>
         <script>
         (function() {
@@ -176,27 +178,34 @@ $currentPage = 'properties';
             <a href="/properties" class="btn-primary mt-6 inline-flex">Clear Filters</a>
         </div>
         <?php else: ?>
-        <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted mb-6"><?php echo count($properties); ?> property<?php echo count($properties) !== 1 ? 'ies' : 'y'; ?> found</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-stagger>
+        <div class="flex items-baseline justify-between mb-8">
+            <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted"><?php echo count($properties); ?> propert<?php echo count($properties) !== 1 ? 'ies' : 'y'; ?> found</p>
+            <div class="hidden lg:flex gap-2">
+                <button class="px-3 py-1.5 text-[0.6875rem] font-mono uppercase tracking-wider border border-border-light rounded-md text-muted hover:text-ink hover:border-ink transition-colors" onclick="document.querySelectorAll('.property-card').forEach(c=>c.style.display='');">All</button>
+                <button class="px-3 py-1.5 text-[0.6875rem] font-mono uppercase tracking-wider border border-border-light rounded-md text-muted hover:text-ink hover:border-ink transition-colors" onclick="filterCards('Villa')">Villa</button>
+                <button class="px-3 py-1.5 text-[0.6875rem] font-mono uppercase tracking-wider border border-border-light rounded-md text-muted hover:text-ink hover:border-ink transition-colors" onclick="filterCards('Penthouse')">Penthouse</button>
+                <button class="px-3 py-1.5 text-[0.6875rem] font-mono uppercase tracking-wider border border-border-light rounded-md text-muted hover:text-ink hover:border-ink transition-colors" onclick="filterCards('Estate')">Estate</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6" data-stagger>
             <?php foreach ($properties as $p): ?>
-            <a href="/property-detail?id=<?php echo $p['id']; ?>" class="property-card no-underline" data-stagger-item>
+            <a href="/property-detail?id=<?php echo $p['id']; ?>" class="property-card no-underline" data-stagger-item data-type="<?php echo htmlspecialchars($p['property_type']); ?>">
                 <?php if (!empty($p['main_image'])): ?>
-                <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy" onerror="this.onerror=null;this.src='resources/placeholders/property.svg';">
+                <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy" alt="<?php echo htmlspecialchars($p['title']); ?>" onerror="this.onerror=null;this.src='resources/placeholders/property.svg';">
                 <?php else: ?>
                 <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center"><i class="fas fa-building text-3xl text-muted"></i></div>
                 <?php endif; ?>
-                <div class="p-4 lg:p-5">
-                    <div class="font-mono text-[0.625rem] tracking-[-0.02em] uppercase text-muted flex gap-4 mb-2">
-                        <span><?php echo htmlspecialchars($p['property_type']); ?></span>
-                        <span><?php echo htmlspecialchars($p['location']); ?></span>
+                <div class="p-4 lg:p-5 flex flex-col flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="inline-block px-2 py-0.5 text-[0.5625rem] font-mono uppercase tracking-wider bg-bg-alt text-muted rounded"><?php echo htmlspecialchars($p['property_type']); ?></span>
                     </div>
-                    <h3 class="font-sans font-medium text-[1.125rem] leading-[1.2] text-ink mb-1"><?php echo htmlspecialchars($p['title']); ?></h3>
-                    <p class="font-sans text-[0.875rem] leading-[1.5] text-ink-secondary opacity-80"><?php echo htmlspecialchars(substr($p['description'] ?? '', 0, 120)); ?>...</p>
-                    <div class="flex gap-4 mt-3 font-mono text-[0.625rem] text-muted">
-                        <span><?php echo $p['bedrooms']; ?> bed</span>
-                        <span><?php echo $p['bathrooms']; ?> bath</span>
-                        <span><?php echo number_format($p['area_sqft']); ?> ft&sup2;</span>
-                        <span class="ml-auto text-ink font-medium">$<?php echo number_format($p['price']); ?><span class="font-normal text-muted">/mo</span></span>
+                    <h3 class="font-sans font-medium text-[1rem] leading-[1.25] text-ink mb-1"><?php echo htmlspecialchars($p['title']); ?></h3>
+                    <p class="font-mono text-[0.625rem] tracking-[-0.02em] uppercase text-muted mb-3"><?php echo htmlspecialchars($p['location']); ?></p>
+                    <div class="flex items-center gap-3 mt-auto pt-3 border-t border-border-light font-mono text-[0.625rem] text-muted">
+                        <span class="flex items-center gap-1"><i class="fas fa-bed text-[0.5rem]"></i> <?php echo $p['bedrooms']; ?></span>
+                        <span class="flex items-center gap-1"><i class="fas fa-bath text-[0.5rem]"></i> <?php echo $p['bathrooms']; ?></span>
+                        <span class="flex items-center gap-1"><i class="fas fa-ruler-combined text-[0.5rem]"></i> <?php echo number_format($p['area_sqft']); ?></span>
+                        <span class="ml-auto text-ink font-medium">$<?php echo number_format($p['price']); ?></span>
                     </div>
                 </div>
             </a>
@@ -205,5 +214,12 @@ $currentPage = 'properties';
         <?php endif; ?>
     </div>
 </section>
+<script>
+function filterCards(type) {
+    document.querySelectorAll('.property-card').forEach(function(card) {
+        card.style.display = (card.dataset.type === type) ? '' : 'none';
+    });
+}
+</script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

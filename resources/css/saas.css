@@ -157,6 +157,34 @@ body.page-entered > *:not(.loading-screen):not(script):not(style) {
 }
 
 /* ── Property Cards ── */
+.property-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.property-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.property-card img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.property-card:hover img {
+    transform: scale(1.04);
+}
+
 /* ── Portfolio Grid ── */
 .portfolio-grid {
     display: grid;
