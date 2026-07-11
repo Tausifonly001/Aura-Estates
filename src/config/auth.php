@@ -235,10 +235,18 @@ class Auth {
     }
 
     public static function login($email, $password, $redirect = null) {
-        self::startSession();
+        try {
+            self::startSession();
+        } catch (Throwable $e) {
+            error_log('Session start error: ' . $e->getMessage());
+        }
 
-        if (!RateLimiter::checkLoginAttempts($email)) {
-            return false;
+        try {
+            if (!RateLimiter::checkLoginAttempts($email)) {
+                return false;
+            }
+        } catch (Throwable $e) {
+            error_log('RateLimiter error: ' . $e->getMessage());
         }
 
         try {

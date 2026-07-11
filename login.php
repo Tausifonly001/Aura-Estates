@@ -27,13 +27,17 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
         try {
             $user = Auth::login($_POST['email'], $_POST['password']);
             if ($user) {
-                AuditLogger::log('login', 'user', $user['id'], "User logged in: {$user['email']}");
+                try {
+                    AuditLogger::log('login', 'user', $user['id'], "User logged in: {$user['email']}");
+                } catch (Throwable $e) {
+                    error_log('AuditLogger error: ' . $e->getMessage());
+                }
                 header('Location: ' . Auth::getDashboardUrl($user['role']));
                 exit;
             }
             $message = 'Invalid email or password.';
         } catch (Throwable $e) {
-            error_log('Login error: ' . $e->getMessage());
+            error_log('Login error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
             $message = 'System temporarily unavailable. Please try again later.';
         }
     }
