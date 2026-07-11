@@ -191,10 +191,10 @@ ON CONFLICT DO NOTHING;
 
 -- Seed admin user (password: admin123)
 INSERT INTO users (name, email, password, role, role_id)
-SELECT 'Administrator', 'admin@aura.com', '$2y$10$be4f7G.nSVkP7ny98G1uq.DZLvpiteTKCLm6BEmgxWpflAJl5GRnq', 'admin', r.id
+SELECT 'Administrator', 'admin@aura.com', '$2y$10$VThHEVrK/ZTgcjP5kVj7MugzV1q8Ie9lTiFddeox2/UoT.0PNt.RC', 'admin', r.id
 FROM roles r WHERE r.name = 'admin'
 ON CONFLICT (email) DO UPDATE SET 
-    password = '$2y$10$be4f7G.nSVkP7ny98G1uq.DZLvpiteTKCLm6BEmgxWpflAJl5GRnq',
+    password = '$2y$10$VThHEVrK/ZTgcjP5kVj7MugzV1q8Ie9lTiFddeox2/UoT.0PNt.RC',
     role = 'admin',
     role_id = (SELECT id FROM roles WHERE name = 'admin');
 
