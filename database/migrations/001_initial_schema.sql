@@ -190,7 +190,7 @@ CREATE TABLE IF NOT EXISTS amenity_bookings (
 );
 
 INSERT IGNORE INTO users (name, email, password, role) VALUES 
-('Admin User', 'admin@aura.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Admin User', 'admin@aura.com', '$2y$10$be4f7G.nSVkP7ny98G1uq.DZLvpiteTKCLm6BEmgxWpflAJl5GRnq', 'admin');
 
 INSERT IGNORE INTO properties (title, description, price, location, property_type, bedrooms, bathrooms, area_sqft, main_image) VALUES
 ('The Sapphire Penthouse', 'A stunning penthouse with panoramic ocean views and private elevator access.', 5000000.00, 'Beverly Hills, CA', 'Penthouse', 4, 5, 4500, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000'),
