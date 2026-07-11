@@ -6,8 +6,15 @@ require_once __DIR__ . '/../src/core/AuditLogger.php';
 
 Middleware::api();
 
-$database = new Database();
-$db = $database->getConnection();
+try {
+    $database = new Database();
+    $db = $database->getConnection();
+} catch (Exception $e) {
+    http_response_code(503);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'System temporarily unavailable. Please try again later.']);
+    exit;
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 

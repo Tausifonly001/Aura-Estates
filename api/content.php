@@ -5,7 +5,14 @@ require_once __DIR__ . '/../src/models/SiteContent.php';
 
 Middleware::api();
 
-$db = (new Database())->getConnection();
+try {
+    $db = (new Database())->getConnection();
+} catch (Exception $e) {
+    http_response_code(503);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'System temporarily unavailable. Please try again later.']);
+    exit;
+}
 $content = new SiteContent($db);
 $method = $_SERVER['REQUEST_METHOD'];
 

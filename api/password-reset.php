@@ -18,7 +18,14 @@ switch ($method) {
             $validator->required('email')->email('email');
             if (!$validator->passes()) Response::error('Valid email required.', 422, $validator->errors());
 
-            $db = (new Database())->getConnection();
+            try {
+                $db = (new Database())->getConnection();
+            } catch (Exception $e) {
+                http_response_code(503);
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'System temporarily unavailable. Please try again later.']);
+                exit;
+            }
             $stmt = $db->prepare("SELECT id, name, email FROM users WHERE email = ?");
             $stmt->execute([$data->email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -45,7 +52,14 @@ switch ($method) {
                 Response::error(Auth::getPasswordRequirements(), 422);
             }
 
-            $db = (new Database())->getConnection();
+            try {
+                $db = (new Database())->getConnection();
+            } catch (Exception $e) {
+                http_response_code(503);
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'System temporarily unavailable. Please try again later.']);
+                exit;
+            }
             $hashedToken = hash('sha256', $data->token);
             $stmt = $db->prepare("SELECT email FROM password_resets WHERE token = ? AND expires_at > NOW() AND used = 0");
             $stmt->execute([$hashedToken]);

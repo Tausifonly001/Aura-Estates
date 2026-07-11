@@ -9,8 +9,15 @@ require_once __DIR__ . '/../src/models/AmenityBooking.php';
 Middleware::api();
 Middleware::auth();
 
-$database = new Database();
-$db = $database->getConnection();
+try {
+    $database = new Database();
+    $db = $database->getConnection();
+} catch (Exception $e) {
+    http_response_code(503);
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'System temporarily unavailable. Please try again later.']);
+    exit;
+}
 $rentalCtrl = new RentalController($db);
 $uid = $_SESSION['user_id'];
 
