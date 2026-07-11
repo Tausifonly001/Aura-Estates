@@ -112,8 +112,8 @@ foreach ($files as $file) {
         fwrite(STDOUT, "Applied migration: $filename\n");
     } catch (PDOException $e) {
         fwrite(STDERR, "Migration $filename failed: {$e->getMessage()}\n");
-        $pdo = null;
-        exit(1);
+        // Don't exit — skip failed migration and continue with remaining ones
+        // This allows later pure-PgSQL migrations to fix schema issues
     }
 }
 
