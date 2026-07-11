@@ -65,6 +65,8 @@ foreach ($files as $file) {
     $sql = file_get_contents($file);
     $sql = preg_replace('/^CREATE DATABASE\s+.*?;/im', '', $sql);
     $sql = preg_replace('/^USE\s+.*?;/im', '', $sql);
+    $sql = preg_replace('/INT\s+AUTO_INCREMENT/i', 'SERIAL', $sql);
+    $sql = preg_replace('/BIGINT\s+AUTO_INCREMENT/i', 'BIGSERIAL', $sql);
     $sql = preg_replace('/AUTO_INCREMENT/i', 'SERIAL', $sql);
     $sql = preg_replace('/`/i', '"', $sql);
     $sql = preg_replace('/INSERT IGNORE INTO/i', 'INSERT INTO', $sql);
@@ -75,6 +77,7 @@ foreach ($files as $file) {
     $sql = preg_replace('/BIGINT\s+UNSIGNED/i', 'BIGINT', $sql);
     $sql = preg_replace('/INT\s+UNSIGNED/i', 'INT', $sql);
     $sql = preg_replace('/ON\s+UPDATE\s+CURRENT_TIMESTAMP/i', '', $sql);
+    $sql = preg_replace('/UNIQUE\s+INDEX\s+\w+\s*\([^)]+\)/i', '', $sql);
     $sql = preg_replace('/INDEX\s+\w+\s*\([^)]+\)/i', '', $sql);
     $sql = preg_replace('/,\s*\)\s*;/i', ')', $sql);
     $sql = preg_replace('/,\s* ENGINE/i', ' ENGINE', $sql);
@@ -96,6 +99,10 @@ foreach ($files as $file) {
         foreach ($statements as $statement) {
             $statement = trim($statement);
             if (!empty($statement)) {
+                // Add ON CONFLICT DO NOTHING for INSERT statements (PostgreSQL IGNORE equivalent)
+                if (preg_match('/^INSERT\s+INTO/i', $statement) && stripos($statement, 'ON CONFLICT') === false) {
+                    $statement = rtrim($statement, ';') . ' ON CONFLICT DO NOTHING;';
+                }
                 $pdo->exec($statement);
             }
         }
