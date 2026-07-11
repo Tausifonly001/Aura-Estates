@@ -40,7 +40,14 @@ class CsrfProtection {
 
     public static function check() {
         if (!in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE', 'PATCH'])) return;
-        $noCsrfPaths = ['/api/auth.php'];
+        $noCsrfPaths = [
+            '/api/auth',
+            '/api/auth.php',
+            '/api/password-reset',
+            '/api/password-reset.php',
+            '/api/inquiry',
+            '/api/inquiry.php',
+        ];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         foreach ($noCsrfPaths as $path) {
             if (strpos($uri, $path) !== false) return;

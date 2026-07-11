@@ -62,7 +62,7 @@ switch ($method) {
             $stmt->execute([$reset['email']]);
             $userId = $stmt->fetchColumn();
             if ($userId) {
-                $db->prepare("DELETE FROM sessions WHERE user_id = ?")->execute([$userId]);
+                Auth::destroyUserSessions((int)$userId);
             }
 
             AuditLogger::log('password_reset', 'user', $userId, "Password reset completed for {$reset['email']}");

@@ -1,4 +1,4 @@
-var app = angular.module('auraApp', []);
+var app = angular.module('auraApp', ['apiHttp']);
 
 app.controller('PropertyController', function($scope, $http, $timeout) {
     $scope.properties = [];
@@ -12,8 +12,9 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
     $scope.buildingSceneReady = false;
 
     $http.get('api/auth?action=me').then(function(res) {
-        if (res.data.authenticated) {
-            $scope.currentUser = res.data.user;
+        var data = res.data && res.data.data ? res.data.data : {};
+        if (data.user) {
+            $scope.currentUser = data.user;
         }
     });
 

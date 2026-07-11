@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
+require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 Auth::startSession();
+CsrfProtection::generate();
 if(isset($_SESSION['user_id'])){
-    header("Location: " . Auth::getBasePrefix() . "/admin/dashboard");
+    header('Location: ' . Auth::getDashboardUrl());
     exit;
 }
 
@@ -16,6 +18,9 @@ $user = new User($db);
 $message = "";
 
 if($_POST){
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $message = 'Invalid security token. Please refresh and try again.';
+    } else {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
@@ -26,8 +31,9 @@ if($_POST){
         Auth::logout(Auth::getBasePrefix() . '/admin/login');
         $message = "Access denied. Admins only.";
     } else {
-        header("Location: " . Auth::getBasePrefix() . "/admin/dashboard");
+        header('Location: ' . Auth::getDashboardUrl('admin'));
         exit;
+    }
     }
 }
 ?>
@@ -97,6 +103,7 @@ if($_POST){
         <?php endif; ?>
 
         <form action="<?php echo Auth::getBasePrefix(); ?>/admin/login" method="post">
+            <?php echo CsrfProtection::field(); ?>
             <div class="relative mb-7">
                 <input type="email" name="email" id="email" class="input-line" placeholder=" " value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
                 <label for="email" class="input-label">Email</label>

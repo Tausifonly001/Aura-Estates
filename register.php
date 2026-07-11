@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__ . '/src/config/database.php';
 require_once __DIR__ . '/src/config/auth.php';
+require_once __DIR__ . '/src/core/CsrfProtection.php';
 
 Auth::startSession();
+CsrfProtection::generate();
 
 // Calculate base path prefix dynamically
 $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
@@ -11,12 +13,16 @@ $basePath = str_replace($docRoot, '', $projectRoot);
 $basePrefix = rtrim($basePath, '/');
 
 if (isset($_SESSION['user_id'])) {
-    header("Location: " . $basePrefix . "/user/dashboard");
+    header('Location: ' . Auth::getDashboardUrl());
     exit;
 }
 
 $message = '';
 if ($_POST) {
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $message = 'Invalid security token. Please refresh and try again.';
+    } else {
+    try {
     $db = (new Database())->getConnection();
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -38,18 +44,24 @@ if ($_POST) {
             $tenantRoleId = $roleStmt->fetchColumn();
             $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', ?)");
             if ($stmt->execute([$name, $email, $hash, $tenantRoleId])) {
-                $uid = $db->lastInsertId();
-                Auth::startSession();
-                $_SESSION['user_id'] = $uid;
-                $_SESSION['user_name'] = $name;
-                $_SESSION['user_email'] = $email;
-                $_SESSION['role'] = 'tenant';
-                $_SESSION['user_role'] = 'tenant';
-                header("Location: " . $basePrefix . "/user/dashboard");
+                $uid = (int)$db->lastInsertId();
+                Auth::establishSession([
+                    'id' => $uid,
+                    'name' => $name,
+                    'email' => $email,
+                    'role' => 'tenant',
+                    'role_id' => $tenantRoleId
+                ]);
+                header('Location: ' . Auth::getDashboardUrl('tenant'));
                 exit;
             }
             $message = 'Registration failed.';
         }
+    }
+    } catch (Throwable $e) {
+        error_log('Registration error: ' . $e->getMessage());
+        $message = 'System temporarily unavailable. Please try again later.';
+    }
     }
 }
 ?>
@@ -127,6 +139,7 @@ if ($_POST) {
                 <?php endif; ?>
  
                 <form method="post" class="mt-8 space-y-6" id="registerForm">
+                    <?php echo CsrfProtection::field(); ?>
                     <div class="relative">
                         <input type="text" name="name" id="name" class="inp" placeholder=" " required>
                         <label for="name">Full name</label>

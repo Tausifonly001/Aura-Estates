@@ -1,10 +1,12 @@
 <?php
 require_once __DIR__ . '/src/config/auth.php';
+require_once __DIR__ . '/src/core/CsrfProtection.php';
 require_once __DIR__ . '/src/core/Response.php';
 require_once __DIR__ . '/src/core/Validator.php';
 require_once __DIR__ . '/src/core/AuditLogger.php';
 
 Auth::startSession();
+CsrfProtection::generate();
 
 // Calculate base path prefix dynamically
 $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
@@ -13,21 +15,28 @@ $basePath = str_replace($docRoot, '', $projectRoot);
 $basePrefix = rtrim($basePath, '/');
 
 if (isset($_SESSION['user_id'])) {
-    $role = $_SESSION['role'] ?? $_SESSION['user_role'] ?? '';
-    header("Location: " . $basePrefix . ($role === 'admin' ? '/admin/dashboard' : '/user/dashboard'));
+    header('Location: ' . Auth::getDashboardUrl());
     exit;
 }
 
 $message = '';
 if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
-    $user = Auth::login($_POST['email'], $_POST['password']);
-    if ($user) {
-        AuditLogger::log('login', 'user', $user['id'], "User logged in: {$user['email']}");
-        $role = $user['role'] ?? $user['user_role'] ?? 'tenant';
-        header("Location: " . $basePrefix . ($role === 'admin' ? '/admin/dashboard' : '/user/dashboard'));
-        exit;
+    if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
+        $message = 'Invalid security token. Please refresh and try again.';
+    } else {
+        try {
+            $user = Auth::login($_POST['email'], $_POST['password']);
+            if ($user) {
+                AuditLogger::log('login', 'user', $user['id'], "User logged in: {$user['email']}");
+                header('Location: ' . Auth::getDashboardUrl($user['role']));
+                exit;
+            }
+            $message = 'Invalid email or password.';
+        } catch (Throwable $e) {
+            error_log('Login error: ' . $e->getMessage());
+            $message = 'System temporarily unavailable. Please try again later.';
+        }
     }
-    $message = 'Invalid email or password.';
 }
 ?>
 <!DOCTYPE html>
@@ -144,6 +153,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
 
                 <form method="post" class="mt-8 space-y-7" id="loginForm">
                     <input type="hidden" name="action" value="login">
+                    <?php echo CsrfProtection::field(); ?>
                     <div class="relative">
                         <input type="email" name="email" id="email" class="inp" placeholder=" " required>
                         <label for="email">Email</label>

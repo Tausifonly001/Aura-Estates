@@ -6,6 +6,24 @@ require_once __DIR__ . '/Validator.php';
 require_once __DIR__ . '/../config/auth.php';
 
 class Middleware {
+    private static $csrfExemptPaths = [
+        '/api/auth',
+        '/api/auth.php',
+        '/api/password-reset',
+        '/api/password-reset.php',
+        '/api/inquiry',
+        '/api/inquiry.php',
+    ];
+
+    private static function isCsrfExempt($endpoint) {
+        foreach (self::$csrfExemptPaths as $path) {
+            if (strpos($endpoint, $path) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static function cors() {
         $allowedOrigins = [
             'http://localhost/aura-estates',
@@ -32,7 +50,7 @@ class Middleware {
         $endpoint = parse_url($_SERVER['REQUEST_URI'] ?? 'api', PHP_URL_PATH);
         RateLimiter::check($endpoint, 120, 60);
         if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE'])) {
-            if (strpos($endpoint, '/api/') !== false) {
+            if (strpos($endpoint, '/api/') !== false && !self::isCsrfExempt($endpoint)) {
                 CsrfProtection::validateOrFail();
             }
         }

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
-Auth::requireRole('admin');
+Auth::requireStaff();
 Auth::startSession();
 ?>
 <!DOCTYPE html>
@@ -43,6 +43,8 @@ Auth::startSession();
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="../resources/js/angular.min.js"></script>
     <script src="../resources/js/gsap.min.js"></script>
+    <script>window.AURA_API_BASE = '../api/';</script>
+    <script src="../resources/js/api-http.js"></script>
     <style>
         [ng-cloak] { display: none !important; }
         body { font-family: 'DM Sans', sans-serif; background-color: #e8e5db; color: #1c1b18; -webkit-font-smoothing: antialiased; }
@@ -338,7 +340,7 @@ Auth::startSession();
     </div>
 
     <script>
-        var app = angular.module('adminApp', []);
+        var app = angular.module('adminApp', ['apiHttp']);
 
         app.controller('AdminController', function($scope, $http, $timeout, $window) {
             $scope.pageLoading = true;

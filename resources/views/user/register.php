@@ -103,9 +103,10 @@ if(isset($_SESSION['user_id'])){
             var msg = document.getElementById('message');
             msg.classList.add('hidden');
 
-            fetch('../api/auth.php?action=register', {
+            fetch('../api/auth?action=register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                credentials: 'same-origin',
                 body: JSON.stringify({
                     name: document.getElementById('name').value,
                     email: document.getElementById('email').value,

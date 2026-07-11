@@ -15,15 +15,12 @@ switch($method) {
     case 'GET':
         if (isset($_GET['action']) && $_GET['action'] === 'me') {
             Auth::startSession();
-            if (isset($_SESSION['user_id'])) {
+            $user = Auth::getUser();
+            if ($user) {
                 $token = $_SESSION['_csrf_token'] ?? CsrfProtection::generate();
                 Response::success([
-                    'user' => [
-                        'id' => $_SESSION['user_id'],
-                        'name' => $_SESSION['user_name'],
-                        'email' => $_SESSION['user_email'],
-                        'role' => $_SESSION['role']
-                    ],
+                    'authenticated' => true,
+                    'user' => $user,
                     '_csrf_token' => $token
                 ]);
             } else {
@@ -47,7 +44,11 @@ switch($method) {
                 Response::error('Validation failed.', 422, $validator->errors());
             }
 
-            $stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+            if (!Auth::validatePassword($data->password)) {
+                Response::error(Auth::getPasswordRequirements(), 422);
+            }
+
+            $stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
             $stmt->execute([$data->email]);
             if ($stmt->rowCount() > 0) {
                 Response::error('Email already registered.', 409);
@@ -60,17 +61,26 @@ switch($method) {
             $hash = password_hash($data->password, PASSWORD_BCRYPT);
             $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', ?)");
             if ($stmt->execute([$data->name, $data->email, $hash, $tenantRoleId])) {
-                $uid = $db->lastInsertId();
-                Auth::startSession();
-                $_SESSION['user_id'] = $uid;
-                $_SESSION['user_name'] = $data->name;
-                $_SESSION['user_email'] = $data->email;
-                $_SESSION['role'] = 'tenant';
-                $_SESSION['user_role'] = 'tenant';
-                $_SESSION['role_id'] = $tenantRoleId;
+                $uid = (int)$db->lastInsertId();
+                Auth::establishSession([
+                    'id' => $uid,
+                    'name' => $data->name,
+                    'email' => $data->email,
+                    'role' => 'tenant',
+                    'role_id' => $tenantRoleId
+                ]);
 
                 AuditLogger::log('create', 'user', $uid, "User registered: {$data->email}");
-                Response::success(['user_id' => $uid], 'Registration successful.', 201);
+                Response::success([
+                    'user_id' => $uid,
+                    'user' => [
+                        'id' => $uid,
+                        'name' => $data->name,
+                        'email' => $data->email,
+                        'role' => 'tenant'
+                    ],
+                    '_csrf_token' => $_SESSION['_csrf_token'] ?? CsrfProtection::generate()
+                ], 'Registration successful.', 201);
             } else {
                 Response::error('Registration failed.', 503);
             }
@@ -85,16 +95,16 @@ switch($method) {
 
             $user = Auth::login($data->email, $data->password);
             if ($user) {
-                Auth::startSession();
-                $token = $_SESSION['_csrf_token'] ?? CsrfProtection::generate();
+                AuditLogger::log('login', 'user', $user['id'], "User logged in: {$user['email']}");
                 Response::success([
+                    'authenticated' => true,
                     'user' => [
                         'id' => $user['id'],
                         'name' => $user['name'],
                         'email' => $user['email'],
                         'role' => $user['role']
                     ],
-                    '_csrf_token' => $token
+                    '_csrf_token' => $_SESSION['_csrf_token'] ?? CsrfProtection::generate()
                 ], 'Login successful.');
             } else {
                 Response::error('Invalid credentials.', 401);
@@ -102,9 +112,11 @@ switch($method) {
         }
 
         if ($action === 'logout') {
-            Auth::startSession();
-            $_SESSION = [];
-            session_destroy();
+            $user = Auth::getUser();
+            if ($user) {
+                AuditLogger::log('logout', 'user', $user['id'], "User logged out: {$user['email']}");
+            }
+            Auth::logout();
             Response::success(null, 'Logged out.');
         }
         break;

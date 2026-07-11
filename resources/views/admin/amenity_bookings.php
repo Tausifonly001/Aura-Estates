@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
 require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
-Auth::requireRole('admin');
+Auth::requireStaff();
 CsrfProtection::generate();
 
 include_once __DIR__ . '/../../../src/config/database.php';

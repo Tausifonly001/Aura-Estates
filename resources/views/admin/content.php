@@ -6,8 +6,8 @@ require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
 
 Auth::startSession();
 CsrfProtection::generate();
-if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-    header("Location: login.php");
+if (!Auth::isAuthenticated() || !Auth::hasPermission($_SESSION['user_id'], 'settings_view')) {
+    header('Location: ' . Auth::getBasePrefix() . '/admin/login');
     exit;
 }
 

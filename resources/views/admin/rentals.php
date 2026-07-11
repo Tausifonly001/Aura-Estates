@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
-Auth::requireRole('admin');
+Auth::requireStaff();
 
 include_once __DIR__ . '/../../../src/config/database.php';
 $database = new Database();
