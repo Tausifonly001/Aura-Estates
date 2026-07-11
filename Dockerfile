@@ -1,4 +1,4 @@
-# Cache bust 2026-07-08-v6
+# Cache bust 2026-07-11-v7
 FROM php:8.2-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
