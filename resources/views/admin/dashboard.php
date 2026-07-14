@@ -102,74 +102,7 @@ Auth::startSession();
 
     <div class="flex h-screen overflow-hidden" ng-show="!pageLoading">
         <!-- Sidebar -->
-        <aside class="w-64 bg-surface border-r border-border-light flex flex-col flex-shrink-0">
-            <div class="p-6 border-b border-border-light">
-                <a href="../index.html" class="flex items-center gap-3 no-underline">
-                    <span class="inline-flex items-center justify-center w-8 h-8 bg-accent text-bg text-[0.75rem] font-semibold">A</span>
-                    <div>
-                        <div class="font-sans font-medium text-[0.875rem] tracking-[0.15em] uppercase text-ink">AURA</div>
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Admin Console</div>
-                    </div>
-                </a>
-            </div>
-            <nav class="flex-1 py-6 px-4 flex flex-col gap-1 overflow-y-auto">
-                <a href="/admin/dashboard" class="sidebar-link active flex items-center gap-4 py-3 px-4 text-ink no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                    <span class="font-sans font-medium text-[0.875rem]">Dashboard</span>
-                </a>
-                <a href="/admin/maintenance" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <span class="font-sans text-[0.875rem]">Maintenance</span>
-                    <span ng-if="stats.maintenance.pending_count > 0" class="ml-auto bg-warning/10 text-warning font-mono text-[0.5rem] font-medium px-2 py-0.5">{{stats.maintenance.pending_count}}</span>
-                </a>
-                <a href="/admin/amenities" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    <span class="font-sans text-[0.875rem]">Amenities</span>
-                </a>
-                <a href="/admin/amenity-bookings" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span class="font-sans text-[0.875rem]">Bookings</span>
-                    <span ng-if="stats.amenities.today_count > 0" class="ml-auto bg-warning/10 text-warning font-mono text-[0.5rem] font-medium px-2 py-0.5">{{stats.amenities.today_count}}</span>
-                </a>
-                <a href="/admin/inquiries" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span class="font-sans text-[0.875rem]">Inquiries</span>
-                    <span ng-if="stats.inquiries.pending_inquiries > 0" class="ml-auto bg-warning/10 text-warning font-mono text-[0.5rem] font-medium px-2 py-0.5">{{stats.inquiries.pending_inquiries}}</span>
-                </a>
-                <a href="/admin/rentals" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-                    <span class="font-sans text-[0.875rem]">Rentals</span>
-                </a>
-                <a href="/admin/users" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    <span class="font-sans text-[0.875rem]">Users</span>
-                </a>
-                <a href="/admin/blog" class="sidebar-link flex items-center gap-4 py-3 px-4 text-ink-secondary hover:text-ink transition-colors no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 4h4a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h4m4-2v6m0 0l-3-3m3 3l3-3"/></svg>
-                    <span class="font-sans text-[0.875rem]">Blog</span>
-                </a>
-                <hr class="border-border-light my-4">
-                <a href="../index.html" target="_blank" class="flex items-center gap-4 py-2 px-4 text-muted hover:text-ink-secondary transition-colors font-sans text-[0.875rem] no-underline">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-                    <span>View Site</span>
-                </a>
-            </nav>
-            <div class="p-4 border-t border-border-light">
-                <div class="flex items-center gap-3 mb-3 px-2">
-                    <div class="w-8 h-8 flex items-center justify-center border border-border">
-                        <span class="text-ink font-sans font-medium text-[0.75rem]"><?php echo htmlspecialchars(strtoupper(substr($_SESSION['user_name'] ?? '', 0, 1)), ENT_QUOTES, 'UTF-8'); ?></span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-sans font-medium text-[0.875rem] text-ink truncate"><?php echo htmlspecialchars($_SESSION['user_name'] ?? '', ENT_QUOTES, 'UTF-8'); ?></div>
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Administrator</div>
-                    </div>
-                </div>
-                <a href="/admin/logout" class="flex items-center justify-center gap-2 py-3 px-4 border border-border text-ink-secondary hover:text-ink hover:bg-bg transition-colors font-mono text-[0.625rem] tracking-[0.02em] uppercase no-underline">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </aside>
+        <?php include __DIR__ . '/sidebar.php'; ?>
 
         <!-- Main -->
         <main class="flex-1 overflow-auto bg-bg">

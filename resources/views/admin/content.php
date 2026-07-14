@@ -80,7 +80,7 @@ $currentSection = $_GET['section'] ?? ($currentSections[0] ?? 'hero');
                 <?php endforeach; ?>
             </nav>
             <div class="mt-auto pt-6 border-t border-[#e1ddd4]">
-                <a href="/admin/dashboard" class="text-[0.6875rem] text-[#5c5349] hover:text-[#1c1b18] transition-colors no-underline">&larr; Dashboard</a>
+                <a href="<?php echo Auth::getBasePrefix(); ?>/admin/dashboard" class="text-[0.6875rem] text-[#5c5349] hover:text-[#1c1b18] transition-colors no-underline">&larr; Dashboard</a>
             </div>
         </div>
 

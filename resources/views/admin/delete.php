@@ -51,7 +51,7 @@ if($property->readOne()){
             <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             <input type="hidden" name="confirm" value="1">
             <button type="submit" class="border-2 border-rust/60 text-rust px-8 py-3 text-xs font-body font-bold uppercase tracking-[0.2em] hover:bg-rust hover:text-ink transition-all duration-300">Delete</button>
-            <a href="/admin/dashboard" class="border-2 border-paper/20 text-paper/40 px-8 py-3 text-xs font-body font-bold uppercase tracking-[0.2em] hover:border-paper/40 hover:text-paper/60 transition-all duration-300">Cancel</a>
+            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/dashboard" class="border-2 border-paper/20 text-paper/40 px-8 py-3 text-xs font-body font-bold uppercase tracking-[0.2em] hover:border-paper/40 hover:text-paper/60 transition-all duration-300">Cancel</a>
         </form>
     </div>
 </body>

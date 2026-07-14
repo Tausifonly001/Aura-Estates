@@ -63,7 +63,7 @@ $updated = $_GET['updated'] ?? 0;
 <body class="antialiased min-h-screen">
     <div class="noise-overlay"></div>
     <div class="max-w-3xl mx-auto px-6 py-12">
-        <a href="/admin/dashboard" class="text-[10px] font-body uppercase tracking-[0.25em] text-rust/60 hover:text-rust transition mb-8 inline-block">&larr; Back to Dashboard</a>
+        <a href="<?php echo Auth::getBasePrefix(); ?>/admin/dashboard" class="text-[10px] font-body uppercase tracking-[0.25em] text-rust/60 hover:text-rust transition mb-8 inline-block">&larr; Back to Dashboard</a>
         
         <h1 class="text-5xl font-display italic text-paper mb-2">Edit Property</h1>
         <p class="text-sm text-paper/30 font-body font-light mb-10">Update property details.</p>

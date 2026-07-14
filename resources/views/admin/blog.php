@@ -75,7 +75,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <h1 class="text-4xl font-serif font-light italic text-ink mb-2">Blog Posts</h1>
                 <p class="text-sm text-graphite font-sans">Manage your journal articles and publications</p>
             </div>
-            <a href="/admin/blog/edit" class="neo-btn">
+            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/blog/edit" class="neo-btn">
                 <i class="fas fa-plus mr-2"></i> New Post
             </a>
         </div>
@@ -101,7 +101,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </thead>
                 <tbody>
                     <?php if (count($posts) === 0): ?>
-                    <tr><td colspan="6" class="py-12 text-center text-graphite font-sans">No posts yet. <a href="/admin/blog/edit" class="text-ink underline">Create one.</a></td></tr>
+                    <tr><td colspan="6" class="py-12 text-center text-graphite font-sans">No posts yet. <a href="<?php echo Auth::getBasePrefix(); ?>/admin/blog/edit" class="text-ink underline">Create one.</a></td></tr>
                     <?php else: ?>
                     <?php foreach ($posts as $p): ?>
                     <tr class="border-b border-clay/20 hover:bg-ink/[0.02] transition-colors">
@@ -124,7 +124,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </td>
                         <td class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <a href="/admin/blog/edit?id=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">Edit</a>
+                                <a href="<?php echo Auth::getBasePrefix(); ?>/admin/blog/edit?id=<?php echo $p['id']; ?>" class="font-mono text-[0.625rem] uppercase tracking-wider text-graphite hover:text-ink transition-colors no-underline">Edit</a>
                                 <form method="POST" style="display:inline">
                                     <input type="hidden" name="_csrf_token" value="<?php echo htmlspecialchars($_SESSION['_csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                     <input type="hidden" name="toggle" value="<?php echo $p['id']; ?>">
