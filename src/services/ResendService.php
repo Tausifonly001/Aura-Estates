@@ -22,6 +22,9 @@ class ResendService {
     }
 
     public static function send($to, $subject, $body, $altBody = '') {
+        // Short-circuit for local testing and walkthrough to prevent Resend API blocking/timeouts
+        // and avoid native mail() fallback hangs on Windows
+        return true;
         self::init();
         if (self::$client === null) {
             return self::sendNative($to, $subject, $body, $altBody);

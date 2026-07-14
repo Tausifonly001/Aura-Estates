@@ -36,6 +36,7 @@ if(!isset($_SESSION['user_id'])) {
                     fontFamily: {
                         sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
                     },
                 }
             }
@@ -43,7 +44,8 @@ if(!isset($_SESSION['user_id'])) {
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="../resources/js/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>window.AURA_API_BASE = '../api/';</script>
@@ -51,10 +53,6 @@ if(!isset($_SESSION['user_id'])) {
     <style>
         [ng-cloak] { display: none !important; }
         body { font-family: 'DM Sans', sans-serif; background-color: #e8e5db; color: #1c1b18; -webkit-font-smoothing: antialiased; }
-        .tab-btn { position: relative; transition: all 0.3s ease; }
-        .tab-btn::after { content: ''; position: absolute; bottom: -2px; left: 50%; right: 50%; height: 2px; background: #3a322c; transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); border-radius: 1px; }
-        .tab-btn.active::after { left: 0; right: 0; }
-        .tab-btn:not(.active):hover::after { left: 30%; right: 30%; background: #d6d2c8; }
         .list-item { opacity: 0; }
         .inner-item { }
         .stat-card { position: relative; overflow: hidden; }
@@ -62,7 +60,7 @@ if(!isset($_SESSION['user_id'])) {
             content: '';
             position: absolute;
             top: 0; left: 0;
-            width: 100%; height: 2px;
+            width: 100%; height: 3px;
             background: #3a322c;
             transform: scaleX(0);
             transform-origin: left;
@@ -70,283 +68,427 @@ if(!isset($_SESSION['user_id'])) {
         .stat-card.animated::after { animation: statBarIn 0.6s ease forwards; }
         @keyframes statBarIn { to { transform: scaleX(1); } }
         .tab-content { will-change: transform, opacity; }
-        .pulse-ring { animation: pulseRing 2s ease infinite; }
+        .pulse-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #5d7a4f;
+            position: relative;
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(93, 122, 79, 0.25);
+            animation: pulseRing 2s ease infinite;
+        }
         @keyframes pulseRing {
             0% { transform: scale(0.5); opacity: 0; }
             50% { opacity: 1; }
             100% { transform: scale(1.5); opacity: 0; }
         }
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d6d2c8;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9a9086;
+        }
+        .neo-sidebar {
+            width: 16rem !important;
+            background: #ffffff !important;
+            border-right: 1px solid var(--color-border) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            flex-shrink: 0 !important;
+        }
     </style>
 </head>
 <body ng-controller="TenantController" ng-cloak>
 
-    <!-- Navigation -->
-    <nav class="bg-surface border-b border-border-light relative z-10 h-16">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 h-full flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <a href="../index.html" class="flex items-center gap-3 font-sans font-medium text-[0.875rem] tracking-[0.15em] uppercase text-ink no-underline">
-                    <span class="inline-flex items-center justify-center w-6 h-6 bg-accent text-bg text-[0.625rem] font-semibold leading-none">A</span>
-                    AURA
-                </a>
-                <span class="text-border">|</span>
-                <span class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Tenant Portal</span>
-            </div>
-            <div class="flex items-center gap-4">
-                <span class="font-sans text-[0.875rem] text-ink-secondary">Welcome, <strong class="text-ink font-medium">{{user.name}}</strong></span>
-                <a href="<?php echo Auth::getBasePrefix(); ?>/user/logout" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors px-4 py-2 border border-border rounded-full no-underline">
-                    Logout
-                </a>
+    <!-- Loading -->
+    <div ng-if="pageLoading" class="fixed inset-0 z-[60] flex justify-center items-center bg-bg/95 backdrop-blur-sm">
+        <div class="text-center">
+            <div class="font-sans font-medium text-[0.875rem] tracking-[0.15em] uppercase text-ink/20">AURA</div>
+            <div class="mt-4 flex gap-2 justify-center">
+                <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay:0s"></div>
+                <div class="w-2 h-2 rounded-full bg-accent/60 animate-bounce" style="animation-delay:0.15s"></div>
+                <div class="w-2 h-2 rounded-full bg-accent/30 animate-bounce" style="animation-delay:0.3s"></div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8 relative">
-        <!-- Loading -->
-        <div ng-if="pageLoading" class="fixed inset-0 z-[60] flex justify-center items-center bg-bg/95 backdrop-blur-sm">
-            <div class="text-center">
-                <div class="font-sans font-medium text-[0.875rem] tracking-[0.15em] uppercase text-ink/20">AURA</div>
-                <div class="mt-4 flex gap-2 justify-center">
-                    <div class="w-2 h-2 rounded-full bg-accent animate-bounce" style="animation-delay:0s"></div>
-                    <div class="w-2 h-2 rounded-full bg-accent/60 animate-bounce" style="animation-delay:0.15s"></div>
-                    <div class="w-2 h-2 rounded-full bg-accent/30 animate-bounce" style="animation-delay:0.3s"></div>
+    <div class="flex h-screen overflow-hidden" ng-show="!pageLoading">
+        <!-- User Left Sidebar -->
+        <aside class="neo-sidebar w-64 flex flex-col flex-shrink-0 bg-surface border-r border-border-light">
+            <!-- Brand Logo Header -->
+            <div class="p-6 border-b border-border-light bg-surface/50 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-center w-7 h-7 bg-accent text-bg text-[0.75rem] font-semibold tracking-wider font-sans leading-none">A</span>
+                    <span class="font-serif italic font-light text-[1.4rem] tracking-wide text-ink leading-none">Aura</span>
+                    <span class="font-sans text-[0.55rem] font-medium uppercase tracking-[0.2em] text-ink-secondary/60 mt-1">Estates</span>
                 </div>
-            </div>
-        </div>
-
-        <div ng-show="!pageLoading">
-            <!-- Tabs -->
-            <div class="border-b border-border-light mb-8 overflow-x-auto">
-                <nav class="flex gap-8 min-w-max">
-                    <button ng-click="switchTab('overview')" ng-class="{'text-ink active': currentTab == 'overview', 'text-ink-secondary opacity-65 hover:text-ink': currentTab != 'overview'}" class="tab-btn pb-3 px-1 font-sans font-medium text-[0.875rem] transition-all whitespace-nowrap bg-none border-none cursor-pointer">Overview</button>
-                    <button ng-click="switchTab('browse')" ng-class="{'text-ink active': currentTab == 'browse', 'text-ink-secondary opacity-65 hover:text-ink': currentTab != 'browse'}" class="tab-btn pb-3 px-1 font-sans font-medium text-[0.875rem] transition-all whitespace-nowrap bg-none border-none cursor-pointer">Browse</button>
-                    <button ng-click="switchTab('rentals')" ng-class="{'text-ink active': currentTab == 'rentals', 'text-ink-secondary opacity-65 hover:text-ink': currentTab != 'rentals'}" class="tab-btn pb-3 px-1 font-sans font-medium text-[0.875rem] transition-all whitespace-nowrap bg-none border-none cursor-pointer">Rentals</button>
-                    <button ng-click="switchTab('maintenance')" ng-class="{'text-ink active': currentTab == 'maintenance', 'text-ink-secondary opacity-65 hover:text-ink': currentTab != 'maintenance'}" class="tab-btn pb-3 px-1 font-sans font-medium text-[0.875rem] transition-all whitespace-nowrap bg-none border-none cursor-pointer">Maintenance</button>
-                    <button ng-click="switchTab('amenities')" ng-class="{'text-ink active': currentTab == 'amenities', 'text-ink-secondary opacity-65 hover:text-ink': currentTab != 'amenities'}" class="tab-btn pb-3 px-1 font-sans font-medium text-[0.875rem] transition-all whitespace-nowrap bg-none border-none cursor-pointer">Amenities</button>
-                </nav>
+                <div class="text-[0.5rem] uppercase tracking-[0.2em] text-ink-secondary/50 font-sans font-bold mt-2">Tenant Portal</div>
             </div>
 
-            <div class="tab-container relative min-h-[400px]">
-                <!-- Overview -->
-                <div ng-show="currentTab == 'overview'" class="tab-content w-full" id="tab-overview">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                        <div class="bg-surface border border-border-light p-6 list-item stat-card">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Active Rentals</p>
-                                    <p class="font-sans font-medium text-[2rem] text-ink mt-2">{{counts.rentals}}</p>
-                                </div>
-                                <div class="w-12 h-12 border border-border flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-surface border border-border-light p-6 list-item stat-card">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Open Requests</p>
-                                    <p class="font-sans font-medium text-[2rem] text-ink mt-2">{{counts.maintenance}}</p>
-                                </div>
-                                <div class="w-12 h-12 border border-border flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-surface border border-border-light p-6 list-item stat-card">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Upcoming Bookings</p>
-                                    <p class="font-sans font-medium text-[2rem] text-ink mt-2">{{counts.bookings}}</p>
-                                </div>
-                                <div class="w-12 h-12 border border-border flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
+                <button ng-click="switchTab('overview')" ng-class="currentTab == 'overview' ? 'border-accent text-ink font-medium bg-bg-alt/60' : 'border-transparent text-ink-secondary hover:text-ink hover:bg-bg-alt/30'" class="w-full flex items-center space-x-3.5 py-2.5 px-4 transition-all text-left bg-transparent border-none border-l-2 cursor-pointer outline-none border-solid">
+                    <i class="fas fa-th-large w-4 text-center text-xs opacity-75"></i>
+                    <span class="text-[0.8125rem] font-sans">Overview</span>
+                </button>
+                <button ng-click="switchTab('browse')" ng-class="currentTab == 'browse' ? 'border-accent text-ink font-medium bg-bg-alt/60' : 'border-transparent text-ink-secondary hover:text-ink hover:bg-bg-alt/30'" class="w-full flex items-center space-x-3.5 py-2.5 px-4 transition-all text-left bg-transparent border-none border-l-2 cursor-pointer outline-none border-solid">
+                    <i class="fas fa-search w-4 text-center text-xs opacity-75"></i>
+                    <span class="text-[0.8125rem] font-sans">Browse</span>
+                </button>
+                <button ng-click="switchTab('rentals')" ng-class="currentTab == 'rentals' ? 'border-accent text-ink font-medium bg-bg-alt/60' : 'border-transparent text-ink-secondary hover:text-ink hover:bg-bg-alt/30'" class="w-full flex items-center space-x-3.5 py-2.5 px-4 transition-all text-left bg-transparent border-none border-l-2 cursor-pointer outline-none border-solid">
+                    <i class="fas fa-key w-4 text-center text-xs opacity-75"></i>
+                    <span class="text-[0.8125rem] font-sans">Rentals</span>
+                </button>
+                <button ng-click="switchTab('maintenance')" ng-class="currentTab == 'maintenance' ? 'border-accent text-ink font-medium bg-bg-alt/60' : 'border-transparent text-ink-secondary hover:text-ink hover:bg-bg-alt/30'" class="w-full flex items-center space-x-3.5 py-2.5 px-4 transition-all text-left bg-transparent border-none border-l-2 cursor-pointer outline-none border-solid">
+                    <i class="fas fa-tools w-4 text-center text-xs opacity-75"></i>
+                    <span class="text-[0.8125rem] font-sans">Maintenance</span>
+                </button>
+                <button ng-click="switchTab('amenities')" ng-class="currentTab == 'amenities' ? 'border-accent text-ink font-medium bg-bg-alt/60' : 'border-transparent text-ink-secondary hover:text-ink hover:bg-bg-alt/30'" class="w-full flex items-center space-x-3.5 py-2.5 px-4 transition-all text-left bg-transparent border-none border-l-2 cursor-pointer outline-none border-solid">
+                    <i class="fas fa-concierge-bell w-4 text-center text-xs opacity-75"></i>
+                    <span class="text-[0.8125rem] font-sans">Amenities</span>
+                </button>
+            </nav>
+
+            <!-- User Profile Footer -->
+            <div class="p-4 border-t border-border-light bg-surface/50">
+                <div class="flex items-center space-x-3 mb-3 px-2">
+                    <div class="w-8 h-8 rounded-full bg-accent text-bg flex items-center justify-center font-medium font-sans text-xs">
+                        {{user.name ? (user.name | limitTo:1).toUpperCase() : 'U'}}
                     </div>
-
-                    <div class="bg-surface border border-border-light p-6 list-item">
-                        <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-6">My Properties</h3>
-                        <div class="flex flex-col gap-3">
-                            <p ng-if="!activeRentals || activeRentals.length == 0" class="text-ink-secondary text-[0.875rem] font-sans">No active rentals. <a href="#" ng-click="switchTab('browse'); $event.preventDefault();" class="text-ink hover:underline font-medium">Browse properties</a></p>
-                            <div ng-repeat="r in activeRentals" class="flex flex-col md:flex-row items-start md:items-center justify-between p-5 border border-border-light hover:border-border transition inner-item">
-                                <div class="mb-2 md:mb-0">
-                                    <p class="font-sans font-medium text-ink text-[1rem]">{{r.property_title}}</p>
-                                    <p class="font-sans text-[0.875rem] text-ink-secondary">{{r.location}} · {{r.property_type}} · <span class="text-ink font-medium">{{r.monthly_rent | currency:"$":0}}/mo</span></p>
-                                </div>
-                                <span class="font-mono text-[0.5625rem] px-3 py-1.5 bg-ink/10 text-ink font-medium uppercase tracking-[0.02em]">Active</span>
-                            </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[0.8125rem] text-ink font-medium font-sans truncate">
+                            {{user.name}}
+                        </div>
+                        <div class="text-[0.5625rem] text-ink-secondary/60 uppercase tracking-[0.1em] font-mono mt-0.5">
+                            Resident / Tenant
                         </div>
                     </div>
                 </div>
+                <a href="<?php echo Auth::getBasePrefix(); ?>/user/logout" class="flex items-center justify-center space-x-2 py-2 border border-border hover:border-ink rounded-full text-ink-secondary hover:text-ink transition-colors text-[0.625rem] font-mono uppercase tracking-[0.1em] no-underline">
+                    <i class="fas fa-sign-out-alt text-[10px]"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
 
-                <!-- Browse -->
-                <div ng-show="currentTab == 'browse'" class="tab-content absolute top-0 w-full" id="tab-browse">
-                    <div class="bg-surface border border-border-light p-6">
-                        <h2 class="font-sans font-medium text-[1.125rem] text-ink mb-6">Available Properties</h2>
-                        <p ng-if="!availableProperties || availableProperties.length == 0" class="text-ink-secondary text-[0.875rem] font-sans">No properties available at this time.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div ng-repeat="p in availableProperties" class="bg-bg border border-border-light overflow-hidden list-item group">
-                                <div class="h-48 relative overflow-hidden">
-                                    <img ng-if="p.main_image" ng-src="{{p.main_image}}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105">
-                                    <div ng-if="!p.main_image" class="bg-bg-alt w-full h-full flex items-center justify-center text-muted text-4xl">+</div>
-                                </div>
-                                <div class="p-5">
-                                    <h4 class="font-sans font-medium text-ink text-[1rem]">{{p.title}}</h4>
-                                    <p class="font-mono text-[0.625rem] text-ink-secondary mt-1 uppercase tracking-[0.02em]">{{p.location}} · {{p.property_type}}</p>
-                                    <div class="flex gap-6 mt-3 pt-3 border-t border-border-light">
-                                        <div><span class="block font-sans font-medium text-ink">{{p.bedrooms}}</span><span class="font-mono text-[0.5rem] text-ink-secondary uppercase tracking-[0.02em]">Beds</span></div>
-                                        <div><span class="block font-sans font-medium text-ink">{{p.bathrooms}}</span><span class="font-mono text-[0.5rem] text-ink-secondary uppercase tracking-[0.02em]">Baths</span></div>
-                                        <div><span class="block font-sans font-medium text-ink">{{p.area_sqft}}</span><span class="font-mono text-[0.5rem] text-ink-secondary uppercase tracking-[0.02em]">SqFt</span></div>
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-auto bg-bg">
+            <div class="p-8 max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="flex justify-between items-end mb-6 stagger-item">
+                    <div>
+                        <h1 class="font-serif font-light italic text-[2.5rem] text-ink leading-tight">Welcome, <span class="font-sans not-italic font-normal">{{user.name}}</span></h1>
+                        <p class="font-sans text-[0.8125rem] text-ink-secondary/70 mt-1.5 font-light">Tenant Console · <?php echo date('F d, Y'); ?></p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-surface border border-border-light px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
+                        <span ng-if="isPolling" class="flex items-center gap-2 font-mono text-[0.625rem] text-ink-secondary font-medium uppercase tracking-wider">
+                            <span class="pulse-dot"></span>
+                            Portal Connected
+                        </span>
+                        <span class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted/80 bg-bg-alt px-2 py-0.5 rounded-full">Automated Sync</span>
+                    </div>
+                </div>
+                <div class="h-px bg-border-light mb-8 stagger-item"></div>
+
+                <!-- Tab Container -->
+                <div class="tab-container relative min-h-[400px]">
+                    <!-- Overview -->
+                    <div ng-show="currentTab == 'overview'" class="tab-content w-full" id="tab-overview">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                            <!-- Stat 1 -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 list-item stat-card group">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Active Leases</p>
+                                        <p class="font-serif italic font-light text-[2.5rem] text-ink mt-2 leading-none">{{counts.rentals}}</p>
                                     </div>
-                                    <p class="font-sans font-medium text-[1.125rem] text-ink mt-4">{{p.price | currency:"$":0}}/mo</p>
+                                    <div class="w-10 h-10 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                        <i class="fas fa-home text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Stat 2 -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 list-item stat-card group">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Open Requests</p>
+                                        <p class="font-serif italic font-light text-[2.5rem] text-ink mt-2 leading-none">{{counts.maintenance}}</p>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                        <i class="fas fa-wrench text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Stat 3 -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 list-item stat-card group">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Upcoming Bookings</p>
+                                        <p class="font-serif italic font-light text-[2.5rem] text-ink mt-2 leading-none">{{counts.bookings}}</p>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                        <i class="fas fa-calendar-check text-xs"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- My Properties list card -->
+                        <div class="bg-surface border border-border-light rounded-2xl p-6 shadow-sm list-item">
+                            <h3 class="font-serif font-light italic text-[1.25rem] text-ink mb-6">My Leased Properties</h3>
+                            <div class="flex flex-col gap-4">
+                                <p ng-if="!activeRentals || activeRentals.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans font-light">
+                                    No active rentals. <a href="#" ng-click="switchTab('browse'); $event.preventDefault();" class="text-accent hover:underline font-semibold">Browse available properties</a>
+                                </p>
+                                <div ng-repeat="r in activeRentals" class="flex flex-col md:flex-row items-start md:items-center justify-between p-5 border border-border-light hover:border-accent/20 rounded-xl hover:bg-bg-alt/20 transition-all duration-300 inner-item">
+                                    <div class="mb-2 md:mb-0">
+                                        <p class="font-sans font-semibold text-ink text-[1rem]">{{r.property_title}}</p>
+                                        <p class="font-sans text-[0.8125rem] text-ink-secondary/70 font-light mt-1">
+                                            {{r.location}} · {{r.property_type}} · 
+                                            <span class="text-ink font-semibold bg-bg-alt/70 px-2 py-0.5 rounded-md font-mono text-xs">{{r.monthly_rent | currency:"$":0}}/mo</span>
+                                        </p>
+                                    </div>
+                                    <span class="font-mono text-[0.5625rem] px-3 py-1 bg-success/15 text-success font-semibold uppercase tracking-wider rounded">Active Lease</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rentals -->
-                <div ng-show="currentTab == 'rentals'" class="tab-content absolute top-0 w-full" id="tab-rentals">
-                    <div class="bg-surface border border-border-light p-6">
-                        <h2 class="font-sans font-medium text-[1.125rem] text-ink mb-6">Rental History</h2>
-                        <p ng-if="!rentals || rentals.length == 0" class="text-ink-secondary text-[0.875rem] font-sans">No rental history found.</p>
-                        <div class="flex flex-col gap-3">
-                            <div ng-repeat="r in rentals" class="flex flex-col md:flex-row items-start md:items-center justify-between p-5 border border-border-light hover:border-border transition list-item">
-                                <div>
-                                    <p class="font-sans font-medium text-ink text-[1rem]">{{r.property_title}}</p>
-                                    <p class="font-sans text-[0.875rem] text-ink-secondary mb-1">{{r.location}} · <span class="font-medium text-ink">{{r.monthly_rent | currency:"$":0}}/mo</span></p>
-                                    <p class="font-mono text-[0.625rem] text-muted tabular-nums">{{r.start_date}} — {{r.end_date || 'Ongoing'}}</p>
-                                </div>
-                                <span class="mt-3 md:mt-0 font-mono text-[0.5625rem] px-4 py-1.5 font-medium uppercase tracking-[0.02em]" ng-class="{'bg-ink/10 text-ink': r.status=='active', 'bg-border text-ink-secondary': r.status=='terminated', 'bg-bg text-muted': r.status=='expired'}">{{r.status}}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Maintenance -->
-                <div ng-show="currentTab == 'maintenance'" class="tab-content absolute top-0 w-full" id="tab-maintenance">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-surface border border-border-light p-6 list-item">
-                            <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-6 pb-3 border-b border-border-light">Submit Request</h3>
-                            <form ng-submit="submitMaint()" class="flex flex-col gap-4">
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Property</label>
-                                    <select ng-model="maintForm.property_id" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent appearance-none">
-                                        <option value="">Select property</option>
-                                        <option ng-repeat="r in activeRentals" value="{{r.property_id}}">{{r.property_title}}</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Subject</label>
-                                    <input type="text" ng-model="maintForm.subject" placeholder="Brief description" required class="w-full font-sans text-[0.875rem] text-ink bg-transparent border border-border px-4 py-3 outline-none focus:border-accent placeholder:text-muted">
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Details</label>
-                                    <textarea ng-model="maintForm.description" rows="3" placeholder="More context..." required class="w-full font-sans text-[0.875rem] text-ink bg-transparent border border-border px-4 py-3 outline-none focus:border-accent resize-none placeholder:text-muted"></textarea>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Priority</label>
-                                    <select ng-model="maintForm.priority" class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent appearance-none">
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                        <option value="urgent">Urgent</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-3 font-mono text-[0.6875rem] tracking-[0.02em] uppercase text-bg bg-accent px-5 py-3 rounded-full hover:bg-accent-hover transition-colors" ng-disabled="isSubmittingMaint">
-                                    {{ isSubmittingMaint ? 'Submitting...' : 'Submit' }}
-                                </button>
-                            </form>
-                            <div ng-if="maintMessage" class="mt-4 p-4 font-mono text-[0.75rem]" ng-class="maintMessageClass">{{maintMessage}}</div>
-                        </div>
-                        <div class="bg-surface border border-border-light p-6 list-item flex flex-col">
-                            <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-6 pb-3 border-b border-border-light flex justify-between items-center">
-                                My Requests
-                                <span ng-if="isPolling" class="flex h-3 w-3 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/60"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
-                                </span>
-                            </h3>
-                            <p ng-if="!myMaintenance || myMaintenance.length == 0" class="text-ink-secondary text-[0.875rem] font-sans text-center my-auto">No requests yet.</p>
-                            <div class="flex flex-col gap-3 overflow-y-auto max-h-[500px] pr-2">
-                                <div ng-repeat="m in myMaintenance" class="p-4 border border-border-light hover:border-border transition inner-item" ng-class="{'border-border': m._updated}">
-                                    <div class="flex items-start justify-between mb-2">
-                                        <p class="font-sans font-medium text-ink text-[0.875rem] w-3/5 truncate">{{m.subject || (m.issue_description | limitTo:30)}}</p>
-                                        <div class="flex gap-2 w-2/5 justify-end">
-                                            <span class="font-mono text-[0.5rem] px-2 py-1 font-medium uppercase tracking-[0.02em]" ng-class="getPriorityClass(m.priority)">{{m.priority}}</span>
-                                            <span class="font-mono text-[0.5rem] px-2 py-1 font-medium uppercase tracking-[0.02em]" ng-class="getStatusClass(m.status)">{{m.status.replace('_',' ')}}</span>
+                    <!-- Browse -->
+                    <div ng-show="currentTab == 'browse'" class="tab-content absolute top-0 w-full" id="tab-browse">
+                        <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm">
+                            <h2 class="font-serif font-light italic text-[1.25rem] text-ink mb-6">Available Properties</h2>
+                            <p ng-if="!availableProperties || availableProperties.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans font-light">No properties available at this time.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div ng-repeat="p in availableProperties" class="bg-bg-alt/25 border border-border-light rounded-xl overflow-hidden list-item group hover:border-accent/20 hover:shadow-md transition-all duration-300 flex flex-col">
+                                    <div class="h-48 relative overflow-hidden bg-bg">
+                                        <img ng-if="p.main_image" ng-src="{{p.main_image}}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                        <div ng-if="!p.main_image" class="bg-bg-alt/60 w-full h-full flex items-center justify-center text-muted/50 text-4xl font-light">+</div>
+                                    </div>
+                                    <div class="p-5 flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <h4 class="font-sans font-semibold text-ink text-[1rem] group-hover:text-accent transition-colors">{{p.title}}</h4>
+                                            <p class="font-mono text-[0.625rem] text-ink-secondary/70 mt-1.5 uppercase tracking-wider flex items-center gap-1">
+                                                <i class="fas fa-map-marker-alt opacity-70"></i> {{p.location}} · {{p.property_type}}
+                                            </p>
+                                            <div class="flex gap-6 mt-4 pt-4 border-t border-border-light/80 text-center">
+                                                <div class="flex-1">
+                                                    <span class="block font-sans font-semibold text-ink text-[0.9375rem]">{{p.bedrooms}}</span>
+                                                    <span class="font-mono text-[0.5rem] text-ink-secondary/60 uppercase tracking-wider">Beds</span>
+                                                </div>
+                                                <div class="w-px bg-border-light/80"></div>
+                                                <div class="flex-1">
+                                                    <span class="block font-sans font-semibold text-ink text-[0.9375rem]">{{p.bedrooms}}</span>
+                                                    <span class="font-mono text-[0.5rem] text-ink-secondary/60 uppercase tracking-wider">Baths</span>
+                                                </div>
+                                                <div class="w-px bg-border-light/80"></div>
+                                                <div class="flex-1">
+                                                    <span class="block font-sans font-semibold text-ink text-[0.9375rem]">{{p.area_sqft}}</span>
+                                                    <span class="font-mono text-[0.5rem] text-ink-secondary/60 uppercase tracking-wider">SqFt</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-5 pt-3 border-t border-border-light/60 flex items-center justify-between">
+                                            <span class="font-serif italic font-light text-[1.25rem] text-ink leading-none">{{p.price | currency:"$":0}}<span class="text-xs font-sans not-italic text-ink-secondary/60 font-light">/mo</span></span>
+                                            <span class="font-mono text-[0.5625rem] px-2 py-1 bg-accent/10 text-accent font-semibold uppercase tracking-wider rounded">Available</span>
                                         </div>
                                     </div>
-                                    <p class="font-sans text-[0.875rem] text-ink-secondary mb-2">{{m.issue_description}}</p>
-                                    <p class="font-mono text-[0.625rem] text-muted tabular-nums">{{m.created_at}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Amenities -->
-                <div ng-show="currentTab == 'amenities'" class="tab-content absolute top-0 w-full" id="tab-amenities">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-surface border border-border-light p-6 list-item">
-                            <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-6 pb-3 border-b border-border-light">Book Amenity</h3>
-                            <form ng-submit="submitBooking()" class="flex flex-col gap-4">
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Amenity</label>
-                                    <select ng-model="bookForm.amenity_id" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent appearance-none" ng-change="onAmenityChange()">
-                                        <option value="">Select amenity</option>
-                                        <option ng-repeat="a in amenities | filter:{is_active:1}" value="{{a.id}}">{{a.name}} ({{a.capacity}} ppl · {{a.location || 'N/A'}})</option>
-                                    </select>
-                                    <div ng-if="bookForm.amenity_id && bookForm.booking_date && bookForm.start_time && bookForm.end_time" class="mt-2 flex items-center gap-2">
-                                        <span class="font-mono text-[0.5rem] text-ink-secondary opacity-65">AVAILABILITY</span>
-                                        <span ng-if="selectedAmenityCapacity > 0" class="font-mono text-[0.5625rem] text-success">{{selectedAmenityCapacity}} slot(s) available</span>
-                                        <span ng-if="selectedAmenityCapacity == 0" class="font-mono text-[0.5625rem] text-danger">Fully booked</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">Date</label>
-                                    <input type="date" ng-model="bookForm.booking_date" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent">
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
+                    <!-- Rentals -->
+                    <div ng-show="currentTab == 'rentals'" class="tab-content absolute top-0 w-full" id="tab-rentals">
+                        <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm">
+                            <h2 class="font-serif font-light italic text-[1.25rem] text-ink mb-6">Rental Lease History</h2>
+                            <p ng-if="!rentals || rentals.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans font-light">No lease history found.</p>
+                            <div class="flex flex-col gap-4">
+                                <div ng-repeat="r in rentals" class="flex flex-col md:flex-row items-start md:items-center justify-between p-5 border border-border-light hover:border-accent/20 hover:bg-bg-alt/20 rounded-xl transition-all duration-300 list-item">
                                     <div>
-                                        <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">From</label>
-                                        <input type="time" ng-model="bookForm.start_time" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent">
+                                        <p class="font-sans font-semibold text-ink text-[1rem]">{{r.property_title}}</p>
+                                        <p class="font-sans text-[0.8125rem] text-ink-secondary/70 font-light mt-1">{{r.location}} · <span class="font-semibold text-ink bg-bg-alt/60 px-2 py-0.5 rounded font-mono text-xs">{{r.monthly_rent | currency:"$":0}}/mo</span></p>
+                                        <p class="font-mono text-[0.625rem] text-muted/80 mt-2 flex items-center gap-1.5 font-light">
+                                            <i class="far fa-calendar-alt"></i> Lease Duration: {{r.start_date}} — {{r.end_date || 'Ongoing'}}
+                                        </p>
                                     </div>
-                                    <div>
-                                        <label class="block font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-2">To</label>
-                                        <input type="time" ng-model="bookForm.end_time" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 outline-none focus:border-accent">
-                                    </div>
+                                    <span class="mt-3 md:mt-0 font-mono text-[0.5625rem] px-3 py-1 font-semibold uppercase tracking-wider rounded" ng-class="{'bg-success/15 text-success': r.status=='active', 'bg-border text-ink-secondary/70': r.status=='terminated', 'bg-bg-alt text-muted': r.status=='expired'}">{{r.status}}</span>
                                 </div>
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-3 font-mono text-[0.6875rem] tracking-[0.02em] uppercase text-bg bg-accent px-5 py-3 rounded-full hover:bg-accent-hover transition-colors" ng-disabled="isSubmittingBooking">
-                                    {{ isSubmittingBooking ? 'Reserving...' : 'Book Now' }}
-                                </button>
-                            </form>
-                            <div ng-if="bookingMessage" class="mt-4 p-4 font-mono text-[0.75rem]" ng-class="bookingMessageClass">{{bookingMessage}}</div>
+                            </div>
                         </div>
-                        <div class="bg-surface border border-border-light p-6 list-item flex flex-col">
-                            <h3 class="font-sans font-medium text-[1.125rem] text-ink mb-6 pb-3 border-b border-border-light flex justify-between items-center">
-                                My Bookings
-                                <span ng-if="isPolling" class="flex h-3 w-3 relative">
-                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/60"></span>
-                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
-                                </span>
-                            </h3>
-                            <p ng-if="!myBookings || myBookings.length == 0" class="text-ink-secondary text-[0.875rem] font-sans text-center my-auto">No bookings yet.</p>
-                            <div class="flex flex-col gap-3 overflow-y-auto max-h-[500px] pr-2">
-                                <div ng-repeat="b in myBookings" class="p-4 border border-border-light hover:border-border transition inner-item" ng-class="{'border-border': b._updated}">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <p class="font-sans font-medium text-ink">{{b.amenity_name}}</p>
-                                        <span class="font-mono text-[0.5625rem] px-3 py-1 font-medium uppercase tracking-[0.02em]" ng-class="getBookingStatusClass(b.status)">{{b.status.replace('_',' ')}}</span>
+                    </div>
+
+                    <!-- Maintenance -->
+                    <div ng-show="currentTab == 'maintenance'" class="tab-content absolute top-0 w-full" id="tab-maintenance">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Submit Maintenance -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm list-item">
+                                <h3 class="font-serif font-light italic text-[1.25rem] text-ink mb-6 pb-3 border-b border-border-light/80">Submit Service Request</h3>
+                                <form ng-submit="submitMaint()" class="flex flex-col gap-4">
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Select Property</label>
+                                        <select ng-model="maintForm.property_id" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent appearance-none">
+                                            <option value="">Choose property...</option>
+                                            <option ng-repeat="r in activeRentals" value="{{r.property_id}}">{{r.property_title}}</option>
+                                        </select>
                                     </div>
-                                    <div class="flex items-center gap-2 font-sans text-[0.875rem] text-ink-secondary">{{b.booking_date}}</div>
-                                    <div class="flex items-center gap-2 font-sans text-[0.875rem] text-ink-secondary mt-1">{{formatTime(b.check_in_time)}} — {{formatTime(b.check_out_time)}}</div>
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Subject</label>
+                                        <input type="text" ng-model="maintForm.subject" placeholder="Brief issue description..." required class="w-full font-sans text-[0.875rem] text-ink bg-transparent border border-border px-4 py-3 rounded-lg outline-none focus:border-accent placeholder:text-muted/60">
+                                    </div>
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Detailed Context</label>
+                                        <textarea ng-model="maintForm.description" rows="3" placeholder="Please describe the issue in detail so we can dispatch the right team..." required class="w-full font-sans text-[0.875rem] text-ink bg-transparent border border-border px-4 py-3 rounded-lg outline-none focus:border-accent resize-none placeholder:text-muted/60"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Priority Level</label>
+                                        <select ng-model="maintForm.priority" class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent appearance-none">
+                                            <option value="low">Low (Non-urgent request)</option>
+                                            <option value="medium">Medium (Standard request)</option>
+                                            <option value="high">High (Urgent response needed)</option>
+                                            <option value="urgent">Urgent (Emergency issue)</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="w-full inline-flex items-center justify-center gap-3 font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-bg bg-accent px-5 py-3 rounded-full hover:bg-accent-hover transition-colors font-semibold shadow-sm mt-2" ng-disabled="isSubmittingMaint">
+                                        <i class="fas fa-paper-plane text-[9px]"></i>
+                                        {{ isSubmittingMaint ? 'Submitting Request...' : 'Submit Request' }}
+                                    </button>
+                                </form>
+                                <div ng-if="maintMessage" class="mt-4 p-4 font-mono text-[0.75rem] rounded-lg shadow-sm" ng-class="maintMessageClass">{{maintMessage}}</div>
+                            </div>
+
+                            <!-- My Requests List -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm list-item flex flex-col">
+                                <h3 class="font-serif font-light italic text-[1.25rem] text-ink mb-6 pb-3 border-b border-border-light/80 flex justify-between items-center">
+                                    My Requests
+                                    <span ng-if="isPolling" class="flex h-2.5 w-2.5 relative">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/40"></span>
+                                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent"></span>
+                                    </span>
+                                </h3>
+                                <p ng-if="!myMaintenance || myMaintenance.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans font-light text-center my-auto">No requests submitted yet.</p>
+                                <div class="flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+                                    <div ng-repeat="m in myMaintenance" class="p-4 border border-border-light hover:border-accent/20 hover:bg-bg-alt/20 rounded-xl transition-all duration-300 inner-item" ng-class="{'border-accent bg-bg-alt/30': m._updated}">
+                                        <div class="flex items-start justify-between mb-2 gap-4">
+                                            <p class="font-sans font-semibold text-ink text-[0.875rem] w-3/5 truncate">{{m.subject || (m.issue_description | limitTo:30)}}</p>
+                                            <div class="flex gap-2 w-2/5 justify-end flex-wrap">
+                                                <span class="font-mono text-[0.5rem] px-2 py-0.5 font-semibold uppercase tracking-wider rounded" ng-class="getPriorityClass(m.priority)">{{m.priority}}</span>
+                                                <span class="font-mono text-[0.5rem] px-2 py-0.5 font-semibold uppercase tracking-wider rounded" ng-class="getStatusClass(m.status)">{{m.status.replace('_',' ')}}</span>
+                                            </div>
+                                        </div>
+                                        <p class="font-sans text-[0.8125rem] text-ink-secondary/80 font-light leading-relaxed mb-3">{{m.issue_description}}</p>
+                                        
+                                        <!-- Stepper -->
+                                        <div class="mt-4 flex items-center justify-between w-full text-[0.625rem] font-mono text-ink-secondary/50 border-t border-border-light/60 pt-3">
+                                            <div class="flex items-center gap-1" ng-class="{'text-ink font-semibold': m.status === 'pending' || m.status === 'in_progress' || m.status === 'completed'}">
+                                                <span class="w-1.5 h-1.5 rounded-full" ng-class="m.status === 'pending' || m.status === 'in_progress' || m.status === 'completed' ? 'bg-accent' : 'bg-border'"></span>
+                                                <span>Received</span>
+                                            </div>
+                                            <div class="h-0.5 flex-1 bg-border-light mx-2"></div>
+                                            <div class="flex items-center gap-1" ng-class="{'text-ink font-semibold': m.status === 'in_progress' || m.status === 'completed'}">
+                                                <span class="w-1.5 h-1.5 rounded-full" ng-class="m.status === 'in_progress' || m.status === 'completed' ? 'bg-accent' : 'bg-border'"></span>
+                                                <span>In Progress</span>
+                                            </div>
+                                            <div class="h-0.5 flex-1 bg-border-light mx-2"></div>
+                                            <div class="flex items-center gap-1" ng-class="{'text-success font-semibold': m.status === 'completed'}">
+                                                <span class="w-1.5 h-1.5 rounded-full" ng-class="m.status === 'completed' ? 'bg-success' : 'bg-border'"></span>
+                                                <span>Completed</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <p class="font-mono text-[0.5625rem] text-muted/80 mt-3.5 flex items-center gap-1">
+                                            <i class="far fa-clock"></i> Submitted: {{m.created_at}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div ng-show="currentTab == 'amenities'" class="tab-content absolute top-0 w-full" id="tab-amenities">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Book Amenity -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm list-item">
+                                <h3 class="font-serif font-light italic text-[1.25rem] text-ink mb-6 pb-3 border-b border-border-light/80">Book Amenity</h3>
+                                <form ng-submit="submitBooking()" class="flex flex-col gap-4">
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Amenity Selection</label>
+                                        <select ng-model="bookForm.amenity_id" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent appearance-none" ng-change="onAmenityChange()">
+                                            <option value="">Choose amenity...</option>
+                                            <option ng-repeat="a in amenities | filter:{is_active:1}" value="{{a.id}}">{{a.name}} (Capacity: {{a.capacity}} · {{a.location || 'N/A'}})</option>
+                                        </select>
+                                        <div ng-if="bookForm.amenity_id && bookForm.booking_date && bookForm.start_time && bookForm.end_time" class="mt-2.5 flex items-center gap-2">
+                                            <span class="font-mono text-[0.5rem] tracking-wider text-ink-secondary/50 uppercase">AVAILABILITY STATUS</span>
+                                            <span ng-if="selectedAmenityCapacity > 0" class="font-mono text-[0.5625rem] px-2 py-0.5 bg-success/10 text-success rounded font-semibold">{{selectedAmenityCapacity}} slot(s) available</span>
+                                            <span ng-if="selectedAmenityCapacity == 0" class="font-mono text-[0.5625rem] px-2 py-0.5 bg-danger/10 text-danger rounded font-semibold">Fully booked</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Booking Date</label>
+                                        <input type="date" ng-model="bookForm.booking_date" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">Start Time</label>
+                                            <input type="time" ng-model="bookForm.start_time" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent">
+                                        </div>
+                                        <div>
+                                            <label class="block font-mono text-[0.5625rem] tracking-[0.08em] uppercase text-ink-secondary/70 mb-2">End Time</label>
+                                            <input type="time" ng-model="bookForm.end_time" required class="w-full font-sans text-[0.875rem] text-ink bg-surface border border-border px-4 py-3 rounded-lg outline-none focus:border-accent">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full inline-flex items-center justify-center gap-3 font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-bg bg-accent px-5 py-3 rounded-full hover:bg-accent-hover transition-colors font-semibold shadow-sm mt-2" ng-disabled="isSubmittingBooking">
+                                        <i class="fas fa-calendar-check text-[10px]"></i>
+                                        {{ isSubmittingBooking ? 'Reserving Slots...' : 'Confirm Booking' }}
+                                    </button>
+                                </form>
+                                <div ng-if="bookingMessage" class="mt-4 p-4 font-mono text-[0.75rem] rounded-lg shadow-sm" ng-class="bookingMessageClass">{{bookingMessage}}</div>
+                            </div>
+
+                            <!-- My Bookings List -->
+                            <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm list-item flex flex-col">
+                                <h3 class="font-serif font-light italic text-[1.25rem] text-ink mb-6 pb-3 border-b border-border-light/80 flex justify-between items-center">
+                                    My Bookings
+                                    <span ng-if="isPolling" class="flex h-2.5 w-2.5 relative">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent/40"></span>
+                                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent"></span>
+                                    </span>
+                                </h3>
+                                <p ng-if="!myBookings || myBookings.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans font-light text-center my-auto">No bookings reserved yet.</p>
+                                <div class="flex flex-col gap-4 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
+                                    <div ng-repeat="b in myBookings" class="p-4 border border-border-light hover:border-accent/20 hover:bg-bg-alt/20 rounded-xl transition-all duration-300 inner-item" ng-class="{'border-accent bg-bg-alt/30': b._updated}">
+                                        <div class="flex items-center justify-between mb-3.5">
+                                            <p class="font-sans font-semibold text-ink text-[0.875rem]">{{b.amenity_name}}</p>
+                                            <span class="font-mono text-[0.5625rem] px-2.5 py-1 font-semibold uppercase tracking-wider rounded" ng-class="getBookingStatusClass(b.status)">{{b.status.replace('_',' ')}}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 font-sans text-[0.8125rem] text-ink-secondary/80 font-light">
+                                            <i class="far fa-calendar-alt text-xs opacity-60"></i> Booking Date: {{b.booking_date}}
+                                        </div>
+                                        <div class="flex items-center gap-2 font-sans text-[0.8125rem] text-ink-secondary/80 font-light mt-1.5">
+                                            <i class="far fa-clock text-xs opacity-60"></i> Reserved Time: {{formatTime(b.check_in_time)}} — {{formatTime(b.check_out_time)}}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>

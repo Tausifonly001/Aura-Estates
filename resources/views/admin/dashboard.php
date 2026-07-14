@@ -31,8 +31,10 @@ Auth::startSession();
                         danger: '#9e4f4f',
                     },
                     fontFamily: {
+                        fontFamily: {
                         sans: ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
                     },
                 }
             }
@@ -40,7 +42,8 @@ Auth::startSession();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="../resources/js/angular.min.js"></script>
     <script src="../resources/js/gsap.min.js"></script>
     <script>window.AURA_API_BASE = '../api/';</script>
@@ -66,9 +69,9 @@ Auth::startSession();
         .stat-card.animated::after { animation: statBarIn 0.8s ease forwards; }
         @keyframes statBarIn { to { transform: scaleX(1); } }
         .pulse-dot {
-            width: 8px; height: 8px;
+            width: 7px; height: 7px;
             border-radius: 50%;
-            background: #3a322c;
+            background: #5d7a4f;
             position: relative;
         }
         .pulse-dot::before {
@@ -76,7 +79,7 @@ Auth::startSession();
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            background: rgba(58,50,44,0.2);
+            background: rgba(93, 122, 79, 0.25);
             animation: pulseRing 2s ease infinite;
         }
         @keyframes pulseRing {
@@ -85,6 +88,20 @@ Auth::startSession();
             100% { transform: scale(1.5); opacity: 0; }
         }
         .count-up { display: inline-block; }
+        /* Custom scrollbar for panels */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d6d2c8;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9a9086;
+        }
     </style>
 </head>
 <body ng-controller="AdminController" ng-cloak>
@@ -110,135 +127,170 @@ Auth::startSession();
                 <!-- Header -->
                 <div class="flex justify-between items-end mb-6 stagger-item">
                     <div>
-                        <h1 class="font-sans font-medium text-[2rem] text-ink" id="dashboardTitle">Dashboard</h1>
-                        <p class="font-sans text-[0.875rem] text-ink-secondary mt-1">Real-time management overview</p>
+                        <h1 class="font-serif font-light italic text-[2.5rem] text-ink leading-tight" id="dashboardTitle">Dashboard</h1>
+                        <p class="font-sans text-[0.8125rem] text-ink-secondary/70 mt-1.5 font-light">Real-time management overview</p>
                     </div>
-                    <div class="flex items-center gap-3 bg-surface border border-border-light px-4 py-2">
-                        <span ng-if="isPolling" class="flex items-center gap-2 font-mono text-[0.625rem] text-ink-secondary">
+                    <div class="flex items-center gap-3 bg-surface border border-border-light px-4 py-2 rounded-full shadow-sm hover:shadow-md transition-all duration-300">
+                        <span ng-if="isPolling" class="flex items-center gap-2 font-mono text-[0.625rem] text-ink-secondary font-medium uppercase tracking-wider">
                             <span class="pulse-dot"></span>
-                            Live
+                            Live Connection
                         </span>
-                        <span class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-muted">5s</span>
+                        <span class="font-mono text-[0.5625rem] tracking-[0.05em] uppercase text-muted/80 bg-bg-alt px-2 py-0.5 rounded-full">5s Refresh</span>
                     </div>
                 </div>
                 <div class="h-px bg-border-light mb-8 stagger-item"></div>
 
                 <!-- Primary Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="statGrid">
-                    <div class="bg-surface border border-border-light p-6 stagger-item stat-card" data-stat>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Total</span>
-                            <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8" id="statGrid">
+                    <!-- Stat 1 -->
+                    <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 stagger-item stat-card group" data-stat>
+                        <div class="flex items-center justify-between mb-5">
+                            <span class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Total Listings</span>
+                            <div class="w-8 h-8 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                <i class="fas fa-building text-[10px]"></i>
+                            </div>
                         </div>
-                        <div class="font-sans font-medium text-[2rem] text-ink mb-1 count-up" id="statProperties">{{stats.properties.total || 0}}</div>
-                        <div class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Properties</div>
+                        <div class="font-serif italic font-light text-[2.5rem] text-ink leading-none mb-2 count-up" id="statProperties">{{stats.properties.total || 0}}</div>
+                        <div class="font-sans text-[0.6875rem] font-medium tracking-[0.05em] uppercase text-ink-secondary/50">Properties Listed</div>
                     </div>
-                    <div class="bg-surface border border-border-light p-6 stagger-item stat-card">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Pending</span>
-                            <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <!-- Stat 2 -->
+                    <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 stagger-item stat-card group">
+                        <div class="flex items-center justify-between mb-5">
+                            <span class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Active Tickets</span>
+                            <div class="w-8 h-8 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                <i class="fas fa-wrench text-[10px]"></i>
+                            </div>
                         </div>
-                        <div class="font-sans font-medium text-[2rem] text-ink mb-1 count-up">{{stats.maintenance.pending_count || 0}}</div>
-                        <div class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Maintenance</div>
+                        <div class="font-serif italic font-light text-[2.5rem] text-ink leading-none mb-2 count-up">{{stats.maintenance.pending_count || 0}}</div>
+                        <div class="font-sans text-[0.6875rem] font-medium tracking-[0.05em] uppercase text-ink-secondary/50">Pending Maintenance</div>
                     </div>
-                    <div class="bg-surface border border-border-light p-6 stagger-item stat-card">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Today</span>
-                            <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <!-- Stat 3 -->
+                    <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 stagger-item stat-card group">
+                        <div class="flex items-center justify-between mb-5">
+                            <span class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">Today's Usage</span>
+                            <div class="w-8 h-8 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                <i class="fas fa-calendar-check text-[10px]"></i>
+                            </div>
                         </div>
-                        <div class="font-sans font-medium text-[2rem] text-ink mb-1 count-up">{{stats.amenities.today_count || 0}}</div>
-                        <div class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Bookings</div>
+                        <div class="font-serif italic font-light text-[2.5rem] text-ink leading-none mb-2 count-up">{{stats.amenities.today_count || 0}}</div>
+                        <div class="font-sans text-[0.6875rem] font-medium tracking-[0.05em] uppercase text-ink-secondary/50">Amenity Bookings</div>
                     </div>
-                    <div class="bg-surface border border-border-light p-6 stagger-item stat-card">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">New</span>
-                            <svg class="w-5 h-5 text-ink-secondary opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <!-- Stat 4 -->
+                    <div class="bg-surface border border-border-light p-6 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 stagger-item stat-card group">
+                        <div class="flex items-center justify-between mb-5">
+                            <span class="font-mono text-[0.5625rem] tracking-[0.1em] uppercase text-ink-secondary/65">New Contacts</span>
+                            <div class="w-8 h-8 rounded-full bg-bg-alt/80 flex items-center justify-center text-accent/80 group-hover:bg-accent group-hover:text-bg transition-colors duration-300">
+                                <i class="fas fa-envelope text-[10px]"></i>
+                            </div>
                         </div>
-                        <div class="font-sans font-medium text-[2rem] text-ink mb-1 count-up">{{stats.inquiries.pending_inquiries || 0}}</div>
-                        <div class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65">Inquiries</div>
+                        <div class="font-serif italic font-light text-[2.5rem] text-ink leading-none mb-2 count-up">{{stats.inquiries.pending_inquiries || 0}}</div>
+                        <div class="font-sans text-[0.6875rem] font-medium tracking-[0.05em] uppercase text-ink-secondary/50">Pending Inquiries</div>
                     </div>
                 </div>
 
                 <!-- Secondary Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
-                    <div class="bg-bg-alt border border-border-light p-4 stagger-item">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Completed</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.maintenance.completed_count || 0}}</div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                    <div class="bg-surface/50 border border-border-light p-4 rounded-xl shadow-sm stagger-item hover:border-accent/15 transition-colors">
+                        <div class="font-mono text-[0.5rem] tracking-[0.08em] uppercase text-ink-secondary/65 mb-1.5">Completed Maint.</div>
+                        <div class="font-sans font-semibold text-[1.25rem] text-ink">{{stats.maintenance.completed_count || 0}}</div>
                     </div>
-                    <div class="bg-bg-alt border border-border-light p-4 stagger-item">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">In Progress</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.maintenance.in_progress_count || 0}}</div>
+                    <div class="bg-surface/50 border border-border-light p-4 rounded-xl shadow-sm stagger-item hover:border-accent/15 transition-colors">
+                        <div class="font-mono text-[0.5rem] tracking-[0.08em] uppercase text-ink-secondary/65 mb-1.5">In Progress Maint.</div>
+                        <div class="font-sans font-semibold text-[1.25rem] text-ink">{{stats.maintenance.in_progress_count || 0}}</div>
                     </div>
-                    <div class="bg-bg-alt border border-border-light p-4 stagger-item">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Active Amenities</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.amenities.active_count || 0}}</div>
+                    <div class="bg-surface/50 border border-border-light p-4 rounded-xl shadow-sm stagger-item hover:border-accent/15 transition-colors">
+                        <div class="font-mono text-[0.5rem] tracking-[0.08em] uppercase text-ink-secondary/65 mb-1.5">Active Amenities</div>
+                        <div class="font-sans font-semibold text-[1.25rem] text-ink">{{stats.amenities.active_count || 0}}</div>
                     </div>
-                    <div class="bg-bg-alt border border-border-light p-4 stagger-item">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Upcoming</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.amenities.upcoming_count || 0}}</div>
+                    <div class="bg-surface/50 border border-border-light p-4 rounded-xl shadow-sm stagger-item hover:border-accent/15 transition-colors">
+                        <div class="font-mono text-[0.5rem] tracking-[0.08em] uppercase text-ink-secondary/65 mb-1.5">Upcoming Bookings</div>
+                        <div class="font-sans font-semibold text-[1.25rem] text-ink">{{stats.amenities.upcoming_count || 0}}</div>
                     </div>
-                    <div class="bg-bg-alt border border-border-light p-4 stagger-item">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Active Rentals</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.rentals.active_rentals || 0}}</div>
+                    <div class="bg-surface/50 border border-border-light p-4 rounded-xl shadow-sm stagger-item hover:border-accent/15 transition-colors">
+                        <div class="font-mono text-[0.5rem] tracking-[0.08em] uppercase text-ink-secondary/65 mb-1.5">Active Leases</div>
+                        <div class="font-sans font-semibold text-[1.25rem] text-ink">{{stats.rentals.active_rentals || 0}}</div>
                     </div>
                 </div>
 
                 <!-- Notifications -->
                 <div ng-if="notifications.length > 0" class="mb-6 stagger-item">
-                    <div ng-repeat="n in notifications" class="flex items-center gap-3 px-4 py-3 mb-2 border" ng-class="{'bg-danger/5 border-danger/20 text-danger': n.type == 'overdue', 'bg-success/5 border-success/20 text-success': n.type == 'resolved', 'bg-warning/5 border-warning/20 text-warning': n.type == 'pending'}">
-                        <span class="font-sans text-[0.875rem]">{{n.message}}</span>
+                    <div ng-repeat="n in notifications" class="flex items-center gap-3 px-4 py-3 mb-2 border rounded-xl" ng-class="{'bg-danger/5 border-danger/20 text-danger': n.type == 'overdue', 'bg-success/5 border-success/20 text-success': n.type == 'resolved', 'bg-warning/5 border-warning/20 text-warning': n.type == 'pending'}">
+                        <span class="w-2 h-2 rounded-full" ng-class="{'bg-danger animate-pulse': n.type == 'overdue', 'bg-success': n.type == 'resolved', 'bg-warning': n.type == 'pending'}"></span>
+                        <span class="font-sans text-[0.875rem] font-light">{{n.message}}</span>
                         <span class="font-mono text-[0.5625rem] opacity-60 ml-auto">{{n.time}}</span>
                     </div>
                 </div>
 
-                <!-- KPI -->
-                <div id="kpiSection" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8 stagger-item">
-                    <div class="bg-surface border border-border-light p-4">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Avg Resolution</div>
-                        <div class="font-sans font-medium text-[1.125rem] text-ink">{{stats.kpi.avg_resolution_hours || 'N/A'}}<span ng-if="stats.kpi.avg_resolution_hours" class="text-[0.75rem] text-ink-secondary ml-1">hrs</span></div>
-                        <div class="font-mono text-[0.5rem] text-ink-secondary/50 mt-1" ng-class="{'text-danger': stats.kpi.avg_resolution_hours > 48, 'text-success': stats.kpi.avg_resolution_hours <= 48 && stats.kpi.avg_resolution_hours > 0}">
-                            {{stats.kpi.avg_resolution_hours > 48 ? '⚠ Exceeds 48h target' : stats.kpi.avg_resolution_hours > 0 ? '✓ Within 48h target' : ''}}
+                <!-- KPI Section -->
+                <div id="kpiSection" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 stagger-item">
+                    <!-- KPI 1 -->
+                    <div class="bg-surface border border-border-light p-5 rounded-2xl shadow-sm hover:border-accent/20 transition-all duration-300">
+                        <div class="font-mono text-[0.5rem] tracking-[0.1em] uppercase text-ink-secondary/65 mb-2">Avg Resolution</div>
+                        <div class="font-serif italic font-light text-[1.5rem] text-ink">
+                            {{stats.kpi.avg_resolution_hours || 'N/A'}}<span ng-if="stats.kpi.avg_resolution_hours" class="text-[0.875rem] font-sans text-ink-secondary/60 ml-1 font-normal">hrs</span>
+                        </div>
+                        <div class="font-sans text-[0.625rem] mt-2.5 flex items-center gap-1.5 font-medium" ng-class="{'text-danger': stats.kpi.avg_resolution_hours > 48, 'text-success': stats.kpi.avg_resolution_hours <= 48 && stats.kpi.avg_resolution_hours > 0}">
+                            <span class="w-1.5 h-1.5 rounded-full" ng-class="{'bg-danger animate-pulse': stats.kpi.avg_resolution_hours > 48, 'bg-success': stats.kpi.avg_resolution_hours <= 48 && stats.kpi.avg_resolution_hours > 0}"></span>
+                            {{stats.kpi.avg_resolution_hours > 48 ? 'Exceeds 48h limit' : stats.kpi.avg_resolution_hours > 0 ? 'Within 48h target' : 'No data yet'}}
                         </div>
                     </div>
-                    <div class="bg-surface border border-border-light p-4">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Completion Rate</div>
-                        <div class="font-sans font-medium text-[1.125rem]" ng-class="{'text-success': stats.kpi.completion_rate >= 90, 'text-warning': stats.kpi.completion_rate < 90 && stats.kpi.completion_rate >= 0}">{{stats.kpi.completion_rate || 0}}%</div>
-                        <div class="font-mono text-[0.5rem] text-ink-secondary/50 mt-1" ng-class="{'text-success': stats.kpi.completion_rate >= 90, 'text-warning': stats.kpi.completion_rate < 90 && stats.kpi.completion_rate >= 0}">
-                            {{stats.kpi.completion_rate >= 90 ? '✓ Goal met (≥90%)' : stats.kpi.completion_rate >= 0 ? '⚠ Below 90% target' : ''}}
+                    <!-- KPI 2 -->
+                    <div class="bg-surface border border-border-light p-5 rounded-2xl shadow-sm hover:border-accent/20 transition-all duration-300">
+                        <div class="font-mono text-[0.5rem] tracking-[0.1em] uppercase text-ink-secondary/65 mb-2">Completion Rate</div>
+                        <div class="font-serif italic font-light text-[1.5rem]" ng-class="{'text-success': stats.kpi.completion_rate >= 90, 'text-warning': stats.kpi.completion_rate < 90 && stats.kpi.completion_rate >= 0}">
+                            {{stats.kpi.completion_rate || 0}}%
+                        </div>
+                        <div class="font-sans text-[0.625rem] mt-2.5 flex items-center gap-1.5 font-medium" ng-class="{'text-success': stats.kpi.completion_rate >= 90, 'text-warning': stats.kpi.completion_rate < 90 && stats.kpi.completion_rate >= 0}">
+                            <span class="w-1.5 h-1.5 rounded-full" ng-class="{'bg-success': stats.kpi.completion_rate >= 90, 'bg-warning animate-pulse': stats.kpi.completion_rate < 90 && stats.kpi.completion_rate >= 0}"></span>
+                            {{stats.kpi.completion_rate >= 90 ? 'Goal met (≥90%)' : stats.kpi.completion_rate >= 0 ? 'Below 90% target' : 'No data'}}
                         </div>
                     </div>
-                    <div class="bg-surface border border-border-light p-4">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Overdue Requests</div>
-                        <div class="font-sans font-medium text-[1.125rem]" ng-class="{'text-danger': stats.kpi.overdue_count > 0, 'text-success': stats.kpi.overdue_count == 0}">{{stats.kpi.overdue_count || 0}}</div>
-                        <div class="font-mono text-[0.5rem] text-ink-secondary/50 mt-1">{{stats.kpi.overdue_count > 0 ? 'Beyond 48h resolution time' : 'No overdue items'}}</div>
+                    <!-- KPI 3 -->
+                    <div class="bg-surface border border-border-light p-5 rounded-2xl shadow-sm hover:border-accent/20 transition-all duration-300">
+                        <div class="font-mono text-[0.5rem] tracking-[0.1em] uppercase text-ink-secondary/65 mb-2">Overdue Requests</div>
+                        <div class="font-serif italic font-light text-[1.5rem]" ng-class="{'text-danger': stats.kpi.overdue_count > 0, 'text-success': stats.kpi.overdue_count == 0}">
+                            {{stats.kpi.overdue_count || 0}}
+                        </div>
+                        <div class="font-sans text-[0.625rem] mt-2.5 flex items-center gap-1.5 font-medium" ng-class="{'text-danger': stats.kpi.overdue_count > 0, 'text-success': stats.kpi.overdue_count == 0}">
+                            <span class="w-1.5 h-1.5 rounded-full" ng-class="{'bg-danger animate-pulse': stats.kpi.overdue_count > 0, 'bg-success': stats.kpi.overdue_count == 0}"></span>
+                            {{stats.kpi.overdue_count > 0 ? 'Beyond 48h SLA' : 'All items in SLA'}}
+                        </div>
                     </div>
-                    <div class="bg-surface border border-border-light p-4">
-                        <div class="font-mono text-[0.5rem] tracking-[0.02em] uppercase text-ink-secondary opacity-65 mb-1">Today's Conflicts</div>
-                        <div class="font-sans font-medium text-[1.125rem]" ng-class="{'text-success': stats.kpi.today_conflicts == 0, 'text-danger': stats.kpi.today_conflicts > 0}">{{stats.kpi.today_conflicts || 0}}</div>
-                        <div class="font-mono text-[0.5rem] text-ink-secondary/50 mt-1">{{stats.kpi.today_conflicts > 0 ? '⚠ Booking conflicts detected' : '✓ No conflicts'}}</div>
+                    <!-- KPI 4 -->
+                    <div class="bg-surface border border-border-light p-5 rounded-2xl shadow-sm hover:border-accent/20 transition-all duration-300">
+                        <div class="font-mono text-[0.5rem] tracking-[0.1em] uppercase text-ink-secondary/65 mb-2">Today's Conflicts</div>
+                        <div class="font-serif italic font-light text-[1.5rem]" ng-class="{'text-success': stats.kpi.today_conflicts == 0, 'text-danger': stats.kpi.today_conflicts > 0}">
+                            {{stats.kpi.today_conflicts || 0}}
+                        </div>
+                        <div class="font-sans text-[0.625rem] mt-2.5 flex items-center gap-1.5 font-medium" ng-class="{'text-success': stats.kpi.today_conflicts == 0, 'text-danger': stats.kpi.today_conflicts > 0}">
+                            <span class="w-1.5 h-1.5 rounded-full" ng-class="{'bg-success': stats.kpi.today_conflicts == 0, 'bg-danger animate-pulse': stats.kpi.today_conflicts > 0}"></span>
+                            {{stats.kpi.today_conflicts > 0 ? 'Conflicts detected' : 'No conflicts'}}
+                        </div>
                     </div>
                 </div>
 
                 <!-- Panels -->
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
                     <!-- Recent Maintenance -->
-                    <div class="bg-surface border border-border-light flex flex-col h-[500px] stagger-item">
-                        <div class="px-6 py-5 border-b border-border-light flex justify-between items-center">
-                            <h2 class="font-sans font-medium text-[1rem] text-ink">Maintenance</h2>
-                            <a href="/admin/maintenance" class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">View →</a>
+                    <div class="bg-surface border border-border-light rounded-2xl flex flex-col h-[520px] shadow-sm stagger-item overflow-hidden">
+                        <div class="px-6 py-5 border-b border-border-light bg-surface/50 backdrop-blur-sm flex justify-between items-center">
+                            <h2 class="font-serif font-light italic text-[1.25rem] text-ink">Recent Maintenance</h2>
+                            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/maintenance" class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-accent hover:text-accent-hover transition-colors no-underline font-semibold">View All →</a>
                         </div>
-                        <div class="p-6 flex-1 overflow-y-auto">
-                            <p ng-if="!recentMaintenance || recentMaintenance.length == 0" class="text-ink-secondary text-[0.875rem] font-sans text-center mt-10">No recent maintenance requests.</p>
-                            <div class="flex flex-col gap-3">
-                                <div ng-repeat="r in recentMaintenance" class="flex items-start justify-between p-4 border border-border-light hover:border-border transition stagger-inner" ng-class="{'border-border bg-bg-alt': r._updated}">
+                        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                            <p ng-if="!recentMaintenance || recentMaintenance.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans text-center mt-12 font-light">No recent maintenance requests.</p>
+                            <div class="flex flex-col gap-4">
+                                <div ng-repeat="r in recentMaintenance" class="flex items-start justify-between p-4 border border-border-light hover:border-accent/20 rounded-xl hover:bg-bg-alt/25 transition-all duration-300 stagger-inner" ng-class="{'border-accent/40 bg-bg-alt/20': r._updated}">
                                     <div class="flex-1 pr-4">
-                                        <p class="font-sans font-medium text-ink text-[0.875rem] mb-1">{{r.property_title}}</p>
-                                        <p class="font-sans text-[0.75rem] text-ink-secondary line-clamp-2">{{r.issue_description}}</p>
-                                        <p class="font-mono text-[0.5625rem] text-muted mt-2">{{r.created_at}}</p>
+                                        <p class="font-sans font-semibold text-ink text-[0.875rem] mb-1.5">{{r.property_title}}</p>
+                                        <p class="font-sans text-[0.8125rem] text-ink-secondary/80 font-light leading-relaxed line-clamp-2">{{r.issue_description}}</p>
+                                        <p class="font-mono text-[0.5625rem] text-muted/80 mt-3 flex items-center gap-1.5">
+                                            <i class="far fa-clock"></i> {{r.created_at}}
+                                        </p>
                                     </div>
                                     <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                                        <span class="px-3 py-1 font-mono text-[0.5625rem] font-medium uppercase tracking-[0.02em]" ng-class="getStatusClass(r.status)">{{r.status.replace('_', ' ')}}</span>
-                                        <span class="px-2 py-0.5 font-mono text-[0.5rem] border font-medium uppercase tracking-[0.02em]" ng-class="getPriorityClass(r.priority)">{{r.priority}}</span>
+                                        <span class="px-2.5 py-1 font-mono text-[0.5625rem] font-medium uppercase tracking-wider rounded" ng-class="getStatusClass(r.status)">{{r.status.replace('_', ' ')}}</span>
+                                        <span class="px-2 py-0.5 font-mono text-[0.5rem] border rounded font-medium uppercase tracking-wider" ng-class="getPriorityClass(r.priority)">{{r.priority}}</span>
                                     </div>
                                 </div>
                             </div>
@@ -246,22 +298,22 @@ Auth::startSession();
                     </div>
 
                     <!-- Today's Bookings -->
-                    <div class="bg-surface border border-border-light flex flex-col h-[500px] stagger-item">
-                        <div class="px-6 py-5 border-b border-border-light flex justify-between items-center">
-                            <h2 class="font-sans font-medium text-[1rem] text-ink">Today's Bookings</h2>
-                            <a href="/admin/amenity-bookings" class="font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">View →</a>
+                    <div class="bg-surface border border-border-light rounded-2xl flex flex-col h-[520px] shadow-sm stagger-item overflow-hidden">
+                        <div class="px-6 py-5 border-b border-border-light bg-surface/50 backdrop-blur-sm flex justify-between items-center">
+                            <h2 class="font-serif font-light italic text-[1.25rem] text-ink">Today's Bookings</h2>
+                            <a href="<?php echo Auth::getBasePrefix(); ?>/admin/amenity-bookings" class="font-mono text-[0.625rem] tracking-[0.1em] uppercase text-accent hover:text-accent-hover transition-colors no-underline font-semibold">View All →</a>
                         </div>
-                        <div class="p-6 flex-1 overflow-y-auto">
-                            <p ng-if="!todayBookings || todayBookings.length == 0" class="text-ink-secondary text-[0.875rem] font-sans text-center mt-10">No bookings for today.</p>
-                            <div class="flex flex-col gap-3">
-                                <div ng-repeat="b in todayBookings" class="flex items-center justify-between p-4 border border-border-light hover:border-border transition stagger-inner" ng-class="{'border-border': b._updated}">
+                        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar">
+                            <p ng-if="!todayBookings || todayBookings.length == 0" class="text-ink-secondary/60 text-[0.875rem] font-sans text-center mt-12 font-light">No bookings scheduled for today.</p>
+                            <div class="flex flex-col gap-4">
+                                <div ng-repeat="b in todayBookings" class="flex items-center justify-between p-4 border border-border-light hover:border-accent/20 rounded-xl hover:bg-bg-alt/25 transition-all duration-300 stagger-inner" ng-class="{'border-accent/40 bg-bg-alt/20': b._updated}">
                                     <div>
-                                        <p class="font-sans font-medium text-ink text-[0.875rem] mb-1">{{b.amenity_name}}</p>
-                                        <p class="font-sans text-[0.75rem] text-ink-secondary">{{b.guest_name}}</p>
+                                        <p class="font-sans font-semibold text-ink text-[0.875rem] mb-1">{{b.amenity_name}}</p>
+                                        <p class="font-sans text-[0.8125rem] text-ink-secondary/70 font-light">{{b.guest_name}}</p>
                                     </div>
                                     <div class="text-right flex flex-col items-end">
-                                        <p class="font-sans font-medium text-[0.875rem] text-ink mb-2 bg-bg-alt px-3 py-1">{{formatTime(b.check_in_time)}} — {{formatTime(b.check_out_time)}}</p>
-                                        <span class="font-mono text-[0.5625rem] px-3 py-1 font-medium uppercase tracking-[0.02em]" ng-class="getBookingStatusClass(b.status)">{{b.status.replace('_', ' ')}}</span>
+                                        <p class="font-mono text-[0.75rem] font-semibold text-accent mb-2 bg-bg-alt/60 px-3 py-1 rounded-full">{{formatTime(b.check_in_time)}} — {{formatTime(b.check_out_time)}}</p>
+                                        <span class="font-mono text-[0.5625rem] px-2.5 py-1 font-medium uppercase tracking-wider rounded" ng-class="getBookingStatusClass(b.status)">{{b.status.replace('_', ' ')}}</span>
                                     </div>
                                 </div>
                             </div>

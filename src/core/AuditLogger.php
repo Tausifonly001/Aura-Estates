@@ -14,20 +14,38 @@ class AuditLogger {
     }
 
     private static function ensureTable() {
-        self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
-            id BIGSERIAL PRIMARY KEY,
-            user_id INT DEFAULT NULL,
-            user_name VARCHAR(100) DEFAULT NULL,
-            action VARCHAR(50) NOT NULL,
-            entity_type VARCHAR(50) NOT NULL,
-            entity_id VARCHAR(50) DEFAULT NULL,
-            description TEXT DEFAULT NULL,
-            old_values JSONB DEFAULT NULL,
-            new_values JSONB DEFAULT NULL,
-            ip_address VARCHAR(45) DEFAULT NULL,
-            user_agent VARCHAR(500) DEFAULT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        )");
+        $driver = self::$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT DEFAULT NULL,
+                user_name VARCHAR(100) DEFAULT NULL,
+                action VARCHAR(50) NOT NULL,
+                entity_type VARCHAR(50) NOT NULL,
+                entity_id VARCHAR(50) DEFAULT NULL,
+                description TEXT DEFAULT NULL,
+                old_values JSON DEFAULT NULL,
+                new_values JSON DEFAULT NULL,
+                ip_address VARCHAR(45) DEFAULT NULL,
+                user_agent VARCHAR(500) DEFAULT NULL,
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )");
+        } else {
+            self::$db->exec("CREATE TABLE IF NOT EXISTS " . self::$table . " (
+                id BIGSERIAL PRIMARY KEY,
+                user_id INT DEFAULT NULL,
+                user_name VARCHAR(100) DEFAULT NULL,
+                action VARCHAR(50) NOT NULL,
+                entity_type VARCHAR(50) NOT NULL,
+                entity_id VARCHAR(50) DEFAULT NULL,
+                description TEXT DEFAULT NULL,
+                old_values JSONB DEFAULT NULL,
+                new_values JSONB DEFAULT NULL,
+                ip_address VARCHAR(45) DEFAULT NULL,
+                user_agent VARCHAR(500) DEFAULT NULL,
+                created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )");
+        }
     }
 
     public static function log($action, $entityType, $entityId = null, $description = null, $oldValues = null, $newValues = null) {
