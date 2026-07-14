@@ -20,6 +20,13 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $message = '';
+$msg_type = 'error';
+if (isset($_SESSION['login_message'])) {
+    $message = $_SESSION['login_message'];
+    $msg_type = $_SESSION['login_message_type'] ?? 'error';
+    unset($_SESSION['login_message']);
+    unset($_SESSION['login_message_type']);
+}
 if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
     if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
         $message = 'Invalid security token. Please refresh and try again.';
@@ -75,6 +82,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
         .line-reveal { width: 0; height: 1px; background: rgba(28,27,24,0.08); transition: width 1.2s cubic-bezier(0.16,1,0.3,1); }
         .line-reveal.show { width: 100%; }
         .err-msg { font-size: 0.6875rem; color: #964a4a; padding: 0.75rem 1rem; background: rgba(150,74,74,0.03); border-left: 2px solid rgba(150,74,74,0.3); }
+        .success-msg { font-size: 0.6875rem; color: #5d7a4f; padding: 0.75rem 1rem; background: rgba(93,122,79,0.03); border-left: 2px solid rgba(93,122,79,0.3); }
         .morph-circle { position: absolute; border-radius: 50%; pointer-events: none; border: 1px solid rgba(28,27,24,0.04); z-index: -8; }
         .slide-link { position: relative; text-decoration: none; color: #8c7b6c; font-size: 0.6875rem; transition: color 0.4s; }
         .slide-link:hover { color: #6f5f51; }
@@ -152,7 +160,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
                 </div>
 
                 <?php if ($message): ?>
-                    <div class="err-msg mt-4" id="errMsg"><?php echo $message; ?></div>
+                    <div class="<?php echo $msg_type === 'success' ? 'success-msg' : 'err-msg'; ?> mt-4" id="msgBox"><?php echo $message; ?></div>
                 <?php endif; ?>
 
                 <form method="post" class="mt-8 space-y-7" id="loginForm">

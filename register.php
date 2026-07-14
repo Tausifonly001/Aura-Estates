@@ -44,15 +44,9 @@ if ($_POST) {
             $tenantRoleId = $roleStmt->fetchColumn();
             $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', ?)");
             if ($stmt->execute([$name, $email, $hash, $tenantRoleId])) {
-                $uid = (int)$db->lastInsertId();
-                Auth::establishSession([
-                    'id' => $uid,
-                    'name' => $name,
-                    'email' => $email,
-                    'role' => 'tenant',
-                    'role_id' => $tenantRoleId
-                ]);
-                header('Location: ' . Auth::getDashboardUrl('tenant'));
+                $_SESSION['login_message'] = 'Account created successfully! Please sign in to access your portal.';
+                $_SESSION['login_message_type'] = 'success';
+                header('Location: ' . $basePrefix . '/login');
                 exit;
             }
             $message = 'Registration failed.';

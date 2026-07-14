@@ -41,6 +41,7 @@ switch($method) {
         $action = $_GET['action'] ?? '';
 
         if ($action === 'register') {
+            Auth::startSession();
             $validator = new Validator($data);
             $validator->required('name', 'Name')
                 ->required('email', 'Email')
@@ -69,13 +70,8 @@ switch($method) {
             $stmt = $db->prepare("INSERT INTO users (name, email, password, role, role_id) VALUES (?, ?, ?, 'tenant', ?)");
             if ($stmt->execute([$data->name, $data->email, $hash, $tenantRoleId])) {
                 $uid = (int)$db->lastInsertId();
-                Auth::establishSession([
-                    'id' => $uid,
-                    'name' => $data->name,
-                    'email' => $data->email,
-                    'role' => 'tenant',
-                    'role_id' => $tenantRoleId
-                ]);
+                $_SESSION['login_message'] = 'Account created successfully! Please sign in to access your portal.';
+                $_SESSION['login_message_type'] = 'success';
 
                 AuditLogger::log('create', 'user', $uid, "User registered: {$data->email}");
                 Response::success([

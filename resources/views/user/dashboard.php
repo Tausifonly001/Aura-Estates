@@ -44,7 +44,7 @@ if(!isset($_SESSION['user_id'])) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="../resources/js/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>window.AURA_API_BASE = '../api/';</script>
     <script src="../resources/js/api-http.js"></script>
@@ -93,7 +93,7 @@ if(!isset($_SESSION['user_id'])) {
             </div>
             <div class="flex items-center gap-4">
                 <span class="font-sans text-[0.875rem] text-ink-secondary">Welcome, <strong class="text-ink font-medium">{{user.name}}</strong></span>
-                <a href="/user/logout" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors px-4 py-2 border border-border rounded-full no-underline">
+                <a href="<?php echo Auth::getBasePrefix(); ?>/user/logout" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors px-4 py-2 border border-border rounded-full no-underline">
                     Logout
                 </a>
             </div>
