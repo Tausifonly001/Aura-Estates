@@ -536,7 +536,14 @@ if(!Auth::isAuthenticated()) {
 
             $scope.isPolling = false;
 
-            const API = { auth: '../api/auth', user: '../api/user_data', maintenance: '../api/maintenance', amenities: '../api/amenities', bookings: '../api/amenity_bookings' };
+            const BASE_PREFIX = '<?php echo Auth::getBasePrefix(); ?>';
+            const API = { 
+                auth: BASE_PREFIX + '/api/auth', 
+                user: BASE_PREFIX + '/api/user_data', 
+                maintenance: BASE_PREFIX + '/api/maintenance', 
+                amenities: BASE_PREFIX + '/api/amenities', 
+                bookings: BASE_PREFIX + '/api/amenity_bookings' 
+            };
 
             $scope.formatTime = function(tStr) {
                 if(!tStr) return '';
@@ -548,19 +555,22 @@ if(!Auth::isAuthenticated()) {
             };
 
             $http.get(API.auth + '?action=me').then(function(res) {
-                if(!res.data.data || !res.data.data.user) { $window.location.href = '<?php echo Auth::getBasePrefix(); ?>/login'; return; }
+                if(!res.data.data || !res.data.data.user) { $window.location.href = BASE_PREFIX + '/login'; return; }
                 $scope.user = res.data.data.user;
-                $scope.loadAllData().then(function() {
+                $scope.loadAllData().finally(function() {
                     $scope.pageLoading = false;
                     $scope.animateTabEntry();
                     $scope.startSSE();
                 });
-                }, function() { $window.location.href = '<?php echo Auth::getBasePrefix(); ?>/login'; });
+            }, function() { $window.location.href = BASE_PREFIX + '/login'; });
 
             $scope.loadAllData = function() {
                 return $q.all([
-                    $http.get(API.user + '?type=rentals'), $http.get(API.user + '?type=maintenance'),
-                    $http.get(API.user + '?type=bookings'), $http.get(API.user + '?type=available_properties'), $http.get(API.amenities)
+                    $http.get(API.user + '?type=rentals').catch(function() { return { data: { data: { records: [] } } }; }),
+                    $http.get(API.user + '?type=maintenance').catch(function() { return { data: { data: { records: [] } } }; }),
+                    $http.get(API.user + '?type=bookings').catch(function() { return { data: { data: { records: [] } } }; }),
+                    $http.get(API.user + '?type=available_properties').catch(function() { return { data: { data: { records: [] } } }; }),
+                    $http.get(API.amenities).catch(function() { return { data: { data: { records: [] } } }; })
                 ]).then(function(responses) {
                     $scope.rentals = (responses[0].data.data && responses[0].data.data.records) || [];
                     $scope.activeRentals = $scope.rentals.filter(r => r.status === 'active');
@@ -571,13 +581,15 @@ if(!Auth::isAuthenticated()) {
                     $scope.counts.bookings = $scope.myBookings.filter(b => b.status !== 'cancelled' && b.status !== 'completed').length;
                     $scope.availableProperties = (responses[3].data.data && responses[3].data.data.records) || [];
                     $scope.amenities = (responses[4].data.data && responses[4].data.data.records) || [];
+                }).catch(function(err) {
+                    console.error("Dashboard data load error:", err);
                 });
             };
 
             var sseSource = null;
             $scope.startSSE = function() {
                 $scope.isPolling = true;
-                sseSource = new EventSource('../api/sse');
+                sseSource = new EventSource(BASE_PREFIX + '/api/sse');
                 sseSource.addEventListener('new_maintenance', function(e) {
                     $scope.$apply(function() { $scope._refreshTenantData(); });
                 });

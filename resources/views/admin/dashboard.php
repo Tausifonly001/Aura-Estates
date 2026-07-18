@@ -359,8 +359,10 @@ Auth::startSession();
                 }
             };
 
+            const BASE_PREFIX = '<?php echo Auth::getBasePrefix(); ?>';
+
             $scope.loadDashboardData = function() {
-                return $http.get('../api/dashboard').then(function(res) {
+                return $http.get(BASE_PREFIX + '/api/dashboard').then(function(res) {
                     var d = res.data.data || {};
                     $scope.stats = {
                         properties: d.properties,
@@ -373,10 +375,12 @@ Auth::startSession();
                     $scope.recentMaintenance = d.kpirecent_maintenance_requests || [];
                     $scope.todayBookings = d.today_bookings || [];
                     $scope._checkNotifications(d.kpi);
+                }).catch(function(err) {
+                    console.error("Dashboard data error:", err);
                 });
             };
 
-            $scope.loadDashboardData().then(function() {
+            $scope.loadDashboardData().finally(function() {
                 $scope.pageLoading = false;
                 $scope.animateEntry();
                 $scope.startSSE();
@@ -385,7 +389,7 @@ Auth::startSession();
             var sseSource = null;
             $scope.startSSE = function() {
                 $scope.isPolling = true;
-                sseSource = new EventSource('../api/sse');
+                sseSource = new EventSource(BASE_PREFIX + '/api/sse');
                 sseSource.addEventListener('new_maintenance', function(e) {
                     $scope.$apply(function() { $scope._refreshDashboard(); });
                 });
@@ -398,7 +402,7 @@ Auth::startSession();
             };
 
             $scope._refreshDashboard = function() {
-                $http.get('../api/dashboard').then(function(res) {
+                $http.get(BASE_PREFIX + '/api/dashboard').then(function(res) {
                     var d = res.data.data || {};
                     var oldPending = $scope.stats.maintenance ? $scope.stats.maintenance.pending_count : 0;
                     var oldInProgress = $scope.stats.maintenance ? $scope.stats.maintenance.in_progress_count : 0;
