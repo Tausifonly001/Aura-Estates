@@ -133,10 +133,14 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
 
         $http.post('api/inquiry', data)
         .then(function(response) {
-            $scope.successMessage = "Thank you! We will contact you shortly.";
+            $scope.successMessage = (response && response.data && response.data.message) ? response.data.message : "Thank you! We will contact you shortly.";
             $scope.inquiry = {};
-            $scope.selectedProperty = null;
-            $timeout(function() { $scope.successMessage = ''; }, 3000);
+            $timeout(function() {
+                $scope.successMessage = '';
+                if ($scope.selectedProperty) {
+                    $scope.closeDetail();
+                }
+            }, 3000);
         }, function(error) {
             $scope.errorMessage = (error && error.data && error.data.message) ? error.data.message : "Failed to send inquiry. Please try again.";
             $timeout(function() { $scope.errorMessage = ''; }, 3000);
