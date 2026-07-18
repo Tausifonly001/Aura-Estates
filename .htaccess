@@ -31,7 +31,7 @@ RewriteRule ^ /%1 [R=301,L,QSA]
 # Rewrite root-level PHP files (login.php, register.php, etc.)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(login|register|forgot-password|reset-password|portal)$ $1.php [L,QSA]
+RewriteRule ^(login|register|forgot-password|reset-password|portal|google_auth)$ $1.php [L,QSA]
 
 # Rewrite /property-detail/123 → property-detail.php?id=123
 RewriteCond %{REQUEST_FILENAME} !-f
