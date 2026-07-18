@@ -30,9 +30,10 @@ class Auth {
             $isSecure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
             $isSecure = $isSecure || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
             session_set_cookie_params([
+                'path' => '/',
                 'httponly' => true,
                 'secure' => $isSecure,
-                'samesite' => 'Strict'
+                'samesite' => 'Lax'
             ]);
             session_start();
         }
@@ -67,6 +68,7 @@ class Auth {
 
         CsrfProtection::refresh();
         self::trackSession((int)$row['id']);
+        session_write_close();
     }
 
     private static function trackSession(int $userId) {
