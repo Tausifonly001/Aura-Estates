@@ -100,6 +100,8 @@
         .page-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(252,251,250,1) 100%); pointer-events: none; }
         @media (max-width: 768px) { .page-hero { min-height: 30vh; } }
         .nav-compact { top: 0.5rem !important; padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; box-shadow: 0 4px 24px rgba(28,27,24,0.05) !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="min-h-screen bg-bg text-ink antialiased">

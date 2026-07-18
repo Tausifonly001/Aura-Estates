@@ -173,7 +173,7 @@ $currentPage = 'properties';
                         <p class="font-sans font-medium text-[1.75rem] lg:text-[2.25rem] text-ink mb-1">$<?php echo number_format($property['price']); ?></p>
                         <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted mb-6"><?php echo htmlspecialchars($property['property_type']); ?> &middot; <?php echo htmlspecialchars($property['location']); ?></p>
 
-                        <form id="propertyInquiryForm" onsubmit="submitPropertyInquiry(event, <?php echo $property['id']; ?>)" class="flex flex-col gap-3">
+                        <form id="propertyInquiryForm" onsubmit="submitPropertyInquiry(event, <?php echo $property['id']; ?>)" class="flex flex-col gap-3 transition-all duration-500">
                             <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
                             <input type="text" name="name" class="input-field" placeholder="Your name" required>
                             <input type="email" name="email" class="input-field" placeholder="Your email" required>
@@ -181,6 +181,18 @@ $currentPage = 'properties';
                             <div id="inquiryAlert" class="hidden p-3 font-sans text-[0.875rem] rounded-lg"></div>
                             <button type="submit" id="inquiryBtn" class="btn-primary w-full justify-center mt-2">Send Inquiry</button>
                         </form>
+
+                        <div id="inquirySuccessCard" class="hidden py-8 px-6 bg-gradient-to-br from-success/10 via-surface to-bg border border-success/30 rounded-2xl shadow-xl shadow-success/5 text-center flex-col items-center justify-center transition-all duration-700 transform scale-100">
+                            <div class="w-14 h-14 rounded-full bg-success/15 border-2 border-success/40 flex items-center justify-center text-success mb-4 shadow-inner animate-pulse">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="animate-bounce">
+                                    <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-success font-semibold mb-2 block">✨ Inquiry Received</span>
+                            <h4 class="font-serif italic text-[1.35rem] lg:text-[1.5rem] text-ink leading-snug mb-3">“Every great chapter begins with finding the right space.”</h4>
+                            <p class="font-sans text-[0.8125rem] text-ink-secondary leading-relaxed mb-5">Our bespoke private client advisors have received your inquiry and will contact you shortly.</p>
+                            <button onclick="resetInquiryCard()" class="btn-outline text-[0.6875rem] px-5 py-2">Send Another Inquiry</button>
+                        </div>
                     </div>
 
                     <div class="bg-surface border border-border-light rounded-xl p-6 lg:p-8">
@@ -273,8 +285,10 @@ function submitPropertyInquiry(e, propId) {
         btn.disabled = false;
         btn.textContent = 'Send Inquiry';
         if (res.status >= 200 && res.status < 300) {
-            alertBox.textContent = res.data.message || 'Thank you! We will contact you shortly.';
-            alertBox.className = 'block p-3 font-sans text-[0.875rem] rounded-lg bg-success/10 text-success border border-success/20';
+            form.style.display = 'none';
+            const successCard = document.getElementById('inquirySuccessCard');
+            successCard.classList.remove('hidden');
+            successCard.classList.add('flex');
             form.reset();
         } else {
             alertBox.textContent = res.data.message || 'Failed to send inquiry. Please try again.';
@@ -287,6 +301,14 @@ function submitPropertyInquiry(e, propId) {
         alertBox.textContent = 'An error occurred. Please try again later.';
         alertBox.className = 'block p-3 font-sans text-[0.875rem] rounded-lg bg-danger/10 text-danger border border-danger/20';
     });
+}
+
+function resetInquiryCard() {
+    const form = document.getElementById('propertyInquiryForm');
+    const successCard = document.getElementById('inquirySuccessCard');
+    successCard.classList.add('hidden');
+    successCard.classList.remove('flex');
+    form.style.display = 'flex';
 }
 </script>
 

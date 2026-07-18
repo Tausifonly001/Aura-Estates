@@ -54,6 +54,8 @@
     <style>
         [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
         .nav-mobile-bg { background: rgba(232,229,219,0.98); backdrop-filter: blur(20px); }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body ng-controller="PropertyController" class="min-h-screen">
@@ -638,14 +640,29 @@
                     <p class="font-sans font-medium text-[1.5rem] lg:text-[1.75rem] text-ink mb-6">{{selectedProperty.price | currency:"$":0}} <span class="font-normal text-muted text-[1rem]">/mo</span></p>
                 </div>
                 <div>
-                    <p class="font-sans font-medium text-[1rem] text-ink mb-3">Interested in this property?</p>
-                    <div ng-if="successMessage" class="badge badge-success mb-3">{{successMessage}}</div>
-                    <div ng-if="errorMessage" class="badge badge-danger mb-3">{{errorMessage}}</div>
-                    <div class="flex gap-3">
-                        <input type="text" ng-model="inquiry.name" class="input-field flex-1" placeholder="Your name">
-                        <input type="email" ng-model="inquiry.email" class="input-field flex-1" placeholder="Your email">
+                    <!-- Form State -->
+                    <div ng-if="!successMessage" class="transition-all duration-500">
+                        <p class="font-sans font-medium text-[1rem] text-ink mb-3">Interested in this property?</p>
+                        <div ng-if="errorMessage" class="badge badge-danger mb-3">{{errorMessage}}</div>
+                        <div class="flex gap-3">
+                            <input type="text" ng-model="inquiry.name" class="input-field flex-1" placeholder="Your name">
+                            <input type="email" ng-model="inquiry.email" class="input-field flex-1" placeholder="Your email">
+                        </div>
+                        <button ng-click="submitInquiry(selectedProperty.id)" class="btn-primary w-full justify-center mt-3">Send Inquiry</button>
                     </div>
-                    <button ng-click="submitInquiry(selectedProperty.id)" class="btn-primary w-full justify-center mt-3">Send Inquiry</button>
+
+                    <!-- Animated Success Quote Card -->
+                    <div ng-if="successMessage" class="py-8 px-6 bg-gradient-to-br from-success/10 via-surface to-bg border border-success/30 rounded-2xl shadow-xl shadow-success/5 text-center flex flex-col items-center justify-center transition-all duration-700 transform scale-100">
+                        <div class="w-14 h-14 rounded-full bg-success/15 border-2 border-success/40 flex items-center justify-center text-success mb-4 shadow-inner animate-pulse">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="animate-bounce">
+                                <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="font-mono text-[0.6875rem] tracking-[0.15em] uppercase text-success font-semibold mb-2 block">✨ Inquiry Received</span>
+                        <h4 class="font-serif italic text-[1.35rem] lg:text-[1.5rem] text-ink leading-snug mb-3">“Every great chapter begins with finding the right space.”</h4>
+                        <p class="font-sans text-[0.8125rem] text-ink-secondary leading-relaxed max-w-[20rem] mb-5">Our bespoke private client advisors have received your inquiry and will contact you shortly.</p>
+                        <button ng-click="closeDetail()" class="btn-outline text-[0.6875rem] px-5 py-2">Close & Continue</button>
+                    </div>
                 </div>
             </div>
             <div class="w-full md:w-1/2 p-6 lg:p-8 bg-[#f2efe9] flex flex-col">
