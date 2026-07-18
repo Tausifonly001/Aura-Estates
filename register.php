@@ -18,6 +18,9 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $message = '';
+if (isset($_GET['error'])) {
+    $message = htmlspecialchars(trim($_GET['error']));
+}
 if ($_POST) {
     if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {
         $message = 'Invalid security token. Please refresh and try again.';
@@ -129,7 +132,7 @@ if ($_POST) {
                 </div>
  
                 <?php if ($message): ?>
-                    <div class="err-msg mt-4" id="errMsg" style="opacity:0;"><?php echo $message; ?></div>
+                    <div class="err-msg mt-4" id="errMsg"><?php echo $message; ?></div>
                 <?php endif; ?>
  
                 <form method="post" class="mt-8 space-y-6" id="registerForm">

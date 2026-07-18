@@ -26,6 +26,9 @@ if (isset($_SESSION['login_message'])) {
     $msg_type = $_SESSION['login_message_type'] ?? 'error';
     unset($_SESSION['login_message']);
     unset($_SESSION['login_message_type']);
+} elseif (isset($_GET['error'])) {
+    $message = htmlspecialchars(trim($_GET['error']));
+    $msg_type = 'error';
 }
 if ($_POST && isset($_POST['action']) && $_POST['action'] === 'login') {
     if (!CsrfProtection::validate($_POST['_csrf_token'] ?? null)) {

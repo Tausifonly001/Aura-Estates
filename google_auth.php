@@ -24,6 +24,15 @@ $clientID = getenv('GOOGLE_CLIENT_ID');
 $clientSecret = getenv('GOOGLE_CLIENT_SECRET');
 $redirectUri = getenv('GOOGLE_REDIRECT_URI');
 
+if (!$redirectUri) {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+    $projectRoot = str_replace('\\', '/', __DIR__);
+    $basePrefix = rtrim(str_replace($docRoot, '', $projectRoot), '/');
+    $redirectUri = $protocol . '://' . $host . $basePrefix . '/google_auth';
+}
+
 $client = new Google_Client();
 $client->setClientId($clientID);
 $client->setClientSecret($clientSecret);
@@ -71,9 +80,18 @@ if (isset($_GET['code'])) {
             $roleStmt->execute();
             $tenantRoleId = $roleStmt->fetchColumn();
             
-            $stmt = $db->prepare("INSERT INTO users (name, email, google_id, avatar, role, role_id) VALUES (?, ?, ?, ?, 'tenant', ?) RETURNING *");
+            $stmt = $db->prepare("INSERT INTO users (name, email, google_id, avatar, role, role_id) VALUES (?, ?, ?, ?, 'tenant', ?)");
             $stmt->execute([$name, $email, $google_id, $avatar, $tenantRoleId]);
-            $newUser = $stmt->fetch(PDO::FETCH_ASSOC);
+            $newId = $db->lastInsertId();
+            if (!$newId) {
+                $fetchStmt = $db->prepare('SELECT * FROM users WHERE email = ?');
+                $fetchStmt->execute([$email]);
+                $newUser = $fetchStmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                $fetchStmt = $db->prepare('SELECT * FROM users WHERE id = ?');
+                $fetchStmt->execute([$newId]);
+                $newUser = $fetchStmt->fetch(PDO::FETCH_ASSOC);
+            }
 
             if ($newUser) {
                 Auth::establishSession($newUser);
