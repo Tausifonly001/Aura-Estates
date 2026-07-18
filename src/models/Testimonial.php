@@ -60,17 +60,14 @@ class Testimonial {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET
-            name=:name, location=:location, content=:content,
-            rating=:rating, avatar_url=:avatar_url";
-
+        $query = "INSERT INTO " . $this->table_name . " (name, location, content, rating, avatar_url) VALUES (:name, :location, :content, :rating, :avatar_url)";
         $stmt = $this->conn->prepare($query);
 
-        $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->location = htmlspecialchars(strip_tags($this->location));
-        $this->content = htmlspecialchars(strip_tags($this->content));
-        $this->rating = htmlspecialchars(strip_tags($this->rating));
-        $this->avatar_url = htmlspecialchars(strip_tags($this->avatar_url));
+        $this->name = htmlspecialchars(strip_tags((string)$this->name));
+        $this->location = htmlspecialchars(strip_tags((string)$this->location));
+        $this->content = htmlspecialchars(strip_tags((string)$this->content));
+        $this->rating = htmlspecialchars(strip_tags((string)$this->rating));
+        $this->avatar_url = htmlspecialchars(strip_tags((string)$this->avatar_url));
 
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":location", $this->location);
@@ -78,10 +75,12 @@ class Testimonial {
         $stmt->bindParam(":rating", $this->rating);
         $stmt->bindParam(":avatar_url", $this->avatar_url);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("Testimonial create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function update() {

@@ -59,25 +59,25 @@ class Agent {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET
-            name=:name, title=:title, bio=:bio, image_url=:image_url";
-
+        $query = "INSERT INTO " . $this->table_name . " (name, title, bio, image_url) VALUES (:name, :title, :bio, :image_url)";
         $stmt = $this->conn->prepare($query);
 
-        $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->title = htmlspecialchars(strip_tags($this->title));
-        $this->bio = htmlspecialchars(strip_tags($this->bio));
-        $this->image_url = htmlspecialchars(strip_tags($this->image_url));
+        $this->name = htmlspecialchars(strip_tags((string)$this->name));
+        $this->title = htmlspecialchars(strip_tags((string)$this->title));
+        $this->bio = htmlspecialchars(strip_tags((string)$this->bio));
+        $this->image_url = htmlspecialchars(strip_tags((string)$this->image_url));
 
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":bio", $this->bio);
         $stmt->bindParam(":image_url", $this->image_url);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("Agent create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function update() {

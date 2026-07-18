@@ -138,7 +138,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
             $scope.selectedProperty = null;
             $timeout(function() { $scope.successMessage = ''; }, 3000);
         }, function(error) {
-            $scope.errorMessage = "Failed to send inquiry. Please try again.";
+            $scope.errorMessage = (error && error.data && error.data.message) ? error.data.message : "Failed to send inquiry. Please try again.";
             $timeout(function() { $scope.errorMessage = ''; }, 3000);
         });
     };
@@ -166,8 +166,7 @@ app.controller('PropertyController', function($scope, $http, $timeout) {
             $scope.maint = {};
             $timeout(function() { $scope.maintenanceSuccess = ''; }, 2000);
         }, function(error) {
-            $scope.maintenanceSuccess = '';
-            $scope.maintenanceError = "Failed to submit. " + (error.data && error.data.message || 'Please try again.');
+            $scope.maintenanceError = (error && error.data && error.data.message) ? error.data.message : "Failed to submit request.";
             $timeout(function() { $scope.maintenanceError = ''; }, 4000);
         });
     };

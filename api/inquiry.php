@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/core/Middleware.php';
+require_once __DIR__ . '/../src/core/Validator.php';
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/core/AuditLogger.php';
 require_once __DIR__ . '/../src/controllers/InquiryController.php';
@@ -24,8 +25,7 @@ switch($method) {
         $data = Middleware::getJsonInput();
 
         $validator = new Validator($data);
-        $validator->required('property_id', 'Property')
-            ->required('name', 'Name')
+        $validator->required('name', 'Name')
             ->required('email', 'Email')
             ->email('email')
             ->required('message', 'Message');
@@ -37,7 +37,8 @@ switch($method) {
         $code = http_response_code();
         $result = json_decode($output, true);
         if ($code >= 200 && $code < 300) {
-            AuditLogger::log('create', 'inquiry', $db->lastInsertId(), "Inquiry sent for property {$data->property_id}");
+            $propIdLog = !empty($data->property_id) ? "for property {$data->property_id}" : "general inquiry";
+            AuditLogger::log('create', 'inquiry', $db->lastInsertId(), "Inquiry sent {$propIdLog}");
             Response::success(null, $result['message'] ?? 'Inquiry was sent.', $code);
         } else {
             Response::error($result['message'] ?? 'Unable to send inquiry.', $code);

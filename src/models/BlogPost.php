@@ -94,22 +94,18 @@ class BlogPost {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET
-            title=:title, slug=:slug, excerpt=:excerpt, content=:content,
-            author=:author, category=:category, cover_image=:cover_image,
-            status=:status, published_at=:published_at";
-
+        $query = "INSERT INTO " . $this->table_name . " (title, slug, excerpt, content, author, category, cover_image, status, published_at) VALUES (:title, :slug, :excerpt, :content, :author, :category, :cover_image, :status, :published_at)";
         $stmt = $this->conn->prepare($query);
 
-        $this->title = htmlspecialchars(strip_tags($this->title));
-        $this->slug = htmlspecialchars(strip_tags($this->slug));
-        $this->excerpt = htmlspecialchars(strip_tags($this->excerpt));
-        $this->content = htmlspecialchars(strip_tags($this->content));
-        $this->author = htmlspecialchars(strip_tags($this->author));
-        $this->category = htmlspecialchars(strip_tags($this->category));
-        $this->cover_image = htmlspecialchars(strip_tags($this->cover_image));
-        $this->status = htmlspecialchars(strip_tags($this->status));
-        $this->published_at = htmlspecialchars(strip_tags($this->published_at));
+        $this->title = htmlspecialchars(strip_tags((string)$this->title));
+        $this->slug = htmlspecialchars(strip_tags((string)$this->slug));
+        $this->excerpt = htmlspecialchars(strip_tags((string)$this->excerpt));
+        $this->content = htmlspecialchars(strip_tags((string)$this->content));
+        $this->author = htmlspecialchars(strip_tags((string)$this->author));
+        $this->category = htmlspecialchars(strip_tags((string)$this->category));
+        $this->cover_image = htmlspecialchars(strip_tags((string)$this->cover_image));
+        $this->status = htmlspecialchars(strip_tags((string)$this->status));
+        $this->published_at = htmlspecialchars(strip_tags((string)$this->published_at));
 
         $stmt->bindParam(":title", $this->title);
         $stmt->bindParam(":slug", $this->slug);
@@ -121,10 +117,12 @@ class BlogPost {
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":published_at", $this->published_at);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("BlogPost create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function update() {

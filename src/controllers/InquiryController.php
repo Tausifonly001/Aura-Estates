@@ -13,7 +13,6 @@ class InquiryController {
     public function create($data) {
         // Validate inputs
         if(
-            !empty($data->property_id) &&
             !empty($data->name) &&
             !empty($data->email) &&
             !empty($data->message)
@@ -24,7 +23,7 @@ class InquiryController {
                 return json_encode(array("message" => "Invalid email format."));
             }
 
-            $this->inquiry->property_id = $data->property_id;
+            $this->inquiry->property_id = !empty($data->property_id) ? $data->property_id : null;
             $this->inquiry->name = $data->name;
             $this->inquiry->email = $data->email;
             $this->inquiry->message = $data->message;

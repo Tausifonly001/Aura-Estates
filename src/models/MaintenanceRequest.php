@@ -79,61 +79,48 @@ class MaintenanceRequest {
 
     public function create() {
         $this->createTable();
-        $cols = [];
-        try {
-            $cols = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name)->fetchAll(PDO::FETCH_COLUMN);
-        } catch(PDOException $e) {}
-
-        $fields = ["property_id", "tenant_name", "tenant_email", "issue_description", "priority"];
-        $set = [];
-        foreach ($fields as $f) {
-            $set[] = "$f=:$f";
-        }
-
-        $extra = [];
-        if (in_array('user_id', $cols) && !empty($this->user_id)) {
-            $extra[] = "user_id=:user_id";
-        }
-        if (in_array('subject', $cols) && !empty($this->subject)) {
-            $extra[] = "subject=:subject";
-        }
-        $set = array_merge($extra, $set);
-        $set[] = "status='pending'";
-        $query = "INSERT INTO " . $this->table_name . " SET " . implode(", ", $set);
-
+        $query = "INSERT INTO " . $this->table_name . " (property_id, tenant_name, tenant_email, issue_description, priority, user_id, subject, status) VALUES (:property_id, :tenant_name, :tenant_email, :issue_description, :priority, :user_id, :subject, 'pending')";
         $stmt = $this->conn->prepare($query);
 
-        $this->property_id = htmlspecialchars(strip_tags($this->property_id));
-        $this->tenant_name = htmlspecialchars(strip_tags($this->tenant_name));
-        $this->tenant_email = htmlspecialchars(strip_tags($this->tenant_email));
-        $this->issue_description = htmlspecialchars(strip_tags($this->issue_description));
-        $this->priority = htmlspecialchars(strip_tags($this->priority));
-        if (!empty($this->user_id)) {
-            $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-        }
-        if (!empty($this->subject)) {
-            $this->subject = htmlspecialchars(strip_tags($this->subject));
+        $propId = !empty($this->property_id) && is_numeric($this->property_id) && $this->property_id > 0 ? (int)$this->property_id : null;
+        if ($propId !== null) {
+            try {
+                $check = $this->conn->prepare("SELECT id FROM properties WHERE id = ?");
+                $check->execute([$propId]);
+                if (!$check->fetchColumn()) $propId = null;
+            } catch (Throwable $t) { $propId = null; }
         }
 
-        try {
-            $cols = $this->conn->query("SHOW COLUMNS FROM " . $this->table_name)->fetchAll(PDO::FETCH_COLUMN);
-        } catch(PDOException $e) { $cols = []; }
+        $this->tenant_name = htmlspecialchars(strip_tags((string)$this->tenant_name));
+        $this->tenant_email = htmlspecialchars(strip_tags((string)$this->tenant_email));
+        $this->issue_description = htmlspecialchars(strip_tags((string)$this->issue_description));
+        $this->priority = htmlspecialchars(strip_tags((string)$this->priority));
+        $userId = !empty($this->user_id) && is_numeric($this->user_id) ? (int)$this->user_id : null;
+        $subject = !empty($this->subject) ? htmlspecialchars(strip_tags((string)$this->subject)) : 'General Maintenance';
 
-        if (in_array('user_id', $cols) && !empty($this->user_id)) {
-            $stmt->bindParam(":user_id", $this->user_id);
+        if ($propId === null) {
+            $stmt->bindValue(":property_id", null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(":property_id", $propId, PDO::PARAM_INT);
         }
-        if (in_array('subject', $cols) && !empty($this->subject)) {
-            $stmt->bindParam(":subject", $this->subject);
-        }
-        $stmt->bindParam(":property_id", $this->property_id);
         $stmt->bindParam(":tenant_name", $this->tenant_name);
         $stmt->bindParam(":tenant_email", $this->tenant_email);
         $stmt->bindParam(":issue_description", $this->issue_description);
         $stmt->bindParam(":priority", $this->priority);
+        if ($userId === null) {
+            $stmt->bindValue(":user_id", null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(":user_id", $userId, PDO::PARAM_INT);
+        }
+        $stmt->bindParam(":subject", $subject);
 
-        if($stmt->execute()) {
-            $this->id = $this->conn->lastInsertId();
-            return true;
+        try {
+            if($stmt->execute()) {
+                $this->id = $this->conn->lastInsertId();
+                return true;
+            }
+        } catch (Throwable $e) {
+            error_log("MaintenanceRequest create error: " . $e->getMessage());
         }
         return false;
     }

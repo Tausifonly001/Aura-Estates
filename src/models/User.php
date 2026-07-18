@@ -41,14 +41,12 @@ class User {
             $this->role_id = $roleStmt->fetchColumn();
         }
 
-        $query = "INSERT INTO " . $this->table_name . " SET
-            name=:name, email=:email, password=:password, role=:role, role_id=:role_id";
-
+        $query = "INSERT INTO " . $this->table_name . " (name, email, password, role, role_id) VALUES (:name, :email, :password, :role, :role_id)";
         $stmt = $this->conn->prepare($query);
 
-        $this->name=htmlspecialchars(strip_tags($this->name));
-        $this->password=password_hash($this->password, PASSWORD_BCRYPT);
-        $this->role=htmlspecialchars(strip_tags($this->role));
+        $this->name = htmlspecialchars(strip_tags((string)$this->name));
+        $this->password = !empty($this->password) ? password_hash($this->password, PASSWORD_BCRYPT) : null;
+        $this->role = htmlspecialchars(strip_tags((string)$this->role));
 
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":email", $this->email);
@@ -56,10 +54,12 @@ class User {
         $stmt->bindParam(":role", $this->role);
         $stmt->bindParam(":role_id", $this->role_id);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("User create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function read() {

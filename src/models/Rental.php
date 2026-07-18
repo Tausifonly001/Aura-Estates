@@ -54,30 +54,32 @@ class Rental {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET
-            user_id=:user_id, property_id=:property_id, start_date=:start_date,
-            end_date=:end_date, monthly_rent=:monthly_rent, status='active'";
+        $query = "INSERT INTO " . $this->table_name . " (user_id, property_id, start_date, end_date, monthly_rent, status) VALUES (:user_id, :property_id, :start_date, :end_date, :monthly_rent, 'active')";
         $stmt = $this->conn->prepare($query);
-        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-        $this->property_id = htmlspecialchars(strip_tags($this->property_id));
-        $this->start_date = htmlspecialchars(strip_tags($this->start_date));
-        $this->end_date = htmlspecialchars(strip_tags($this->end_date));
-        $this->monthly_rent = htmlspecialchars(strip_tags($this->monthly_rent));
+        $this->user_id = htmlspecialchars(strip_tags((string)$this->user_id));
+        $this->property_id = htmlspecialchars(strip_tags((string)$this->property_id));
+        $this->start_date = htmlspecialchars(strip_tags((string)$this->start_date));
+        $this->end_date = htmlspecialchars(strip_tags((string)$this->end_date));
+        $this->monthly_rent = htmlspecialchars(strip_tags((string)$this->monthly_rent));
         $stmt->bindParam(":user_id", $this->user_id);
         $stmt->bindParam(":property_id", $this->property_id);
         $stmt->bindParam(":start_date", $this->start_date);
         $stmt->bindParam(":end_date", $this->end_date);
         $stmt->bindParam(":monthly_rent", $this->monthly_rent);
-        if($stmt->execute()) {
-            $pdo = $this->conn;
-            $pdo->prepare("UPDATE properties SET is_available = 0 WHERE id = ?")->execute([$this->property_id]);
-            return true;
+        try {
+            if($stmt->execute()) {
+                $pdo = $this->conn;
+                $pdo->prepare("UPDATE properties SET is_available = 0 WHERE id = ?")->execute([$this->property_id]);
+                return true;
+            }
+        } catch (Throwable $e) {
+            error_log("Rental create error: " . $e->getMessage());
         }
         return false;
     }
 
     public function terminate() {
-        $query = "UPDATE " . $this->table_name . " SET status='terminated', end_date=CURDATE() WHERE id=? AND status='active'";
+        $query = "UPDATE " . $this->table_name . " SET status='terminated', end_date=CURRENT_DATE WHERE id=? AND status='active'";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
         if($stmt->execute() && $stmt->rowCount() > 0) {

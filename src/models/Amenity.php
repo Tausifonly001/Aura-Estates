@@ -59,30 +59,33 @@ class Amenity {
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table_name . " SET
-            property_id=:property_id, name=:name, description=:description,
-            capacity=:capacity, location=:location, image=:image, is_active=1";
-
+        $query = "INSERT INTO " . $this->table_name . " (property_id, name, description, capacity, location, image, is_active, status) VALUES (:property_id, :name, :description, :capacity, :location, :image, 1, 'active')";
         $stmt = $this->conn->prepare($query);
 
-        $this->property_id = htmlspecialchars(strip_tags($this->property_id));
-        $this->name = htmlspecialchars(strip_tags($this->name));
-        $this->description = htmlspecialchars(strip_tags($this->description));
-        $this->capacity = htmlspecialchars(strip_tags($this->capacity));
-        $this->location = htmlspecialchars(strip_tags($this->location));
-        $this->image = htmlspecialchars(strip_tags($this->image));
+        $this->property_id = !empty($this->property_id) && is_numeric($this->property_id) ? (int)$this->property_id : null;
+        $this->name = htmlspecialchars(strip_tags((string)$this->name));
+        $this->description = htmlspecialchars(strip_tags((string)$this->description));
+        $this->capacity = htmlspecialchars(strip_tags((string)$this->capacity));
+        $this->location = htmlspecialchars(strip_tags((string)$this->location));
+        $this->image = htmlspecialchars(strip_tags((string)$this->image));
 
-        $stmt->bindParam(":property_id", $this->property_id);
+        if ($this->property_id === null) {
+            $stmt->bindValue(":property_id", null, PDO::PARAM_NULL);
+        } else {
+            $stmt->bindValue(":property_id", $this->property_id, PDO::PARAM_INT);
+        }
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":capacity", $this->capacity);
         $stmt->bindParam(":location", $this->location);
         $stmt->bindParam(":image", $this->image);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("Amenity create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function update() {

@@ -144,19 +144,15 @@ class AmenityBooking {
             return "capacity";
         }
 
-        $query = "INSERT INTO " . $this->table_name . " SET
-            amenity_id=:amenity_id, user_id=:user_id, guest_name=:guest_name,
-            booking_date=:booking_date, check_in_time=:check_in_time,
-            check_out_time=:check_out_time, status='confirmed'";
-
+        $query = "INSERT INTO " . $this->table_name . " (amenity_id, user_id, guest_name, booking_date, check_in_time, check_out_time, status) VALUES (:amenity_id, :user_id, :guest_name, :booking_date, :check_in_time, :check_out_time, 'confirmed')";
         $stmt = $this->conn->prepare($query);
 
-        $this->amenity_id = htmlspecialchars(strip_tags($this->amenity_id));
-        $this->user_id = htmlspecialchars(strip_tags($this->user_id));
-        $this->guest_name = htmlspecialchars(strip_tags($this->guest_name));
-        $this->booking_date = htmlspecialchars(strip_tags($this->booking_date));
-        $this->check_in_time = htmlspecialchars(strip_tags($this->check_in_time));
-        $this->check_out_time = htmlspecialchars(strip_tags($this->check_out_time));
+        $this->amenity_id = htmlspecialchars(strip_tags((string)$this->amenity_id));
+        $this->user_id = htmlspecialchars(strip_tags((string)$this->user_id));
+        $this->guest_name = htmlspecialchars(strip_tags((string)$this->guest_name));
+        $this->booking_date = htmlspecialchars(strip_tags((string)$this->booking_date));
+        $this->check_in_time = htmlspecialchars(strip_tags((string)$this->check_in_time));
+        $this->check_out_time = htmlspecialchars(strip_tags((string)$this->check_out_time));
 
         $stmt->bindParam(":amenity_id", $this->amenity_id);
         $stmt->bindParam(":user_id", $this->user_id);
@@ -165,10 +161,12 @@ class AmenityBooking {
         $stmt->bindParam(":check_in_time", $this->check_in_time);
         $stmt->bindParam(":check_out_time", $this->check_out_time);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("AmenityBooking create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function updateStatus() {

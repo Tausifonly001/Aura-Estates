@@ -62,27 +62,22 @@ class Property {
             return false;
         }
 
-        $query = "INSERT INTO " . $this->table_name . " SET
-            title=:title, description=:description, price=:price, location=:location, 
-            latitude=:latitude, longitude=:longitude,
-            property_type=:property_type, bedrooms=:bedrooms, bathrooms=:bathrooms, 
-            area_sqft=:area_sqft, main_image=:main_image, is_available=:is_available";
-
+        $query = "INSERT INTO " . $this->table_name . " (title, description, price, location, latitude, longitude, property_type, bedrooms, bathrooms, area_sqft, main_image, image, is_available, status) VALUES (:title, :description, :price, :location, :latitude, :longitude, :property_type, :bedrooms, :bathrooms, :area_sqft, :main_image, :main_image, :is_available, 'available')";
         $stmt = $this->conn->prepare($query);
 
         // Sanitize
-        $this->title=htmlspecialchars(strip_tags($this->title));
-        $this->description=htmlspecialchars(strip_tags($this->description));
-        $this->price=htmlspecialchars(strip_tags($this->price));
-        $this->location=htmlspecialchars(strip_tags($this->location));
-        $this->latitude=htmlspecialchars(strip_tags($this->latitude ?? ''));
-        $this->longitude=htmlspecialchars(strip_tags($this->longitude ?? ''));
-        $this->property_type=htmlspecialchars(strip_tags($this->property_type));
-        $this->bedrooms=htmlspecialchars(strip_tags($this->bedrooms));
-        $this->bathrooms=htmlspecialchars(strip_tags($this->bathrooms));
-        $this->area_sqft=htmlspecialchars(strip_tags($this->area_sqft));
-        $this->main_image=htmlspecialchars(strip_tags($this->main_image));
-        $this->is_available=htmlspecialchars(strip_tags($this->is_available ?? 1));
+        $this->title=htmlspecialchars(strip_tags((string)$this->title));
+        $this->description=htmlspecialchars(strip_tags((string)$this->description));
+        $this->price=htmlspecialchars(strip_tags((string)$this->price));
+        $this->location=htmlspecialchars(strip_tags((string)$this->location));
+        $this->latitude=htmlspecialchars(strip_tags((string)($this->latitude ?? '')));
+        $this->longitude=htmlspecialchars(strip_tags((string)($this->longitude ?? '')));
+        $this->property_type=htmlspecialchars(strip_tags((string)$this->property_type));
+        $this->bedrooms=htmlspecialchars(strip_tags((string)$this->bedrooms));
+        $this->bathrooms=htmlspecialchars(strip_tags((string)$this->bathrooms));
+        $this->area_sqft=htmlspecialchars(strip_tags((string)$this->area_sqft));
+        $this->main_image=htmlspecialchars(strip_tags((string)$this->main_image));
+        $this->is_available=htmlspecialchars(strip_tags((string)($this->is_available ?? 1)));
 
         // Bind
         $stmt->bindParam(":title", $this->title);
@@ -98,10 +93,12 @@ class Property {
         $stmt->bindParam(":main_image", $this->main_image);
         $stmt->bindParam(":is_available", $this->is_available);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            return $stmt->execute();
+        } catch (Throwable $e) {
+            error_log("Property create error: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     // Update property
