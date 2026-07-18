@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../src/config/auth.php';
 Auth::startSession();
-if(!isset($_SESSION['user_id'])) {
+if(!Auth::isAuthenticated()) {
     header("Location: " . Auth::getBasePrefix() . "/login");
     exit;
 }
@@ -548,14 +548,14 @@ if(!isset($_SESSION['user_id'])) {
             };
 
             $http.get(API.auth + '?action=me').then(function(res) {
-                if(!res.data.data || !res.data.data.user) { $window.location.href = '/login'; return; }
+                if(!res.data.data || !res.data.data.user) { $window.location.href = '<?php echo Auth::getBasePrefix(); ?>/login'; return; }
                 $scope.user = res.data.data.user;
                 $scope.loadAllData().then(function() {
                     $scope.pageLoading = false;
                     $scope.animateTabEntry();
                     $scope.startSSE();
                 });
-                }, function() { $window.location.href = '/login'; });
+                }, function() { $window.location.href = '<?php echo Auth::getBasePrefix(); ?>/login'; });
 
             $scope.loadAllData = function() {
                 return $q.all([

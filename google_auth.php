@@ -35,7 +35,7 @@ if (isset($_GET['code'])) {
     try {
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
         if (isset($token['error'])) {
-            header('Location: login?error=Google authentication failed');
+            header('Location: ' . Auth::getBasePrefix() . '/login?error=Google authentication failed');
             exit;
         }
         $client->setAccessToken($token['access_token']);
@@ -80,13 +80,13 @@ if (isset($_GET['code'])) {
                 header('Location: ' . Auth::getDashboardUrl($newUser['role']));
                 exit;
             } else {
-                header('Location: login?error=Registration failed');
+                header('Location: ' . Auth::getBasePrefix() . '/login?error=Registration failed');
                 exit;
             }
         }
     } catch (Exception $e) {
         error_log("Google OAuth Error: " . $e->getMessage());
-        header('Location: login?error=An error occurred during Google authentication');
+        header('Location: ' . Auth::getBasePrefix() . '/login?error=An error occurred during Google authentication');
         exit;
     }
 } else {

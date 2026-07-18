@@ -62,7 +62,7 @@ class Auth {
         $_SESSION['role'] = $row['role'];
         $_SESSION['user_role'] = $row['role'];
         $_SESSION['role_id'] = $row['role_id'] ?? null;
-        $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . $ip);
+        $_SESSION['_fingerprint'] = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? ''));
         $_SESSION['_last_activity'] = time();
 
         CsrfProtection::refresh();
@@ -138,7 +138,9 @@ class Auth {
                 return true;
             }
 
-            return false;
+            // Self-heal: if token is missing from sessions table but session is active, re-track it
+            self::trackSession($userId);
+            return true;
         } catch (Throwable $e) {
             return true;
         }
@@ -147,7 +149,7 @@ class Auth {
     public static function getUser() {
         self::startSession();
         if (isset($_SESSION['user_id'])) {
-            $expectedFingerprint = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . self::getClientIp());
+            $expectedFingerprint = hash('sha256', ($_SERVER['HTTP_USER_AGENT'] ?? ''));
             if (!isset($_SESSION['_fingerprint']) || $_SESSION['_fingerprint'] !== $expectedFingerprint) {
                 self::destroySessionRecord();
                 $_SESSION = [];
@@ -283,10 +285,11 @@ class Auth {
         $_SESSION = [];
         self::clearSessionCookie();
         session_destroy();
-        if ($redirect) {
-            header('Location: ' . $redirect);
-            exit;
+        if ($redirect === null) {
+            $redirect = self::getBasePrefix() . '/';
         }
+        header('Location: ' . $redirect);
+        exit;
     }
 
     public static function isAjaxRequest() {
