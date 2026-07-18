@@ -77,15 +77,17 @@ class Auth {
                 return;
             }
 
-            $stmt = $db->prepare('DELETE FROM sessions WHERE session_id = ?');
+            $stmt = $db->prepare('DELETE FROM sessions WHERE token = ?');
             $stmt->execute([$sessionId]);
 
-            $stmt = $db->prepare('INSERT INTO sessions (user_id, session_id, ip_address, user_agent) VALUES (?, ?, ?, ?)');
+            $expiresAt = date('Y-m-d H:i:s', time() + 7200);
+            $stmt = $db->prepare('INSERT INTO sessions (user_id, token, ip_address, user_agent, expires_at) VALUES (?, ?, ?, ?, ?)');
             $stmt->execute([
                 $userId,
                 $sessionId,
                 self::getClientIp(),
-                substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500)
+                substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
+                $expiresAt
             ]);
         } catch (Throwable $e) {
             // sessions table may not exist yet on older installs
@@ -97,7 +99,7 @@ class Auth {
             $db = self::getDB();
             $sessionId = session_id();
             if ($sessionId) {
-                $stmt = $db->prepare('DELETE FROM sessions WHERE session_id = ?');
+                $stmt = $db->prepare('DELETE FROM sessions WHERE token = ?');
                 $stmt->execute([$sessionId]);
             }
         } catch (Throwable $e) {
@@ -121,11 +123,12 @@ class Auth {
                 return false;
             }
 
-            $stmt = $db->prepare('SELECT id FROM sessions WHERE session_id = ? AND user_id = ?');
+            $stmt = $db->prepare('SELECT id FROM sessions WHERE token = ? AND user_id = ?');
             $stmt->execute([$sessionId, $userId]);
             if ($stmt->fetchColumn()) {
-                $db->prepare('UPDATE sessions SET last_activity = CURRENT_TIMESTAMP WHERE session_id = ?')
-                    ->execute([$sessionId]);
+                $expiresAt = date('Y-m-d H:i:s', time() + 7200);
+                $db->prepare('UPDATE sessions SET expires_at = ? WHERE token = ?')
+                    ->execute([$expiresAt, $sessionId]);
                 return true;
             }
 
