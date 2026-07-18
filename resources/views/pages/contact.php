@@ -28,12 +28,25 @@ if ($_POST) {
             $message = 'Please enter a valid email address.';
             $messageClass = 'text-danger';
         } else {
-            $database = new Database();
-            $db = $database->getConnection();
-            $stmt = $db->prepare("INSERT INTO inquiries (property_id, name, email, phone, message, created_at) VALUES (?, ?, ?, '', ?, NOW())");
-            $stmt->execute([$propertyId ?: null, $name, $email, $msg]);
-            $message = 'Thank you! Your message has been received. We will get back to you shortly.';
-            $messageClass = 'text-success';
+            try {
+                $database = new Database();
+                $db = $database->getConnection();
+                if ($propertyId > 0) {
+                    $checkProp = $db->prepare("SELECT id FROM properties WHERE id = ?");
+                    $checkProp->execute([$propertyId]);
+                    if (!$checkProp->fetch()) {
+                        $propertyId = 0;
+                    }
+                }
+                $stmt = $db->prepare("INSERT INTO inquiries (property_id, name, email, phone, message, created_at) VALUES (?, ?, ?, '', ?, NOW())");
+                $stmt->execute([$propertyId ?: null, $name, $email, $msg]);
+                $message = 'Thank you! Your message has been received. We will get back to you shortly.';
+                $messageClass = 'text-success';
+            } catch (Throwable $e) {
+                error_log('Contact inquiry error: ' . $e->getMessage());
+                $message = 'An error occurred while submitting your inquiry. Please try again later.';
+                $messageClass = 'text-danger';
+            }
         }
     }
 }
