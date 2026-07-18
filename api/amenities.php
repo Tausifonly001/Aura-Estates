@@ -39,7 +39,13 @@ switch($method) {
             Response::success($result);
         } else {
             $result = $amenity->readPaginated($params);
-            Response::paginated($result['records'], $result['pagination']['total'], $params['page'], $params['per_page']);
+            $records = array_map(function($r) {
+                $r['is_active'] = 1;
+                $r['is_available'] = 1;
+                $r['location'] = !empty($r['location']) ? $r['location'] : 'Clubhouse / Main Building';
+                return $r;
+            }, $result['records'] ?? []);
+            Response::paginated($records, $result['pagination']['total'] ?? count($records), $params['page'], $params['per_page']);
         }
         break;
 

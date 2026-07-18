@@ -51,10 +51,14 @@ switch($type) {
         break;
 
     case 'available_properties':
-        $stmt = $db->prepare("SELECT * FROM properties WHERE is_available = 1 ORDER BY created_at DESC");
+        $stmt = $db->prepare("SELECT * FROM properties WHERE is_available = 1 OR status = 'available' OR status IS NULL ORDER BY created_at DESC");
         $stmt->execute();
         $records = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row['is_available'] = 1;
+            $row['status'] = 'available';
+            $row['main_image'] = !empty($row['main_image']) ? $row['main_image'] : (!empty($row['image']) ? $row['image'] : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800');
+            $row['image'] = $row['main_image'];
             $records[] = $row;
         }
         Response::success(['records' => $records]);
