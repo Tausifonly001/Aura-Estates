@@ -120,7 +120,7 @@
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12 text-center relative z-10">
         <p class="font-mono text-[0.75rem] lg:text-[0.875rem] tracking-[-0.02em] uppercase text-white/50 mb-4">Start the conversation</p>
         <h2 class="font-sans font-medium text-[1.5rem] lg:text-[2.125rem] leading-[1.1] text-bg max-w-[48rem] mx-auto mb-8" data-split>Interested in working with us? Let us hear about your property.</h2>
-        <a href="/contact" class="inline-flex items-center gap-3 font-mono text-[0.75rem] tracking-[0.02em] uppercase text-accent bg-bg px-8 py-4 rounded-full hover:bg-white transition-colors no-underline">
+        <a href="contact" class="inline-flex items-center gap-3 font-mono text-[0.75rem] tracking-[0.02em] uppercase text-accent bg-bg px-8 py-4 rounded-full hover:bg-white transition-colors no-underline">
             Get In Touch
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1 15L15 1M15 1H5M15 1V11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>

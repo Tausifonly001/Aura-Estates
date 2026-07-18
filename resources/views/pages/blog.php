@@ -51,7 +51,7 @@ $currentPage = 'blog';
         <?php else: ?>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12" data-stagger>
             <?php foreach ($posts as $post): ?>
-            <a href="/blog-post?slug=<?php echo urlencode($post['slug']); ?>" class="journal-card group" data-stagger-item>
+            <a href="blog-post?slug=<?php echo urlencode($post['slug']); ?>" class="journal-card group" data-stagger-item>
                 <img src="<?php echo htmlspecialchars($post['cover_image'] ?: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800'); ?>" loading="lazy" data-image-reveal onerror="this.onerror=null;this.src='resources/placeholders/journal-1.svg';">
                 <div class="flex gap-3 font-mono text-[0.5625rem] tracking-[0.02em] uppercase text-muted mb-2">
                     <span><?php echo htmlspecialchars($post['category']); ?></span>

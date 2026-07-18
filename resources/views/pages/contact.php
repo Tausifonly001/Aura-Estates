@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/config/auth.php';
 require_once __DIR__ . '/../../../src/helpers.php';
 require_once __DIR__ . '/../../../src/core/CsrfProtection.php';
+require_once __DIR__ . '/../../../src/models/Inquiry.php';
 
 Auth::startSession();
 CsrfProtection::generate();
@@ -31,17 +32,18 @@ if ($_POST) {
             try {
                 $database = new Database();
                 $db = $database->getConnection();
-                if ($propertyId > 0) {
-                    $checkProp = $db->prepare("SELECT id FROM properties WHERE id = ?");
-                    $checkProp->execute([$propertyId]);
-                    if (!$checkProp->fetch()) {
-                        $propertyId = 0;
-                    }
+                $inquiry = new Inquiry($db);
+                $inquiry->property_id = $propertyId > 0 ? $propertyId : null;
+                $inquiry->name = $name;
+                $inquiry->email = $email;
+                $inquiry->message = !empty($subject) ? "[Subject: {$subject}] {$msg}" : $msg;
+                if ($inquiry->create()) {
+                    $message = 'Thank you! Your message has been received. We will get back to you shortly.';
+                    $messageClass = 'text-success';
+                } else {
+                    $message = 'Unable to send inquiry. Please try again later.';
+                    $messageClass = 'text-danger';
                 }
-                $stmt = $db->prepare("INSERT INTO inquiries (property_id, name, email, phone, message, created_at) VALUES (?, ?, ?, '', ?, NOW())");
-                $stmt->execute([$propertyId ?: null, $name, $email, $msg]);
-                $message = 'Thank you! Your message has been received. We will get back to you shortly.';
-                $messageClass = 'text-success';
             } catch (Throwable $e) {
                 error_log('Contact inquiry error: ' . $e->getMessage());
                 $message = 'An error occurred while submitting your inquiry. Please try again later.';

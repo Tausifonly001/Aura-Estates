@@ -75,7 +75,7 @@ $currentPage = 'properties';
 
 <section class="page-hero" style="background: linear-gradient(180deg, #f2efe9 0%, #e8e5db 100%); padding: 6rem 0 2.5rem;">
     <div class="max-w-[120rem] mx-auto px-6 lg:px-12 w-full relative z-10">
-        <a href="/properties" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted hover:text-ink transition-colors no-underline mb-6">
+        <a href="properties" class="inline-flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted hover:text-ink transition-colors no-underline mb-6">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M3 7l4-4M3 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Back to Properties
         </a>
@@ -173,13 +173,13 @@ $currentPage = 'properties';
                         <p class="font-sans font-medium text-[1.75rem] lg:text-[2.25rem] text-ink mb-1">$<?php echo number_format($property['price']); ?></p>
                         <p class="font-mono text-[0.625rem] tracking-[0.02em] uppercase text-muted mb-6"><?php echo htmlspecialchars($property['property_type']); ?> &middot; <?php echo htmlspecialchars($property['location']); ?></p>
 
-                        <p class="font-sans font-medium text-[1rem] text-ink mb-4">Interested in this property?</p>
-                        <form action="/contact" method="GET" class="flex flex-col gap-3">
-                            <input type="hidden" name="property" value="<?php echo $property['id']; ?>">
+                        <form id="propertyInquiryForm" onsubmit="submitPropertyInquiry(event, <?php echo $property['id']; ?>)" class="flex flex-col gap-3">
+                            <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
                             <input type="text" name="name" class="input-field" placeholder="Your name" required>
                             <input type="email" name="email" class="input-field" placeholder="Your email" required>
                             <textarea name="message" class="input-field resize-y leading-relaxed" rows="3" placeholder="I'm interested in <?php echo htmlspecialchars($property['title']); ?>..." required></textarea>
-                            <button type="submit" class="btn-primary w-full justify-center mt-2">Send Inquiry</button>
+                            <div id="inquiryAlert" class="hidden p-3 font-sans text-[0.875rem] rounded-lg"></div>
+                            <button type="submit" id="inquiryBtn" class="btn-primary w-full justify-center mt-2">Send Inquiry</button>
                         </form>
                     </div>
 
@@ -241,5 +241,53 @@ $currentPage = 'properties';
 })();
 </script>
 <?php endif; ?>
+
+<script>
+function submitPropertyInquiry(e, propId) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById('inquiryBtn');
+    const alertBox = document.getElementById('inquiryAlert');
+    const name = form.querySelector('[name="name"]').value.trim();
+    const email = form.querySelector('[name="email"]').value.trim();
+    const message = form.querySelector('[name="message"]').value.trim();
+
+    if (!name || !email || !message) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    alertBox.className = 'hidden p-3 font-sans text-[0.875rem] rounded-lg';
+
+    fetch('api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            property_id: propId,
+            name: name,
+            email: email,
+            message: message
+        })
+    })
+    .then(response => response.json().then(data => ({ status: response.status, data: data })))
+    .then(res => {
+        btn.disabled = false;
+        btn.textContent = 'Send Inquiry';
+        if (res.status >= 200 && res.status < 300) {
+            alertBox.textContent = res.data.message || 'Thank you! We will contact you shortly.';
+            alertBox.className = 'block p-3 font-sans text-[0.875rem] rounded-lg bg-success/10 text-success border border-success/20';
+            form.reset();
+        } else {
+            alertBox.textContent = res.data.message || 'Failed to send inquiry. Please try again.';
+            alertBox.className = 'block p-3 font-sans text-[0.875rem] rounded-lg bg-danger/10 text-danger border border-danger/20';
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.textContent = 'Send Inquiry';
+        alertBox.textContent = 'An error occurred. Please try again later.';
+        alertBox.className = 'block p-3 font-sans text-[0.875rem] rounded-lg bg-danger/10 text-danger border border-danger/20';
+    });
+}
+</script>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

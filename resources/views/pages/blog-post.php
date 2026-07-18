@@ -70,7 +70,7 @@ $currentPage = 'blog';
         </div>
 
         <div class="mt-12 pt-8 border-t border-border flex items-center justify-between">
-            <a href="/blog" class="flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">
+            <a href="blog" class="flex items-center gap-2 font-mono text-[0.625rem] tracking-[0.02em] uppercase text-ink-secondary hover:text-ink transition-colors no-underline">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M3 7l4-4M3 7l4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 Back to Journal
             </a>

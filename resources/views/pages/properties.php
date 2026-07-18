@@ -175,7 +175,7 @@ $currentPage = 'properties';
         <div class="text-center py-16 lg:py-24">
             <i class="fas fa-search text-3xl text-muted mb-4"></i>
             <p class="font-sans text-[1.125rem] text-ink-secondary">No properties match your criteria.</p>
-            <a href="/properties" class="btn-primary mt-6 inline-flex">Clear Filters</a>
+            <a href="properties" class="btn-primary mt-6 inline-flex">Clear Filters</a>
         </div>
         <?php else: ?>
         <div class="flex items-baseline justify-between mb-8">
@@ -189,7 +189,7 @@ $currentPage = 'properties';
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
             <?php foreach ($properties as $p): ?>
-            <a href="/property-detail/<?php echo $p['id']; ?>" class="property-card no-underline" data-type="<?php echo htmlspecialchars($p['property_type']); ?>">
+            <a href="property-detail/<?php echo $p['id']; ?>" class="property-card no-underline" data-type="<?php echo htmlspecialchars($p['property_type']); ?>">
                 <div class="overflow-hidden">
                     <?php if (!empty($p['main_image'])): ?>
                     <img src="<?php echo htmlspecialchars($p['main_image']); ?>" loading="lazy" alt="<?php echo htmlspecialchars($p['title']); ?>" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\'w-full aspect-[16/10] bg-bg-alt flex items-center justify-center\'><i class=\'fas fa-image text-2xl text-muted\'></i></div>';">
