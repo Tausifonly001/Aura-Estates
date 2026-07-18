@@ -48,9 +48,12 @@ class Database {
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
 
-            if (!self::$bootstrapped && $driver === 'pgsql') {
+            if (!self::$bootstrapped) {
                 self::$bootstrapped = true;
-                $this->bootstrapSchema($this->conn);
+                if ($driver === 'pgsql') {
+                    $this->bootstrapSchema($this->conn);
+                }
+                $this->ensureOAuthColumns($this->conn, $driver);
             }
         } catch(PDOException $exception) {
             throw $exception;
@@ -73,6 +76,29 @@ class Database {
             }
         } catch (Exception $e) {
             error_log('Bootstrap schema error: ' . $e->getMessage());
+        }
+    }
+
+    private function ensureOAuthColumns($pdo, $driver) {
+        try {
+            if ($driver === 'mysql') {
+                $cols = $pdo->query("SHOW COLUMNS FROM users")->fetchAll(PDO::FETCH_COLUMN);
+                if (!empty($cols)) {
+                    if (!in_array('google_id', $cols)) {
+                        $pdo->exec("ALTER TABLE users ADD COLUMN google_id VARCHAR(255) UNIQUE");
+                    }
+                    if (!in_array('avatar', $cols)) {
+                        $pdo->exec("ALTER TABLE users ADD COLUMN avatar VARCHAR(500) NULL");
+                    }
+                    $pdo->exec("ALTER TABLE users MODIFY COLUMN password VARCHAR(255) NULL");
+                }
+            } else {
+                $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255) UNIQUE");
+                $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar VARCHAR(500) NULL");
+                $pdo->exec("ALTER TABLE users ALTER COLUMN password DROP NOT NULL");
+            }
+        } catch (Throwable $e) {
+            error_log('ensureOAuthColumns error: ' . $e->getMessage());
         }
     }
 }

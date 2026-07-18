@@ -80,8 +80,9 @@ if (isset($_GET['code'])) {
             $roleStmt->execute();
             $tenantRoleId = $roleStmt->fetchColumn();
             
-            $stmt = $db->prepare("INSERT INTO users (name, email, google_id, avatar, role, role_id) VALUES (?, ?, ?, ?, 'tenant', ?)");
-            $stmt->execute([$name, $email, $google_id, $avatar, $tenantRoleId]);
+            $randomPass = password_hash(bin2hex(random_bytes(16)), PASSWORD_BCRYPT);
+            $stmt = $db->prepare("INSERT INTO users (name, email, password, google_id, avatar, role, role_id) VALUES (?, ?, ?, ?, ?, 'tenant', ?)");
+            $stmt->execute([$name, $email, $randomPass, $google_id, $avatar, $tenantRoleId]);
             $newId = $db->lastInsertId();
             if (!$newId) {
                 $fetchStmt = $db->prepare('SELECT * FROM users WHERE email = ?');
@@ -104,7 +105,7 @@ if (isset($_GET['code'])) {
         }
     } catch (Exception $e) {
         error_log("Google OAuth Error: " . $e->getMessage());
-        header('Location: ' . Auth::getBasePrefix() . '/login?error=An error occurred during Google authentication');
+        header('Location: ' . Auth::getBasePrefix() . '/login?error=' . urlencode('Google Auth Error: ' . $e->getMessage()));
         exit;
     }
 } else {
